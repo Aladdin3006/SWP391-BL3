@@ -29,12 +29,14 @@ public class LoginController extends HttpServlet {
         User user = db.getUserByAccountName(u);
 
         if (user != null && user.getPassword().equals(p)) {
+            if (!user.isStatus()) {
+                request.setAttribute("error", "Please verify your email before logging in.");
+                request.getRequestDispatcher("/view/auth/login.jsp").forward(request, response);
+                return;
+            }
             HttpSession session = request.getSession();
             session.setAttribute("user", user);
             response.sendRedirect("home");
-        } else {
-            request.setAttribute("error", "Invalid username or password");
-            request.getRequestDispatcher("/view/auth/login.jsp").forward(request, response);
-        }
+        } 
     }
 }

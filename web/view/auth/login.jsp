@@ -19,8 +19,9 @@
                         <c:if test="${not empty error}">
                             <div class="alert alert-danger">${error}</div>
                         </c:if>
-                        <c:if test="${param.register == 'success'}">
-                            <div class="alert alert-success">Registration successful. Please login.</div>
+
+                        <c:if test="${not empty message}">
+                            <div class="alert alert-success">${message}</div>
                         </c:if>
                         
                         <form action="login" method="post">

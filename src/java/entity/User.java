@@ -10,6 +10,7 @@ public class User {
     private String role;
     private boolean status;
     private int workspaceId;
+    private String verificationCode;
 
     public User() {}
 
@@ -52,4 +53,7 @@ public class User {
 
     public int getWorkspaceId() { return workspaceId; }
     public void setWorkspaceId(int workspaceId) { this.workspaceId = workspaceId; }
+
+    public String getVerificationCode() { return verificationCode; }
+    public void setVerificationCode(String verificationCode) { this.verificationCode = verificationCode; }
 }
