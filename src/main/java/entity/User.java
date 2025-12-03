@@ -7,24 +7,39 @@ public class User {
     private String password;
     private String email;
     private String phone;
-    private String role;
-    private boolean status;
+    private int roleId;
+    private String status;
     private int workspaceId;
     private String verificationCode;
+    private Role role;
 
     public User() {}
 
     public User(int userId, String accountName, String displayName, String password,
-                String email, String phone, String role, boolean status, int workspaceId) {
+                String email, String phone, int roleId, String status, int workspaceId) {
         this.userId = userId;
         this.accountName = accountName;
         this.displayName = displayName;
         this.password = password;
         this.email = email;
         this.phone = phone;
-        this.role = role;
+        this.roleId = roleId;
         this.status = status;
         this.workspaceId = workspaceId;
+    }
+
+    public User(int userId, String accountName, String displayName, String password,
+                String email, String phone, int roleId, String status, int workspaceId, String verificationCode) {
+        this.userId = userId;
+        this.accountName = accountName;
+        this.displayName = displayName;
+        this.password = password;
+        this.email = email;
+        this.phone = phone;
+        this.roleId = roleId;
+        this.status = status;
+        this.workspaceId = workspaceId;
+        this.verificationCode = verificationCode;
     }
 
     public int getUserId() { return userId; }
@@ -45,15 +60,22 @@ public class User {
     public String getPhone() { return phone; }
     public void setPhone(String phone) { this.phone = phone; }
 
-    public String getRole() { return role; }
-    public void setRole(String role) { this.role = role; }
+    public int getRoleId() { return roleId; }
+    public void setRoleId(int roleId) { this.roleId = roleId; }
 
-    public boolean isStatus() { return status; }
-    public void setStatus(boolean status) { this.status = status; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 
     public int getWorkspaceId() { return workspaceId; }
     public void setWorkspaceId(int workspaceId) { this.workspaceId = workspaceId; }
 
     public String getVerificationCode() { return verificationCode; }
     public void setVerificationCode(String verificationCode) { this.verificationCode = verificationCode; }
+
+    public Role getRole() { return role; }
+    public void setRole(Role role) { this.role = role; }
+
+    public String getRoleName() {
+        return role != null ? role.getRoleName() : "";
+    }
 }

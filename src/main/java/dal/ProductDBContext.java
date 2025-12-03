@@ -12,7 +12,7 @@ public class ProductDBContext extends DBContext {
 
     public List<Product> getAllProducts() {
         List<Product> products = new ArrayList<>();
-        String sql = "SELECT * FROM Product";
+        String sql = "SELECT * FROM product";
 
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -21,11 +21,11 @@ public class ProductDBContext extends DBContext {
             while (rs.next()) {
                 Product product = new Product();
                 product.setId(rs.getInt("id"));
-                product.setProductCode(rs.getString("product_code"));
+                product.setProductCode(rs.getString("productCode"));
                 product.setName(rs.getString("name"));
                 product.setBrand(rs.getString("brand"));
                 product.setCompany(rs.getString("company"));
-                product.setCategoryName(rs.getString("category_name"));
+                product.setCategoryName(rs.getString("categoryName"));
                 product.setUnit(rs.getInt("unit"));
                 products.add(product);
             }
@@ -41,7 +41,7 @@ public class ProductDBContext extends DBContext {
 
     public List<Product> searchProducts(String searchTerm, String category, String company, String brand) {
         List<Product> products = new ArrayList<>();
-        StringBuilder sql = new StringBuilder("SELECT * FROM Product WHERE 1=1");
+        StringBuilder sql = new StringBuilder("SELECT * FROM product WHERE 1=1");
         List<Object> params = new ArrayList<>();
 
         if (searchTerm != null && !searchTerm.trim().isEmpty()) {
@@ -94,7 +94,7 @@ public class ProductDBContext extends DBContext {
 
     public List<String> getAllCategories() {
         List<String> categories = new ArrayList<>();
-        String sql = "SELECT DISTINCT categoryName FROM Product WHERE categoryName IS NOT NULL";
+        String sql = "SELECT DISTINCT categoryName FROM product WHERE categoryName IS NOT NULL";
 
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -111,7 +111,7 @@ public class ProductDBContext extends DBContext {
 
     public List<String> getAllCompanies() {
         List<String> companies = new ArrayList<>();
-        String sql = "SELECT DISTINCT company FROM Product WHERE company IS NOT NULL";
+        String sql = "SELECT DISTINCT company FROM product WHERE company IS NOT NULL";
 
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -128,7 +128,7 @@ public class ProductDBContext extends DBContext {
 
     public List<String> getAllBrands() {
         List<String> brands = new ArrayList<>();
-        String sql = "SELECT DISTINCT brand FROM Product WHERE brand IS NOT NULL";
+        String sql = "SELECT DISTINCT brand FROM product WHERE brand IS NOT NULL";
 
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
