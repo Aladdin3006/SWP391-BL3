@@ -63,6 +63,20 @@ public class UserDBContext extends DBContext {
         return list;
     }
 
+    public void registerUser(String accountName, String password, String displayName, String email, String phone) {
+        String sql = "INSERT INTO user (accountName, password, displayName, email, phone, role, status, workspaceId) VALUES (?, ?, ?, ?, ?, 'User', 1, 1)";
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, accountName);
+            ps.setString(2, password);
+            ps.setString(3, displayName);
+            ps.setString(4, email);
+            ps.setString(5, phone);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) {
         UserDBContext dao = new UserDBContext();
         User user = dao.getUserByAccountName("admin");
