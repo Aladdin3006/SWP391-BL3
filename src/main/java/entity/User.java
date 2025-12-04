@@ -11,6 +11,7 @@ public class User {
     private String status;
     private int workspaceId;
     private String verificationCode;
+    private String resetToken; 
     private Role role;
 
     public User() {}
@@ -71,6 +72,9 @@ public class User {
 
     public String getVerificationCode() { return verificationCode; }
     public void setVerificationCode(String verificationCode) { this.verificationCode = verificationCode; }
+
+    public String getResetToken() { return resetToken; }
+    public void setResetToken(String resetToken) { this.resetToken = resetToken; }
 
     public Role getRole() { return role; }
     public void setRole(Role role) { this.role = role; }

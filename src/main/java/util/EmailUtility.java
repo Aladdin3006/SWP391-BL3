@@ -56,4 +56,44 @@ public class EmailUtility {
             e.printStackTrace();
         }
     }
+
+    public static void sendReset(String email, String token) {
+        Properties props = new Properties();
+        props.put("mail.smtp.host", HOST);
+        props.put("mail.smtp.port", PORT);
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+
+        Authenticator auth = new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(USER, PASS);
+            }
+        };
+
+        Session session = Session.getInstance(props, auth);
+
+        try {
+            Message msg = new MimeMessage(session);
+            msg.setFrom(new InternetAddress(USER));
+            msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
+            msg.setSubject("WMS Password Reset Request");
+
+            String resetLink = "http://localhost:8080/SWP391/reset-password?token=" + token;
+            
+            String content = "<h3>Password Reset</h3>"
+                    + "<p>Someone requested a password reset for your WMS account.</p>"
+                    + "<p>Click the link below to reset your password:</p>"
+                    + "<a href='" + resetLink + "'>RESET PASSWORD</a>"
+                    + "<br><br><p>If this was not you, you can safely ignore this email.</p>";
+
+            msg.setContent(content, "text/html; charset=utf-8");
+
+            Transport.send(msg);
+            System.out.println("Reset email sent successfully to " + email);
+
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+    }
 }
