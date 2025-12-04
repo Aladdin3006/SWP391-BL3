@@ -118,16 +118,14 @@
                 <div class="mt-4">
                     <c:choose>
                         <c:when test="${not empty sessionScope.user}">
-                            <a href="${pageContext.request.contextPath}/dashboard" class="btn btn-primary btn-lg">
-                                Go to Dashboard
-                            </a>
+                            <%-- No dashboard link for logged-in users --%>
                         </c:when>
                         <c:otherwise>
                             <a href="${pageContext.request.contextPath}/login" class="btn btn-primary btn-lg">
                                 Get Started
                             </a>
-                            <a href="${pageContext.request.contextPath}/profile" class="btn btn-outline-primary ms-2">
-                                    My Profile
+                            <a href="${pageContext.request.contextPath}/register" class="btn btn-outline-primary ms-2">
+                                Register
                             </a>
                         </c:otherwise>
                     </c:choose>
@@ -137,6 +135,7 @@
     </div>
 </section>
 
+<%-- Rest of the file remains the same --%>
 <section id="features" class="py-5">
     <div class="container">
         <h2 class="text-center mb-5">Features</h2>
