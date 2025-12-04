@@ -9,97 +9,136 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f8f9fa;
         }
 
         .main-section {
-            padding-top: 80px;
-            padding-bottom: 40px;
-            background-color: #e9ecef;
+            padding-top: 60px;
+            padding-bottom: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .hero-content {
+            max-width: 600px;
+        }
+
+        .hero-image {
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-width: 100%;
+            height: auto;
         }
 
         .card {
             border: 1px solid #ddd;
-            border-radius: 8px;
-            transition: box-shadow 0.3s;
+            border-radius: 10px;
+            transition: all 0.3s ease;
             height: 100%;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
 
         .card:hover {
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
         }
 
         .feature-icon {
-            width: 60px;
-            height: 60px;
-            background-color: #0d6efd;
-            border-radius: 8px;
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 15px;
+            margin: 0 auto 20px;
         }
 
         .feature-icon i {
             color: white;
-            font-size: 24px;
+            font-size: 30px;
         }
 
         .stats-box {
-            background-color: #0d6efd;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
             color: white;
-            padding: 40px 0;
-            margin: 40px 0;
+            padding: 60px 0;
+            margin: 60px 0;
         }
 
         .stat-number {
-            font-size: 36px;
+            font-size: 48px;
             font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 16px;
+            opacity: 0.9;
         }
 
         .footer {
-            background-color: #343a40;
+            background-color: #2c3e50;
             color: white;
-            padding: 40px 0 20px;
+            padding: 60px 0 30px;
         }
 
         .footer a {
-            color: #adb5bd;
+            color: #bdc3c7;
             text-decoration: none;
+            transition: color 0.3s;
         }
 
         .footer a:hover {
             color: white;
         }
 
-        .filter-section {
+        .product-showcase {
             background-color: white;
-            padding: 20px;
-            border-radius: 8px;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 40px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .product-category {
+            margin-bottom: 30px;
+        }
+
+        .category-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #2c3e50;
             margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
         }
 
-        .product-table {
-            background-color: white;
+        .btn-custom {
+            padding: 12px 30px;
             border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            font-weight: 600;
+            transition: all 0.3s;
         }
 
-        .table thead th {
-            background-color: #0d6efd;
-            color: white;
+        .btn-primary-custom {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border: none;
         }
 
-        .table tbody tr:hover {
-            background-color: #f8f9fa;
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(102, 126, 234, 0.4);
         }
 
-        .btn-filter {
-            min-width: 120px;
+        .highlight-box {
+            background: linear-gradient(135deg, #3498db 0%, #2ecc71 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            margin: 40px 0;
         }
     </style>
 </head>
@@ -108,37 +147,80 @@
 
 <section id="home" class="main-section">
     <div class="container">
-        <div class="row">
-            <div class="col-md-8 mx-auto text-center">
-                <h1>Warehouse Management System</h1>
-                <p class="lead">
-                    Manage generator inventory and orders efficiently with our system.
-                </p>
-
-                <div class="mt-4">
-                    <c:choose>
-                        <c:when test="${not empty sessionScope.user}">
-                            <%-- No dashboard link for logged-in users --%>
-                        </c:when>
-                        <c:otherwise>
-                            <a href="${pageContext.request.contextPath}/login" class="btn btn-primary btn-lg">
-                                Get Started
-                            </a>
-                            <a href="${pageContext.request.contextPath}/register" class="btn btn-outline-primary ms-2">
-                                Register
-                            </a>
-                        </c:otherwise>
-                    </c:choose>
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <div class="hero-content">
+                    <h1 class="display-4 fw-bold mb-4">PC Accessories Warehouse Management System</h1>
+                    <p class="lead mb-4">Streamline your PC components and accessories inventory with our powerful warehouse management solution.</p>
+                    <div class="mt-4">
+                        <c:choose>
+                            <c:when test="${not empty sessionScope.user}">
+                            </c:when>
+                            <c:otherwise>
+                                <a href="${pageContext.request.contextPath}/login" class="btn btn-primary btn-custom btn-primary-custom btn-lg me-3">
+                                    Get Started
+                                </a>
+                                <a href="${pageContext.request.contextPath}/register" class="btn btn-outline-light btn-custom btn-lg">
+                                    Register
+                                </a>
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="text-center">
+                    <img src="${pageContext.request.contextPath}/images/banner-home.png" alt="Warehouse Management System" class="hero-image">
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<%-- Rest of the file remains the same --%>
+<section id="products" class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5 display-5 fw-bold">PC Accessories We Manage</h2>
+
+        <div class="product-showcase">
+            <div class="row">
+                <div class="col-md-4 product-category">
+                    <h3 class="category-title">Computer Components</h3>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="fas fa-microchip text-primary me-2"></i>Processors (CPU)</li>
+                        <li class="mb-2"><i class="fas fa-memory text-primary me-2"></i>Memory (RAM)</li>
+                        <li class="mb-2"><i class="fas fa-hdd text-primary me-2"></i>Storage Drives</li>
+                        <li class="mb-2"><i class="fas fa-desktop text-primary me-2"></i>Graphics Cards (GPU)</li>
+                        <li class="mb-2"><i class="fas fa-server text-primary me-2"></i>Motherboards</li>
+                    </ul>
+                </div>
+                <div class="col-md-4 product-category">
+                    <h3 class="category-title">Peripherals</h3>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="fas fa-keyboard text-primary me-2"></i>Keyboards</li>
+                        <li class="mb-2"><i class="fas fa-mouse text-primary me-2"></i>Mice & Pointing Devices</li>
+                        <li class="mb-2"><i class="fas fa-headphones text-primary me-2"></i>Headsets & Speakers</li>
+                        <li class="mb-2"><i class="fas fa-tv text-primary me-2"></i>Monitors & Displays</li>
+                        <li class="mb-2"><i class="fas fa-print text-primary me-2"></i>Printers & Scanners</li>
+                    </ul>
+                </div>
+                <div class="col-md-4 product-category">
+                    <h3 class="category-title">Networking & Accessories</h3>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="fas fa-wifi text-primary me-2"></i>Networking Equipment</li>
+                        <li class="mb-2"><i class="fas fa-bolt text-primary me-2"></i>Power Supplies & UPS</li>
+                        <li class="mb-2"><i class="fas fa-usb text-primary me-2"></i>Cables & Adapters</li>
+                        <li class="mb-2"><i class="fas fa-fan text-primary me-2"></i>Cooling Systems</li>
+                        <li class="mb-2"><i class="fas fa-tools text-primary me-2"></i>PC Tools & Maintenance</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 <section id="features" class="py-5">
     <div class="container">
-        <h2 class="text-center mb-5">Features</h2>
+        <h2 class="text-center mb-5 display-5 fw-bold">System Features</h2>
 
         <div class="row g-4">
             <div class="col-md-4">
@@ -146,9 +228,9 @@
                     <div class="feature-icon">
                         <i class="fas fa-boxes"></i>
                     </div>
-                    <h4 class="text-center">Inventory</h4>
+                    <h4 class="text-center mb-3">Smart Inventory</h4>
                     <p class="text-center">
-                        Track generator stock levels in real-time.
+                        Real-time tracking of PC components with automated stock alerts and barcode scanning.
                     </p>
                 </div>
             </div>
@@ -158,9 +240,9 @@
                     <div class="feature-icon">
                         <i class="fas fa-clipboard-check"></i>
                     </div>
-                    <h4 class="text-center">Orders</h4>
+                    <h4 class="text-center mb-3">Order Management</h4>
                     <p class="text-center">
-                        Process generator orders efficiently.
+                        Efficient order processing for PC accessories with automated fulfillment workflows.
                     </p>
                 </div>
             </div>
@@ -170,9 +252,9 @@
                     <div class="feature-icon">
                         <i class="fas fa-chart-line"></i>
                     </div>
-                    <h4 class="text-center">Reports</h4>
+                    <h4 class="text-center mb-3">Analytics Dashboard</h4>
                     <p class="text-center">
-                        View detailed generator reports.
+                        Detailed reports on PC component sales, inventory turnover, and profit margins.
                     </p>
                 </div>
             </div>
@@ -180,24 +262,32 @@
     </div>
 </section>
 
+<div class="highlight-box">
+    <div class="container text-center">
+        <h3 class="mb-3">Optimized for PC Accessories Business</h3>
+        <p class="mb-4">Specialized features for managing computer components, peripherals, and networking equipment with precision and efficiency.</p>
+        <a href="${pageContext.request.contextPath}/login" class="btn btn-light btn-custom">Start Managing Your PC Inventory</a>
+    </div>
+</div>
+
 <section class="stats-box">
     <div class="container">
         <div class="row text-center">
-            <div class="col-md-3 col-6 mb-3">
-                <div class="stat-number">${empty products ? '0' : products.size()}</div>
-                <div>Products</div>
+            <div class="col-md-3 col-6 mb-4">
+                <div class="stat-number">50K+</div>
+                <div class="stat-label">PC Components Managed</div>
             </div>
-            <div class="col-md-3 col-6 mb-3">
-                <div class="stat-number">10K+</div>
-                <div>Transactions</div>
+            <div class="col-md-3 col-6 mb-4">
+                <div class="stat-number">99.8%</div>
+                <div class="stat-label">Inventory Accuracy</div>
             </div>
-            <div class="col-md-3 col-6 mb-3">
-                <div class="stat-number">99%</div>
-                <div>Accuracy</div>
-            </div>
-            <div class="col-md-3 col-6 mb-3">
+            <div class="col-md-3 col-6 mb-4">
                 <div class="stat-number">24/7</div>
-                <div>Support</div>
+                <div class="stat-label">System Availability</div>
+            </div>
+            <div class="col-md-3 col-6 mb-4">
+                <div class="stat-number">500+</div>
+                <div class="stat-label">Business Partners</div>
             </div>
         </div>
     </div>
@@ -205,40 +295,52 @@
 
 <section id="about" class="py-5">
     <div class="container">
-        <div class="row">
+        <div class="row align-items-center">
             <div class="col-md-6">
-                <h2>About WMS</h2>
-                <p>
-                    Our system helps businesses manage warehouse operations for generator products.
+                <h2 class="display-6 fw-bold mb-4">About Our PC Accessories WMS</h2>
+                <p class="mb-3">
+                    Our Warehouse Management System is specifically designed for businesses dealing with PC components and accessories. From processors and graphics cards to keyboards and networking equipment, we provide specialized tools to manage your entire inventory lifecycle.
                 </p>
-                <p>
-                    Track generator inventory, process orders, and view reports.
+                <p class="mb-4">
+                    With features tailored for the computer hardware industry, including SKU management for different component models, compatibility tracking, and supplier management for tech manufacturers.
                 </p>
 
-                <a href="${pageContext.request.contextPath}/login" class="btn btn-primary">
-                    Start Free Trial
-                </a>
+                <div class="mt-4">
+                    <c:choose>
+                        <c:when test="${not empty sessionScope.user}">
+                        </c:when>
+                        <c:otherwise>
+                            <a href="${pageContext.request.contextPath}/register" class="btn btn-primary-custom btn-custom">
+                                Get Free Demo
+                            </a>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
             </div>
 
             <div class="col-md-6 mt-4 mt-md-0">
                 <div class="card p-4">
-                    <h4>Benefits</h4>
+                    <h4 class="mb-3">Business Benefits</h4>
                     <ul class="list-unstyled">
-                        <li class="mb-2">
-                            <i class="fas fa-check text-success me-2"></i>
-                            Reduce Generator Costs
+                        <li class="mb-3">
+                            <i class="fas fa-check-circle text-success me-2 fs-5"></i>
+                            <span class="fw-medium">Reduce PC Component Stockouts</span>
+                            <p class="mt-1 mb-0 small">Automated reordering for popular PC parts</p>
                         </li>
-                        <li class="mb-2">
-                            <i class="fas fa-check text-success me-2"></i>
-                            Improve Inventory Accuracy
+                        <li class="mb-3">
+                            <i class="fas fa-check-circle text-success me-2 fs-5"></i>
+                            <span class="fw-medium">Optimize Warehouse Space</span>
+                            <p class="mt-1 mb-0 small">Smart storage for different component sizes</p>
                         </li>
-                        <li class="mb-2">
-                            <i class="fas fa-check text-success me-2"></i>
-                            Save Time on Orders
+                        <li class="mb-3">
+                            <i class="fas fa-check-circle text-success me-2 fs-5"></i>
+                            <span class="fw-medium">Streamline Order Fulfillment</span>
+                            <p class="mt-1 mb-0 small">Fast picking and packing for PC accessories</p>
                         </li>
-                        <li class="mb-2">
-                            <i class="fas fa-check text-success me-2"></i>
-                            Better Business Decisions
+                        <li class="mb-3">
+                            <i class="fas fa-check-circle text-success me-2 fs-5"></i>
+                            <span class="fw-medium">Real-time Component Tracking</span>
+                            <p class="mt-1 mb-0 small">Monitor inventory levels for every PC part</p>
                         </li>
                     </ul>
                 </div>
@@ -250,44 +352,52 @@
 <footer class="footer">
     <div class="container">
         <div class="row">
-            <div class="col-md-4 mb-4">
-                <h5>WMS</h5>
+            <div class="col-lg-4 mb-4">
+                <h5 class="mb-3"><i class="fas fa-warehouse me-2"></i>PC Accessories WMS</h5>
                 <p>
-                    Warehouse Management System for generator businesses.
+                    Specialized Warehouse Management System for computer components, peripherals, and networking equipment businesses.
                 </p>
+                <div class="mt-3">
+                    <a href="#" class="me-3"><i class="fab fa-facebook fa-lg"></i></a>
+                    <a href="#" class="me-3"><i class="fab fa-twitter fa-lg"></i></a>
+                    <a href="#" class="me-3"><i class="fab fa-linkedin fa-lg"></i></a>
+                    <a href="#"><i class="fab fa-instagram fa-lg"></i></a>
+                </div>
             </div>
 
-            <div class="col-md-2 mb-4">
-                <h6>Links</h6>
+            <div class="col-lg-2 col-md-4 mb-4">
+                <h6 class="mb-3">Quick Links</h6>
                 <ul class="list-unstyled">
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#products">Products</a></li>
-                    <li><a href="#features">Features</a></li>
-                    <li><a href="#about">About</a></li>
+                    <li class="mb-2"><a href="#home">Home</a></li>
+                    <li class="mb-2"><a href="#products">Products</a></li>
+                    <li class="mb-2"><a href="#features">Features</a></li>
+                    <li class="mb-2"><a href="#about">About</a></li>
                 </ul>
             </div>
 
-            <div class="col-md-3 mb-4">
-                <h6>Contact</h6>
+            <div class="col-lg-3 col-md-4 mb-4">
+                <h6 class="mb-3">Contact Us</h6>
                 <ul class="list-unstyled">
-                    <li>SWP391 University</li>
-                    <li>HCMC, Vietnam</li>
-                    <li>support@wms.com</li>
+                    <li class="mb-2"><i class="fas fa-university me-2"></i>SWP391 FPT University</li>
+                    <li class="mb-2"><i class="fas fa-map-marker-alt me-2"></i>Hoa Lac, Vietnam</li>
+                    <li class="mb-2"><i class="fas fa-envelope me-2"></i>support@pcwms.com</li>
+                    <li class="mb-2"><i class="fas fa-phone me-2"></i>+84 28 1234 5678</li>
                 </ul>
             </div>
 
-            <div class="col-md-3 mb-4">
-                <h6>Services</h6>
+            <div class="col-lg-3 col-md-4 mb-4">
+                <h6 class="mb-3">Our Services</h6>
                 <ul class="list-unstyled">
-                    <li><a href="#">Generator Inventory</a></li>
-                    <li><a href="#">Orders Management</a></li>
-                    <li><a href="#">Product Reports</a></li>
+                    <li class="mb-2"><a href="#">PC Inventory Management</a></li>
+                    <li class="mb-2"><a href="#">Component Order Processing</a></li>
+                    <li class="mb-2"><a href="#">Supplier Management</a></li>
+                    <li class="mb-2"><a href="#">Analytics & Reporting</a></li>
                 </ul>
             </div>
         </div>
 
-        <div class="text-center pt-3 border-top">
-            <p>&copy; 2024 WMS. All rights reserved.</p>
+        <div class="text-center pt-4 border-top border-secondary">
+            <p class="mb-0">&copy; 2024 PC Accessories Warehouse Management System. All rights reserved.</p>
         </div>
     </div>
 </footer>
