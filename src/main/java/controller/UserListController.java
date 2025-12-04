@@ -20,7 +20,7 @@ public class UserListController extends HttpServlet {
 
         UserDBContext db = new UserDBContext();
 
-        // vô hiệu hóa và kích hoạt
+
         String action = request.getParameter("action");
         String idStr = request.getParameter("userId");
 
@@ -37,7 +37,6 @@ public class UserListController extends HttpServlet {
             }
         }
 
-        // tìm kiếm và hiển thị
 
 
         String searchName = request.getParameter("searchName");
@@ -48,7 +47,7 @@ public class UserListController extends HttpServlet {
         Integer roleId = (roleIdRaw == null || roleIdRaw.equals("0") || roleIdRaw.isEmpty()) ? null : Integer.parseInt(roleIdRaw);
         String statusFilter = (status == null) ? "all" : status;
 
-        // gọi DB lấy danh sách User và danh sách Role
+
         List<User> listUser = db.getUsersWithFilter(searchName, searchEmail, roleId, statusFilter);
         List<Role> listRole = db.getAllRoles();
 
@@ -60,7 +59,6 @@ public class UserListController extends HttpServlet {
         request.setAttribute("selectedRoleId", roleId == null ? 0 : roleId);
         request.setAttribute("selectedStatus", statusFilter);
 
-        // chuyển hướng sang file JSP
         request.getRequestDispatcher("view/admin/user-list.jsp").forward(request, response);
     }
 

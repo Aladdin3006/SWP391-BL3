@@ -10,7 +10,6 @@ import java.util.List;
 
 public class UserDBContext extends DBContext {
 
-    // --- CÁC PHƯƠNG THỨC CŨ CỦA BẠN (GIỮ NGUYÊN) ---
     public User getUserByAccountName(String accountName) {
         String sql = "SELECT u.userId, u.accountName, u.displayName, u.password, u.email, u.phone, "
                 + "u.roleId, u.status, u.workspaceId, u.verificationCode, "
@@ -31,7 +30,7 @@ public class UserDBContext extends DBContext {
     }
 
     public List<User> getAllUsers() {
-        // Có thể tái sử dụng hàm getUsersWithFilter để code gọn hơn
+
         return getUsersWithFilter(null, null, null, null);
     }
 
@@ -116,9 +115,9 @@ public class UserDBContext extends DBContext {
         return false;
     }
 
-    // --- CÁC PHƯƠNG THỨC MỚI CẦN THÊM CHO CHỨC NĂNG VIEW USER LIST ---
 
-    // 1. Lấy danh sách user có kết hợp bộ lọc (Tên, Email, Role, Status)
+
+
     public List<User> getUsersWithFilter(String searchName, String searchEmail, Integer roleId, String status) {
         List<User> list = new ArrayList<>();
         String sql = "SELECT u.userId, u.accountName, u.displayName, u.password, u.email, u.phone, "
@@ -166,7 +165,7 @@ public class UserDBContext extends DBContext {
         return list;
     }
 
-    // 2. Lấy danh sách tất cả các Role (để hiển thị trong dropdown)
+
     public List<Role> getAllRoles() {
         List<Role> list = new ArrayList<>();
         String sql = "SELECT * FROM role";
@@ -188,7 +187,7 @@ public class UserDBContext extends DBContext {
         return list;
     }
 
-    // 3. Cập nhật trạng thái User (Vô hiệu hóa / Kích hoạt)
+
     public void updateUserStatus(int userId, String newStatus) {
         String sql = "UPDATE user SET status = ? WHERE userId = ?";
         try (Connection conn = getConnection();
@@ -201,7 +200,7 @@ public class UserDBContext extends DBContext {
         }
     }
 
-    // Hàm phụ trợ để map ResultSet sang User (tránh lặp code)
+
     private User mapUserFromResultSet(ResultSet rs) throws Exception {
         User user = new User(
                 rs.getInt("userId"),
