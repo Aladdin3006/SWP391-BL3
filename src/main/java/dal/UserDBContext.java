@@ -12,13 +12,32 @@ public class UserDBContext extends DBContext {
 
     public User getUserByAccountName(String accountName) {
         String sql = "SELECT u.userId, u.accountName, u.displayName, u.password, u.email, u.phone, "
-                + "u.roleId, u.status, u.workspaceId, u.verificationCode, "
+                + "u.roleId, u.status, u.workspaceId, u.verificationCode, u.reset_token, "
                 + "r.roleId as r_roleId, r.roleName, r.roleDescription, r.status as r_status "
                 + "FROM user u "
                 + "LEFT JOIN role r ON u.roleId = r.roleId "
                 + "WHERE u.accountName = ?";
         try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, accountName);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return mapUserFromResultSet(rs);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public User getUserByEmail(String email) {
+        String sql = "SELECT u.userId, u.accountName, u.displayName, u.password, u.email, u.phone, "
+                + "u.roleId, u.status, u.workspaceId, u.verificationCode, u.reset_token, "
+                + "r.roleId as r_roleId, r.roleName, r.roleDescription, r.status as r_status "
+                + "FROM user u "
+                + "LEFT JOIN role r ON u.roleId = r.roleId "
+                + "WHERE u.email = ?";
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, email);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 return mapUserFromResultSet(rs);
@@ -80,9 +99,52 @@ public class UserDBContext extends DBContext {
         return false;
     }
 
+    public void updateToken(String email, String token) {
+        String sql = "UPDATE user SET reset_token = ? WHERE email = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, token);
+            ps.setString(2, email);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public User getUserByToken(String token) {
+        String sql = "SELECT u.userId, u.accountName, u.displayName, u.password, u.email, u.phone, "
+                + "u.roleId, u.status, u.workspaceId, u.verificationCode, u.reset_token, "
+                + "r.roleId as r_roleId, r.roleName, r.roleDescription, r.status as r_status "
+                + "FROM user u "
+                + "LEFT JOIN role r ON u.roleId = r.roleId "
+                + "WHERE u.reset_token = ?";
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, token);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return mapUserFromResultSet(rs);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void updatePassword(int userId, String newPassword) {
+        String sql = "UPDATE user SET password = ?, reset_token = NULL WHERE userId = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, newPassword);
+            ps.setInt(2, userId);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public User getUserById(int userId) {
         String sql = "SELECT u.userId, u.accountName, u.displayName, u.password, u.email, u.phone, "
-                + "u.roleId, u.status, u.workspaceId, u.verificationCode, "
+                + "u.roleId, u.status, u.workspaceId, u.verificationCode, u.reset_token, "
                 + "r.roleId as r_roleId, r.roleName, r.roleDescription, r.status as r_status "
                 + "FROM user u "
                 + "LEFT JOIN role r ON u.roleId = r.roleId "
@@ -115,13 +177,10 @@ public class UserDBContext extends DBContext {
         return false;
     }
 
-
-
-
     public List<User> getUsersWithFilter(String searchName, String searchEmail, Integer roleId, String status) {
         List<User> list = new ArrayList<>();
         String sql = "SELECT u.userId, u.accountName, u.displayName, u.password, u.email, u.phone, "
-                + "u.roleId, u.status, u.workspaceId, u.verificationCode, "
+                + "u.roleId, u.status, u.workspaceId, u.verificationCode, u.reset_token, "
                 + "r.roleId as r_roleId, r.roleName, r.roleDescription, r.status as r_status "
                 + "FROM user u "
                 + "LEFT JOIN role r ON u.roleId = r.roleId "
@@ -165,7 +224,6 @@ public class UserDBContext extends DBContext {
         return list;
     }
 
-
     public List<Role> getAllRoles() {
         List<Role> list = new ArrayList<>();
         String sql = "SELECT * FROM role";
@@ -187,7 +245,6 @@ public class UserDBContext extends DBContext {
         return list;
     }
 
-
     public void updateUserStatus(int userId, String newStatus) {
         String sql = "UPDATE user SET status = ? WHERE userId = ?";
         try (Connection conn = getConnection();
@@ -199,7 +256,6 @@ public class UserDBContext extends DBContext {
             e.printStackTrace();
         }
     }
-
 
     private User mapUserFromResultSet(ResultSet rs) throws Exception {
         User user = new User(
@@ -214,6 +270,13 @@ public class UserDBContext extends DBContext {
                 rs.getInt("workspaceId"),
                 rs.getString("verificationCode")
         );
+
+        try {
+            user.setResetToken(rs.getString("reset_token"));
+        } catch (java.sql.SQLException e) {
+            
+        }
+
         if (rs.getInt("r_roleId") > 0) {
             Role role = new Role(
                     rs.getInt("r_roleId"),
