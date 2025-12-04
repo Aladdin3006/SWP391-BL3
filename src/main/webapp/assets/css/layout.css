@@ -1,0 +1,62 @@
+.table-container {
+    width: 80%;
+    margin: 30px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px #ccc;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    background: #007BFF;
+    color: white;
+    padding: 10px;
+}
+
+td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+tr:hover {
+    background: #f0f8ff;
+}
+
+.btn {
+    padding: 6px 12px;
+    border-radius: 4px;
+    color: white;
+}
+
+.btn-edit { background: #ffc107; }
+.btn-detail { background: #17a2b8; }
+.btn-toggle { background: #28a745; }
+.btn-inactive { background: #dc3545; }
+
+.form-container {
+    width: 60%;
+    margin: 30px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px #ccc;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    font-weight: bold;
+}
+
+input, select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+}
