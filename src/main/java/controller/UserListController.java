@@ -11,7 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(name = "UserListController", urlPatterns = {"/users"})
+@WebServlet(name = "UserListController", urlPatterns = {"/user-list"})
 public class UserListController extends HttpServlet {
 
     @Override
