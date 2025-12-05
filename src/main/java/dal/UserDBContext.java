@@ -203,6 +203,45 @@ public class UserDBContext extends DBContext {
         return false;
     }
 
+    public User addNewUser(User user) {
+        String sql = "INSERT INTO user (accountName, displayName, password, email, phone, "
+                + "roleId, status, workspaceId, verificationCode) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, user.getAccountName());
+            ps.setString(2, user.getDisplayName());
+            ps.setString(3, user.getPassword());
+            ps.setString(4, user.getEmail());
+            ps.setString(5, user.getPhone());
+            ps.setInt(6, user.getRoleId());
+            ps.setString(7, user.getStatus());
+            ps.setInt(8, user.getWorkspaceId());
+            ps.setString(9, user.getVerificationCode());
+
+            int affectedRows = ps.executeUpdate();
+
+            if (affectedRows > 0) {
+                // Lấy userId tự tăng
+                try (ResultSet rs = ps.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        int generatedId = rs.getInt(1);
+                        user.setUserId(generatedId);
+                    }
+                }
+                return user;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+
     public static void main(String[] args) {
         UserDBContext dao = new UserDBContext();
         User user = dao.getUserByAccountName("admin");
