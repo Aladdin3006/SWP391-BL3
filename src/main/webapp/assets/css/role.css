@@ -1,0 +1,130 @@
+/* ============================================
+   ROLE MANAGEMENT – TABLE & UI REFINEMENT
+   ============================================ */
+
+/* Center page title */
+.container h2 {
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+/* Table layout control */
+.table {
+    table-layout: fixed;      /* Force fixed column widths */
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* Column width definitions */
+.table th:nth-child(1), 
+.table td:nth-child(1) {
+    width: 6%;                /* Index column */
+}
+
+.table th:nth-child(2), 
+.table td:nth-child(2) {
+    width: 15%;               /* Name column */
+}
+
+.table th:nth-child(3), 
+.table td:nth-child(3) {
+    width: 45%;               /* Description column */
+    text-align: left !important;
+}
+
+.table th:nth-child(4), 
+.table td:nth-child(4) {
+    width: 10%;               /* Status */
+}
+
+.table th:nth-child(5), 
+.table td:nth-child(5) {
+    width: 24%;               /* Actions */
+}
+
+/* Center table headers and body */
+.table th,
+.table td {
+    text-align: center !important;
+    vertical-align: middle !important;
+}
+
+/* Status badge */
+.badge {
+    font-size: 0.85rem;
+    padding: 6px 10px;
+    border-radius: 8px;
+}
+
+/* Buttons inside table */
+.table .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.75rem;
+    padding: 5px 12px;
+    white-space: nowrap;      /* Prevent text wrapping */
+}
+
+/* Icon size */
+.table .btn i {
+    font-size: 1rem;
+}
+
+/* Ensure consistent button width */
+.btn-info, .btn-warning, .btn-danger, .btn-success {
+    min-width: 90px;
+}
+
+/* Search and filter elements */
+form .form-control,
+form .form-select {
+    border-radius: 6px;
+}
+
+/* Pagination */
+.pagination .page-item .page-link {
+    color: #0d6efd;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    color: white;
+}
+
+/* Modal UI */
+.modal-content {
+    border-radius: 12px;
+}
+
+.modal-header {
+    background: #0d6efd;
+    color: white;
+    border-radius: 12px 12px 0 0;
+}
+
+.modal-footer button {
+    min-width: 100px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+
+    /* Reduce font size */
+    .table th, .table td {
+        font-size: 0.75rem;
+        padding: 6px;
+    }
+
+    .table {
+        table-layout: auto;
+    }
+
+    .btn {
+        font-size: 0.65rem;
+        padding: 4px 7px;
+        min-width: 70px;
+    }
+}
