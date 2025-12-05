@@ -38,7 +38,7 @@ public class RoleController extends HttpServlet {
         req.setAttribute("page", page);
         req.setAttribute("totalPage", totalPage);
 
-        req.getRequestDispatcher("/view/role/role.jsp").forward(req, resp);
+        req.getRequestDispatcher("/view/admin/manager-role.jsp").forward(req, resp);
     }
 
     @Override

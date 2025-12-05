@@ -44,7 +44,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">
+                                <a class="nav-link" href="${pageContext.request.contextPath}/role">
                                     <i class="fas fa-user-tag me-2"></i>Manage Roles
                                 </a>
                             </li>
