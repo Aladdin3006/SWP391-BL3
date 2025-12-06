@@ -28,7 +28,7 @@ public class RolePermissionController extends HttpServlet {
         String dir = req.getParameter("dir") == null ? "ASC" : req.getParameter("dir");
 
         int page = req.getParameter("page") == null ? 1 : Integer.parseInt(req.getParameter("page"));
-        int pageSize = 6;
+        int pageSize = 15;
 
         int total = pdao.count(search);
         int totalPage = (int) Math.ceil(total * 1.0 / pageSize);
