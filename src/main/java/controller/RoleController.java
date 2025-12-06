@@ -16,32 +16,6 @@ public class RoleController extends HttpServlet {
     RoleDAO dao = new RoleDAO();
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
-
-        String search = req.getParameter("search");
-        String status = req.getParameter("status") == null ? "all" : req.getParameter("status");
-
-        int page = 1;
-        if (req.getParameter("page") != null)
-            page = Integer.parseInt(req.getParameter("page"));
-
-        int pageSize = 5;
-
-        List<Role> list = dao.getAll(search, status, page, pageSize);
-        int total = dao.count(search, status);
-        int totalPage = (int) Math.ceil(total / (double) pageSize);
-
-        req.setAttribute("roles", list);
-        req.setAttribute("search", search);
-        req.setAttribute("status", status);
-        req.setAttribute("page", page);
-        req.setAttribute("totalPage", totalPage);
-
-        req.getRequestDispatcher("/view/admin/manager-role.jsp").forward(req, resp);
-    }
-
-    @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
