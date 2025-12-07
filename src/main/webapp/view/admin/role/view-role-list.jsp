@@ -28,23 +28,8 @@
 <div class="container-fluid mt-0">
     <div class="row">
         <!-- Sidebar -->
-        <nav class="col-md-2 d-none d-md-block sidebar">
-            <div class="position-sticky pt-3">
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link" href="${pageContext.request.contextPath}/user-list">
-                            <i class="fas fa-users me-2"></i>Manage Users
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="${pageContext.request.contextPath}/view-role-list">
-                            <i class="fas fa-user-tag me-2"></i>Manage Roles
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-
+        <c:set var="activePage" value="role" scope="request"/>
+        <jsp:include page="/view/fragments/sidebar.jsp"/>
 
         <!-- Main content -->
         <main class="col-md-10 ms-sm-auto px-4">
@@ -118,7 +103,7 @@
                                         <a href="#" class="btn btn-sm btn-info text-white" title="View">
                                             <i class="fas fa-eye"></i>
                                         </a>
-                                        <a href="#" class="btn btn-sm btn-warning text-white" title="Edit">
+                                        <a href="${pageContext.request.contextPath}/role-permission?roleId=${r.roleId}" class="btn btn-sm btn-warning text-white" title="Edit Permissions">
                                             <i class="fas fa-edit"></i>
                                         </a>
                                         <a href="#" class="btn btn-sm btn-danger text-white" title="Delete" onclick="return confirm('Are you sure?');">

@@ -1,4 +1,4 @@
-package controller;
+package controller.admin;
 
 import dal.PermissionDAO;
 import entity.Permission;
@@ -33,7 +33,7 @@ public class PermissionController extends HttpServlet {
         req.setAttribute("page", page);
         req.setAttribute("totalPage", totalPage);
 
-        req.getRequestDispatcher("view/admin/permission-list.jsp").forward(req, resp);
+        req.getRequestDispatcher("view/admin/permission/permission-list.jsp").forward(req, resp);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package controller;
+package controller.auth;
 
 import dal.UserDBContext;
 import entity.User;

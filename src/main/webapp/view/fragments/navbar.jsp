@@ -22,42 +22,6 @@
                             <a class="nav-link" href="${pageContext.request.contextPath}/home">Home</a>
                         </li>
                     </c:if>
-
-                    <c:if test="${not empty sessionScope.user}">
-                        <c:if test="${sessionScope.user.roleName == 'Admin' || sessionScope.user.roleName == 'Manager'}">
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="manageDropdown" role="button" data-bs-toggle="dropdown">
-                                    Management
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="#">Users</a></li>
-                                    <li><a class="dropdown-item" href="#">Products</a></li>
-                                    <li><a class="dropdown-item" href="#">Warehouses</a></li>
-                                </ul>
-                            </li>
-                        </c:if>
-
-                        <c:if test="${sessionScope.user.roleName == 'Admin' || sessionScope.user.roleName == 'Manager' || sessionScope.user.roleName == 'Staff'}">
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Inventory</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Orders</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Reports</a>
-                            </li>
-                        </c:if>
-
-                        <c:if test="${sessionScope.user.roleName == 'User'}">
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">View Products</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">My Orders</a>
-                            </li>
-                        </c:if>
-                    </c:if>
                 </ul>
 
                 <div class="navbar-nav">
