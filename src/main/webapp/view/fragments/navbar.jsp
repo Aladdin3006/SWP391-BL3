@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ page import="util.PermissionChecker" %>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
         <c:choose>
@@ -9,7 +10,7 @@
             <a class="navbar-brand" href="${pageContext.request.contextPath}/home">
                 </c:otherwise>
                 </c:choose>
-                <i class="fas fa-warehouse"></i> WMS
+                <i class="fas fa-warehouse"></i> WMS PC Accessories
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -21,6 +22,29 @@
                         <li class="nav-item">
                             <a class="nav-link" href="${pageContext.request.contextPath}/home">Home</a>
                         </li>
+                    </c:if>
+
+                    <c:if test="${not empty sessionScope.user}">
+                        <c:if test="<%= PermissionChecker.hasPermission(request) &&
+                        PermissionChecker.checkUrl(request, \"/users\") %>">
+                            <li class="nav-item">
+                                <a class="nav-link" href="${pageContext.request.contextPath}/users">Users</a>
+                            </li>
+                        </c:if>
+
+                        <c:if test="<%= PermissionChecker.hasPermission(request) &&
+                        PermissionChecker.checkUrl(request, \"/roles\") %>">
+                            <li class="nav-item">
+                                <a class="nav-link" href="${pageContext.request.contextPath}/roles">Roles</a>
+                            </li>
+                        </c:if>
+
+                        <c:if test="<%= PermissionChecker.hasPermission(request) &&
+                        PermissionChecker.checkUrl(request, \"/permission\") %>">
+                            <li class="nav-item">
+                                <a class="nav-link" href="${pageContext.request.contextPath}/permission">Permissions</a>
+                            </li>
+                        </c:if>
                     </c:if>
                 </ul>
 
@@ -37,10 +61,16 @@
                                     <small>Role: ${sessionScope.user.roleName}</small>
                                 </span></li>
                                     <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="${pageContext.request.contextPath}/profile">
-                                        <i class="fas fa-user-circle me-2"></i>Profile
-                                    </a></li>
-                                    <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                                    <c:if test="<%= PermissionChecker.checkUrl(request, \"/profile\") %>">
+                                        <li><a class="dropdown-item" href="${pageContext.request.contextPath}/profile">
+                                            <i class="fas fa-user-circle me-2"></i>Profile
+                                        </a></li>
+                                    </c:if>
+                                    <c:if test="<%= PermissionChecker.checkUrl(request, \"/change-password\") %>">
+                                        <li><a class="dropdown-item" href="${pageContext.request.contextPath}/change-password">
+                                            <i class="fas fa-key me-2"></i>Change Password
+                                        </a></li>
+                                    </c:if>
                                     <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" href="${pageContext.request.contextPath}/logout">
                                         <i class="fas fa-sign-out-alt me-2"></i>Logout
@@ -52,9 +82,11 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="${pageContext.request.contextPath}/login">Login</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="${pageContext.request.contextPath}/register">Register</a>
-                            </li>
+                            <c:if test="<%= PermissionChecker.checkUrl(request, \"/register\") %>">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="${pageContext.request.contextPath}/register">Register</a>
+                                </li>
+                            </c:if>
                         </c:otherwise>
                     </c:choose>
                 </div>
