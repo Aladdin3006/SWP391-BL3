@@ -67,7 +67,6 @@ public class AddUserController extends HttpServlet {
         } else {
             request.setAttribute("errorMessage", "Failed to create new user.");
         }
-        request.getRequestDispatcher("/view/add-user.jsp").forward(request, response);
-
+        request.getRequestDispatcher("/view/user/adduser.jsp").forward(request, response);
     }
 }

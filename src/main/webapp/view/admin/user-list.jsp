@@ -1,3 +1,4 @@
+@@ -1,221 +0,0 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
@@ -76,7 +77,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link active" href="${pageContext.request.contextPath}/users">
+                                <a class="nav-link active" href="${pageContext.request.contextPath}/user-list">
                                     <i class="fas fa-users me-2"></i>Manage Users
                                 </a>
                             </li>

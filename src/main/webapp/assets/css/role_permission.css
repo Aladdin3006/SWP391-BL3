@@ -1,0 +1,15 @@
+/* Center text */
+.table th, .table td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+/* Page header */
+h2 {
+    font-weight: bold;
+}
+
+/* Buttons */
+.btn i {
+    margin-right: 3px;
+}

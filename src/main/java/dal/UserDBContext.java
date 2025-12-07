@@ -5,6 +5,7 @@ import entity.Role;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -373,7 +374,7 @@ public class UserDBContext extends DBContext {
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setString(1, user.getAccountName());
             ps.setString(2, user.getDisplayName());
@@ -388,11 +389,9 @@ public class UserDBContext extends DBContext {
             int affectedRows = ps.executeUpdate();
 
             if (affectedRows > 0) {
-                // Lấy userId tự tăng
                 try (ResultSet rs = ps.getGeneratedKeys()) {
                     if (rs.next()) {
-                        int generatedId = rs.getInt(1);
-                        user.setUserId(generatedId);
+                        user.setUserId(rs.getInt(1));
                     }
                 }
                 return user;
@@ -404,6 +403,7 @@ public class UserDBContext extends DBContext {
 
         return null;
     }
+
 
 
     public static void main(String[] args) {

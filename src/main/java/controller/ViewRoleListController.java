@@ -1,6 +1,6 @@
 package controller;
 
-import dal.RoleDBContext;
+import dal.RoleDAO;
 import entity.Role;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -44,7 +44,7 @@ public class ViewRoleListController extends HttpServlet {
             }
         }
 
-        RoleDBContext dao = new RoleDBContext();
+        RoleDAO dao = new RoleDAO();
 
         // lấy danh sách role theo điều kiện
         List<Role> roles = dao.getAllRoles(keyword, status, pageIndex, pageSize);
