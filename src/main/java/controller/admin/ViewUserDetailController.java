@@ -1,4 +1,4 @@
-package controller;
+package controller.admin;
 
 import dal.UserDBContext;
 import entity.User;
@@ -46,7 +46,7 @@ public class ViewUserDetailController extends HttpServlet {
         req.setAttribute("user", user);
 
         // Forward sang đúng file JSP bạn muốn
-        req.getRequestDispatcher("/view/user/userdetail.jsp")
+        req.getRequestDispatcher("/view/admin/user/userdetail.jsp")
                 .forward(req, resp);
     }
 }

@@ -61,42 +61,12 @@
     </style>
 </head>
 <body>
-<jsp:include page="../fragments/navbar.jsp"/>
+<jsp:include page="../../fragments/navbar.jsp"/>
 
 <div class="container-fluid">
     <div class="row">
-        <nav class="col-md-2 d-none d-md-block sidebar">
-            <div class="position-sticky pt-3">
-                <ul class="nav flex-column">
-                    <c:choose>
-                        <c:when test="${sessionScope.user.roleName == 'admin'}">
-                            <li class="nav-item">
-                                <a class="nav-link" href="${pageContext.request.contextPath}/dashboard">
-                                    <i class="fas fa-tachometer-alt me-2"></i>Dashboard
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link active" href="${pageContext.request.contextPath}/user-list">
-                                    <i class="fas fa-users me-2"></i>Manage Users
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="${pageContext.request.contextPath}/view-role-list">
-                                    <i class="fas fa-user-tag me-2"></i>Manage Roles
-                                </a>
-                            </li>
-                        </c:when>
-                        <c:otherwise>
-                            <li class="nav-item">
-                                <a class="nav-link" href="${pageContext.request.contextPath}/dashboard">
-                                    <i class="fas fa-tachometer-alt me-2"></i>Dashboard
-                                </a>
-                            </li>
-                        </c:otherwise>
-                    </c:choose>
-                </ul>
-            </div>
-        </nav>
+        <c:set var="activePage" value="user-list" scope="request"/>
+        <jsp:include page="/view/fragments/sidebar.jsp"/>
 
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
@@ -108,7 +78,7 @@
                 </a>
             </div>
 
-            <form action="${pageContext.request.contextPath}/users" method="GET" class="filter-box">
+            <form action="${pageContext.request.contextPath}/user-list" method="GET" class="filter-box">
                 <div class="row g-3">
                     <div class="col-md-3">
                         <div class="form-group">
@@ -197,19 +167,19 @@
                                 </span>
                             </td>
                             <td style="text-align: center; vertical-align: middle;">
-                                <a href="${pageContext.request.contextPath}/user/detail?id=${u.userId}"
+                                    <a href="${pageContext.request.contextPath}/user/detail?id=${u.userId}"
                                    class="btn btn-sm btn-info btn-action">
                                     <i class="fas fa-eye me-1"></i> View
                                 </a>
                                 <c:if test="${u.status == 'active'}">
-                                    <a href="${pageContext.request.contextPath}/users?action=deactivate&userId=${u.userId}"
+                                    <a href="${pageContext.request.contextPath}/user-list?action=deactivate&userId=${u.userId}"
                                        class="btn btn-sm btn-danger btn-action"
                                        onclick="return confirm('Are you sure you want to deactivate this user?')">
                                         <i class="fas fa-lock me-1"></i> Deactivate
                                     </a>
                                 </c:if>
                                 <c:if test="${u.status == 'inactive'}">
-                                    <a href="${pageContext.request.contextPath}/users?action=activate&userId=${u.userId}"
+                                    <a href="${pageContext.request.contextPath}/user-list?action=activate&userId=${u.userId}"
                                        class="btn btn-sm btn-success btn-action">
                                         <i class="fas fa-unlock me-1"></i> Activate
                                     </a>

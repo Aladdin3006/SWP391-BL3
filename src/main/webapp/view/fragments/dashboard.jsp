@@ -24,129 +24,16 @@
     </style>
 </head>
 <body>
-<jsp:include page="../fragments/navbar.jsp"/>
+<jsp:include page="navbar.jsp"/>
 
 <div class="container-fluid">
     <div class="row">
-        <nav class="col-md-2 d-none d-md-block sidebar">
-            <div class="position-sticky pt-3">
-                <ul class="nav flex-column">
-                    <c:choose>
-                        <c:when test="${sessionScope.user.roleName == 'admin'}">
-                            <li class="nav-item">
-                                <a class="nav-link active" href="${pageContext.request.contextPath}/dashboard">
-                                    <i class="fas fa-tachometer-alt me-2"></i>Dashboard
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="${pageContext.request.contextPath}/user-list">
-                                    <i class="fas fa-users me-2"></i>Manage Users
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="${pageContext.request.contextPath}/role">
-                                    <i class="fas fa-user-tag me-2"></i>Manage Roles
-                                </a>
-                            </li>
-                        </c:when>
-
-                        <c:when test="${sessionScope.user.roleName == 'manager'}">
-                            <li class="nav-item">
-                                <a class="nav-link active" href="${pageContext.request.contextPath}/dashboard">
-                                    <i class="fas fa-tachometer-alt me-2"></i>Dashboard
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">
-                                    <i class="fas fa-boxes me-2"></i>Inventory
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">
-                                    <i class="fas fa-shopping-cart me-2"></i>Orders
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">
-                                    <i class="fas fa-chart-line me-2"></i>Reports
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">
-                                    <i class="fas fa-users me-2"></i>Users
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">
-                                    <i class="fas fa-cog me-2"></i>Settings
-                                </a>
-                            </li>
-                        </c:when>
-
-                        <c:when test="${sessionScope.user.roleName == 'storekeeper'}">
-                            <li class="nav-item">
-                                <a class="nav-link active" href="${pageContext.request.contextPath}/dashboard">
-                                    <i class="fas fa-tachometer-alt me-2"></i>Dashboard
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">
-                                    <i class="fas fa-arrow-right me-2"></i>Export Warehouse Request
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">
-                                    <i class="fas fa-arrow-left me-2"></i>Import Warehouse Request
-                                </a>
-                            </li>
-                        </c:when>
-
-                        <c:when test="${sessionScope.user.roleName == 'employee'}">
-                            <li class="nav-item">
-                                <a class="nav-link active" href="${pageContext.request.contextPath}/dashboard">
-                                    <i class="fas fa-tachometer-alt me-2"></i>Dashboard
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">
-                                    <i class="fas fa-box me-2"></i>Items
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">
-                                    <i class="fas fa-clipboard-list me-2"></i>Your Warehouse Request
-                                </a>
-                            </li>
-                        </c:when>
-
-                        <c:otherwise>
-                            <li class="nav-item">
-                                <a class="nav-link active" href="${pageContext.request.contextPath}/dashboard">
-                                    <i class="fas fa-tachometer-alt me-2"></i>Dashboard
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">
-                                    <i class="fas fa-boxes me-2"></i>Inventory
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">
-                                    <i class="fas fa-shopping-cart me-2"></i>Orders
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">
-                                    <i class="fas fa-chart-line me-2"></i>Reports
-                                </a>
-                            </li>
-                        </c:otherwise>
-                    </c:choose>
-                </ul>
-            </div>
-        </nav>
+        <%-- Include sidebar with active page parameter --%>
+        <c:set var="activePage" value="dashboard" scope="request"/>
+        <jsp:include page="sidebar.jsp"/>
 
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <%-- Rest of dashboard content remains the same --%>
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                 <h1 class="h2">Dashboard</h1>
                 <div class="btn-toolbar mb-2 mb-md-0">

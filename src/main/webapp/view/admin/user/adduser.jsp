@@ -94,25 +94,8 @@
     <div class="row">
 
         <!-- SIDEBAR (column 2) -->
-        <nav class="col-md-2 d-none d-md-block sidebar">
-            <div class="position-sticky pt-3">
-                <ul class="nav flex-column">
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="${pageContext.request.contextPath}/user-list">
-                            <i class="fas fa-users me-2"></i>Manage Users
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="${pageContext.request.contextPath}/view-role-list">
-                            <i class="fas fa-user-tag me-2"></i>Manage Roles
-                        </a>
-                    </li>
-
-                </ul>
-            </div>
-        </nav>
+        <c:set var="activePage" value="user-list" scope="request"/>
+        <jsp:include page="/view/fragments/sidebar.jsp"/>
 
         <!-- MAIN CONTENT (column 10) -->
         <main class="col-md-10 ms-sm-auto px-md-4 mt-4">

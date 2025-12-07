@@ -1,6 +1,5 @@
-package controller;
+package controller.common;
 
-import dal.UserDBContext;
 import entity.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -27,6 +26,6 @@ public class DashboardController extends HttpServlet {
         String roleName = (user.getRole() != null) ? user.getRole().getRoleName() : "User";
 
         request.setAttribute("userRole", roleName);
-        request.getRequestDispatcher("/view/dashboard/dashboard.jsp").forward(request, response);
+        request.getRequestDispatcher("/view/fragments/dashboard.jsp").forward(request, response);
     }
 }

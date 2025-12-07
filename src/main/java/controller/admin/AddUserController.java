@@ -1,4 +1,4 @@
-package controller;
+package controller.admin;
 
 import dal.RoleDAO;
 import dal.UserDBContext;
@@ -6,7 +6,7 @@ import entity.Role;
 import entity.User;
 import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -23,7 +23,7 @@ public class AddUserController extends HttpServlet {
         List<Role> roles = roleDB.getAllRoles();
 
         request.setAttribute("roles", roles);
-        request.getRequestDispatcher("/view/user/adduser.jsp").forward(request, response);
+        request.getRequestDispatcher("/view/admin/user/adduser.jsp").forward(request, response);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class AddUserController extends HttpServlet {
             request.setAttribute("email", email);
             request.setAttribute("phone", phone);
 
-            request.getRequestDispatcher("/view/user/adduser.jsp").forward(request, response);
+            request.getRequestDispatcher("/view/admin/user/adduser.jsp").forward(request, response);
             return;
         }
 
@@ -75,6 +75,6 @@ public class AddUserController extends HttpServlet {
         } else {
             request.setAttribute("errorMessage", "Failed to create new user.");
         }
-        request.getRequestDispatcher("/view/user/adduser.jsp").forward(request, response);
+        request.getRequestDispatcher("/view/admin/user/adduser.jsp").forward(request, response);
     }
 }
