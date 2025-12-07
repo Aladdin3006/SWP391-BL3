@@ -1,8 +1,11 @@
 package controller;
 
+import dal.RoleDAO;
 import dal.UserDBContext;
+import entity.Role;
 import entity.User;
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -16,7 +19,11 @@ public class AddUserController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        RoleDAO roleDB = new RoleDAO();
+        List<Role> roles = roleDB.getAllRoles();
 
+        request.setAttribute("roles", roles);
+        request.getRequestDispatcher("/view/user/adduser.jsp").forward(request, response);
     }
 
     @Override
@@ -64,6 +71,7 @@ public class AddUserController extends HttpServlet {
 
         if (createdUser != null) {
             request.setAttribute("successMessage", "User added successfully!");
+            request.setAttribute("newUserId", createdUser.getUserId());
         } else {
             request.setAttribute("errorMessage", "Failed to create new user.");
         }

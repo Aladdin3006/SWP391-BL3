@@ -159,4 +159,27 @@ public class RoleDAO extends DBContext {
 
         return 0;
     }
+    public List<Role> getAllRoles() {
+        List<Role> list = new ArrayList<>();
+        String sql = "SELECT roleId, roleName, roleDescription, status FROM role";
+
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                Role r = new Role(
+                        rs.getInt("roleId"),
+                        rs.getString("roleName"),
+                        rs.getString("roleDescription"),
+                        rs.getString("status")
+                );
+                list.add(r);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
 }

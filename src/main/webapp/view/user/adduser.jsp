@@ -5,29 +5,40 @@
 <head>
     <meta charset="UTF-8">
     <title>Add New User - Admin</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+
     <style>
         body {
             background: #f5f7fa;
             font-family: Arial, sans-serif;
         }
 
-        .card {
+        .sidebar {
+            height: 100vh;
+            background: #ffffff;
+            border-right: 1px solid #e0e6ed;
+            padding-top: 20px;
+        }
+
+        .card-custom {
             border-radius: 12px;
             border: 1px solid #e0e6ed;
             background: #ffffff;
+            padding: 20px;
         }
 
         h2 {
-            font-weight: 600;
+            font-weight: 650;
             color: #333;
         }
 
         .form-label {
             font-weight: 600;
-            color: #444;
         }
 
-        /* Input style */
         input.form-control,
         select.form-select {
             border-radius: 8px;
@@ -42,7 +53,6 @@
             box-shadow: 0 0 4px rgba(13, 110, 253, 0.4);
         }
 
-        /* Error message highlight */
         .error-message {
             color: #d93025;
             font-size: 14px;
@@ -50,7 +60,6 @@
             font-weight: 500;
         }
 
-        /* Button style */
         button.btn-primary {
             padding: 10px 20px;
             font-weight: 600;
@@ -61,93 +70,163 @@
 
         button.btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 10px rgba(0, 123, 255, 0.4);
+            box-shadow: 0 5px 10px rgba(0,123,255,0.4);
         }
 
-        button.btn-primary:active {
-            transform: scale(0.98);
+        .btn-cancel {
+            padding: 10px 20px;
+            font-weight: 600;
+            border-radius: 8px;
         }
+        .sidebar { background-color: #343a40; color: white; min-height: calc(100vh - 56px); padding-top: 20px; }
+        .sidebar .nav-link { color: rgba(255, 255, 255, 0.8); padding: 10px 15px; }
+        .sidebar .nav-link:hover { color: white; background-color: rgba(255, 255, 255, 0.1); }
+        .sidebar .nav-link.active { color: white; background-color: #0d6efd; }
+        .card { border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
     </style>
-    <!-- (Optional) Bootstrap cho dễ nhìn, có thể bỏ nếu project bạn không dùng -->
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
 
 </head>
-<body class="bg-light">
+<body>
 
-<div class="container mt-5">
-    <h2 class="mb-4">Add New User</h2>
+<jsp:include page="/view/fragments/navbar.jsp" />
 
+<div class="container-fluid">
+    <div class="row">
 
-    <form method="post" action="${pageContext.request.contextPath}/user/adduser" class="card p-4 shadow-sm">
+        <!-- SIDEBAR (column 2) -->
+        <nav class="col-md-2 d-none d-md-block sidebar">
+            <div class="position-sticky pt-3">
+                <ul class="nav flex-column">
 
-        <div class="mb-3">
-            <label class="form-label">Account Name</label>
-            <input type="text" id="accountName" name="accountName" class="form-control" value="${accountName}" required>
-            <p class="error-message" id ="errAccountName">${errAccountName}</p>
-        </div>
+                    <li class="nav-item">
+                        <a class="nav-link" href="${pageContext.request.contextPath}/user-list">
+                            <i class="fas fa-users me-2"></i>Manage Users
+                        </a>
+                    </li>
 
-        <div class="mb-3">
-            <label class="form-label">Display Name</label>
-            <input type="text" id="displayName" name="displayName" class="form-control" value="${displayName}" required>
-            <p class="error-message" id ="errDisplayName">${errDisplayName}</p>
+                    <li class="nav-item">
+                        <a class="nav-link" href="${pageContext.request.contextPath}/view-role-list">
+                            <i class="fas fa-user-tag me-2"></i>Manage Roles
+                        </a>
+                    </li>
 
-        </div>
+                </ul>
+            </div>
+        </nav>
 
-        <div class="mb-3">
-            <label class="form-label">Password</label>
-            <input type="password" id="password" name="password" class="form-control" value="${password}" required>
-            <p class="error-message" id ="errPassword">${errPassword}</p>
+        <!-- MAIN CONTENT (column 10) -->
+        <main class="col-md-10 ms-sm-auto px-md-4 mt-4">
 
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Confirm Password</label>
-            <input type="password" id="cfpassword" name="cfpassword" class="form-control" value="${cfpassword}" required>
-            <p class="error-message" id ="errCfPassword">${errCfPassword}</p>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Email</label>
-            <input type="email" id="email" name="email" class="form-control" value="${email}" required>
-                <p class="error-message" id ="errEmail">${errEmail}</p>
-        </div>
+            <h2 class="mb-4">Add New User</h2>
 
-        <div class="mb-3">
-            <label class="form-label">Phone</label>
-            <input type="text" id="phone" name="phone" class="form-control" value="${phone}">
-            <p class="error-message" id ="errPhone">${errPhone}</p>
+            <form method="post"
+                  action="${pageContext.request.contextPath}/user/adduser"
+                  class="card-custom shadow-sm">
 
-        </div>
+                <!-- Row 1 -->
+                <div class="row mb-3">
+                    <div class="col">
+                        <label class="form-label">Account Name</label>
+                        <input type="text" id="accountName" name="accountName" class="form-control"
+                               value="${accountName}" required>
+                        <p class="error-message" id="errAccountName">${errAccountName}</p>
+                    </div>
 
-        <div class="mb-3">
-            <label class="form-label">Role ID</label>
-            <select id="roleId" name="roleId" class="form-select">
-                <option value="">Select Role</option>
-                <option value="2" ${roleId == 2 ? "selected" : ""}>Manager</option>
-                <option value="3" ${roleId == 3 ? "selected" : ""}>Employee</option>
-                <option value="4" ${roleId == 4 ? "selected" : ""}>Storekeeper</option>
-            </select>
-            <p class="error-message" id ="errRole">${errRole}</p>
+                    <div class="col">
+                        <label class="form-label">Display Name</label>
+                        <input type="text" id="displayName" name="displayName" class="form-control"
+                               value="${displayName}" required>
+                        <p class="error-message" id="errDisplayName">${errDisplayName}</p>
+                    </div>
+                </div>
 
-        </div>
+                <!-- Row 2 -->
+                <div class="row mb-3">
+                    <div class="col">
+                        <label class="form-label">Email</label>
+                        <input type="email" id="email" name="email" class="form-control"
+                               value="${email}" required>
+                        <p class="error-message" id="errEmail">${errEmail}</p>
+                    </div>
 
-        <div class="d-flex justify-content-between">
-            <button type="submit" class="btn btn-primary">
-                Create
-            </button>
-        </div>
-    </form>
+                    <div class="col">
+                        <label class="form-label">Phone</label>
+                        <input type="text" id="phone" name="phone" class="form-control"
+                               value="${phone}">
+                        <p class="error-message" id="errPhone">${errPhone}</p>
+                    </div>
+                </div>
+
+                <!-- Role -->
+                <div class="mb-3">
+                    <label class="form-label">Role</label>
+                    <select id="roleId" name="roleId" class="form-select" required>
+                        <option value="">--- Select Role ---</option>
+
+                        <c:forEach var="r" items="${roles}">
+                            <c:if test="${r.roleId != 1}">
+                                <option value="${r.roleId}"
+                                        <c:if test="${roleId == r.roleId}">selected</c:if>>
+                                        ${r.roleName}
+                                </option>
+                            </c:if>
+                        </c:forEach>
+
+                    </select>
+                    <p class="error-message" id="errRole">${errRole}</p>
+                </div>
+
+                <!-- Row 4 -->
+                <div class="row mb-3">
+                    <div class="col">
+                        <label class="form-label">Password</label>
+                        <input type="password" id="password" name="password" class="form-control"
+                               value="${password}" required>
+                        <p class="error-message" id="errPassword">${errPassword}</p>
+                    </div>
+
+                    <div class="col">
+                        <label class="form-label">Confirm Password</label>
+                        <input type="password" id="cfpassword" name="cfpassword" class="form-control"
+                               value="${cfpassword}" required>
+                        <p class="error-message" id="errCfPassword">${errCfPassword}</p>
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <div class="d-flex justify-content-between mt-4 mb-2">
+                    <a href="" class="btn btn-secondary btn-cancel" onclick="location.reload(); return false;">
+                        Cancel
+                    </a>
+
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </div>
+
+            </form>
+
+        </main>
+
+    </div>
 </div>
+
+<!-- SUCCESS ALERT + REDIRECT -->
 <c:if test="${not empty successMessage}">
     <script>
         alert("${successMessage}");
+        const userId = "${newUserId}";
+        if (userId) {
+            window.location.href =
+                "${pageContext.request.contextPath}/user/detail?id=" + userId;
+        }
     </script>
 </c:if>
 
+<!-- ERROR ALERT -->
 <c:if test="${not empty errorMessage}">
-    <script>
-        alert("${errorMessage}");
-    </script>
+    <script>alert("${errorMessage}");</script>
 </c:if>
+
+<!-- OLD VALIDATION SCRIPT (giữ nguyên) -->
 <script>
     const form = document.querySelector("form");
 
@@ -162,61 +241,39 @@
     form.addEventListener("submit", function (e) {
         let isValid = true;
 
-        // Account Name
         if (accountName.value.trim() === "") {
             document.getElementById("errAccountName").innerText = "Account Name cannot be empty";
             isValid = false;
-        } else {
-            document.getElementById("errAccountName").innerText = "";
-        }
+        } else document.getElementById("errAccountName").innerText = "";
 
-        // Display Name
         if (displayName.value.trim() === "") {
             document.getElementById("errDisplayName").innerText = "Display Name cannot be empty";
             isValid = false;
-        } else {
-            document.getElementById("errDisplayName").innerText = "";
-        }
+        } else document.getElementById("errDisplayName").innerText = "";
 
-        // Password length
         if (password.value.length < 6 || password.value.length > 20) {
             document.getElementById("errPassword").innerText = "Password must be 6–20 characters";
             isValid = false;
-        } else {
-            document.getElementById("errPassword").innerText = "";
-        }
+        } else document.getElementById("errPassword").innerText = "";
 
-        // Confirm Password
         if (cfpassword.value !== password.value) {
             document.getElementById("errCfPassword").innerText = "Passwords do not match";
             isValid = false;
-        } else {
-            document.getElementById("errCfPassword").innerText = "";
-        }
+        } else document.getElementById("errCfPassword").innerText = "";
 
-        // Email empty
         if (email.value.trim() === "") {
             document.getElementById("errEmail").innerText = "Email cannot be empty";
             isValid = false;
-        } else {
-            document.getElementById("errEmail").innerText = "";
-        }
+        } else document.getElementById("errEmail").innerText = "";
 
-        // Role required
         if (roleId.value === "") {
             document.getElementById("errRole").innerText = "Role is required";
             isValid = false;
-        } else {
-            document.getElementById("errRole").innerText = "";
-        }
+        } else document.getElementById("errRole").innerText = "";
 
-        // Stop submit nếu có lỗi
-        if (!isValid) {
-            e.preventDefault();
-        }
+        if (!isValid) e.preventDefault();
     });
 </script>
-
 
 </body>
 </html>
