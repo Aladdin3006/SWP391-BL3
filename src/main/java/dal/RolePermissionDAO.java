@@ -55,4 +55,26 @@ public class RolePermissionDAO extends DBContext {
         }
         return false;
     }
+
+    public List<String> getPermissionUrlsByRoleId(int roleId) {
+        List<String> urls = new ArrayList<>();
+        String sql = "SELECT p.url FROM role_permission rp "
+                + "JOIN permission p ON rp.permissionId = p.permissionId "
+                + "WHERE rp.roleId = ?";
+
+        try (Connection c = getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+
+            ps.setInt(1, roleId);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                urls.add(rs.getString("url"));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return urls;
+    }
 }
