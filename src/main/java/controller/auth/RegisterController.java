@@ -17,13 +17,13 @@ public class RegisterController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         request.getRequestDispatcher("/view/auth/register.jsp").forward(request, response);
-    } 
+    }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         String user = request.getParameter("username");
         String pass = request.getParameter("password");
         String confirmPass = request.getParameter("confirmPassword");
@@ -34,9 +34,9 @@ public class RegisterController extends HttpServlet {
         UserDBContext db = new UserDBContext();
         String error = null;
 
-        if (user == null || user.trim().isEmpty() || 
-            pass == null || pass.trim().isEmpty() || 
-            email == null || email.trim().isEmpty()) {
+        if (user == null || user.trim().isEmpty() ||
+                pass == null || pass.trim().isEmpty() ||
+                email == null || email.trim().isEmpty()) {
             error = "Required fields are missing.";
         } else if (!pass.equals(confirmPass)) {
             error = "Passwords do not match.";
@@ -64,12 +64,31 @@ public class RegisterController extends HttpServlet {
         newUser.setEmail(email);
         newUser.setDisplayName(display);
         newUser.setVerificationCode(code);
-        
+
+        String baseUrl = getBaseUrl(request);
+
         new Thread(() -> {
-            EmailUtility.sendPost(newUser);
+            EmailUtility.sendPost(newUser, baseUrl);
         }).start();
 
         request.setAttribute("message", "Registration successful! Please check your email to verify your account.");
         request.getRequestDispatcher("/view/auth/login.jsp").forward(request, response);
+    }
+
+    private String getBaseUrl(HttpServletRequest request) {
+        String scheme = request.getScheme();
+        String serverName = request.getServerName();
+        int serverPort = request.getServerPort();
+        String contextPath = request.getContextPath();
+
+        StringBuilder url = new StringBuilder();
+        url.append(scheme).append("://").append(serverName);
+
+        if ((serverPort != 80) && (serverPort != 443)) {
+            url.append(":").append(serverPort);
+        }
+
+        url.append(contextPath);
+        return url.toString();
     }
 }

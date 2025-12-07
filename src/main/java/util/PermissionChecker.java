@@ -14,23 +14,21 @@ public class PermissionChecker {
     public static boolean hasPermission(HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute("user");
 
-        if (user == null) {
-            String currentUrl = getCleanUrl(request.getRequestURI(), request.getContextPath());
-            return isPublicUrl(currentUrl);
+        String currentUrl = getCleanUrl(request.getRequestURI(), request.getContextPath());
+
+        if (isPublicUrl(currentUrl)) {
+            return true;
         }
 
-        int roleId = user.getRoleId();
-        String currentUrl = getCleanUrl(request.getRequestURI(), request.getContextPath());
+        if (user == null) {
+            return false;
+        }
 
         if ("/dashboard".equals(currentUrl)) {
             return true;
         }
 
-        if ("/".equals(currentUrl) || "/home".equals(currentUrl)) {
-            return true;
-        }
-
-        List<String> userPermissions = rolePermissionDAO.getPermissionUrlsByRoleId(roleId);
+        List<String> userPermissions = rolePermissionDAO.getPermissionUrlsByRoleId(user.getRoleId());
 
         for (String permissionUrl : userPermissions) {
             if (permissionUrl != null && currentUrl.startsWith(permissionUrl)) {
@@ -54,7 +52,10 @@ public class PermissionChecker {
                 "/home".equals(url) ||
                 "/login".equals(url) ||
                 "/register".equals(url) ||
-                "/forgot-password".equals(url);
+                "/forgot-password".equals(url) ||
+                "/reset-password".equals(url) ||
+                "/verify".equals(url) ||
+                "/unauthorized".equals(url);
     }
 
     public static boolean checkUrl(HttpServletRequest request, String urlToCheck) {

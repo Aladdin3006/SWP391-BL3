@@ -23,7 +23,15 @@ public class PermissionFilter implements Filter {
                 path.startsWith("/css/") ||
                 path.startsWith("/js/") ||
                 path.startsWith("/images/") ||
-                path.equals("/unauthorized")) {
+                path.equals("/") ||
+                path.equals("/home") ||
+                path.equals("/login") ||
+                path.equals("/register") ||
+                path.equals("/forgot-password") ||
+                path.equals("/reset-password") ||
+                path.equals("/verify") ||
+                path.equals("/unauthorized") ||
+                path.equals("/logout")) {
             chain.doFilter(request, response);
             return;
         }
