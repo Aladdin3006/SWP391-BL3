@@ -137,6 +137,17 @@
         </div>
     </form>
 </div>
+<c:if test="${not empty successMessage}">
+    <script>
+        alert("${successMessage}");
+    </script>
+</c:if>
+
+<c:if test="${not empty errorMessage}">
+    <script>
+        alert("${errorMessage}");
+    </script>
+</c:if>
 <script>
     const form = document.querySelector("form");
 
@@ -205,6 +216,7 @@
         }
     });
 </script>
+
 
 </body>
 </html>
