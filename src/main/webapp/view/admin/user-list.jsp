@@ -1,4 +1,3 @@
-@@ -1,221 +0,0 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
@@ -82,7 +81,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">
+                                <a class="nav-link" href="${pageContext.request.contextPath}/view-role-list">
                                     <i class="fas fa-user-tag me-2"></i>Manage Roles
                                 </a>
                             </li>
@@ -102,6 +101,11 @@
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                 <h1 class="h2 page-title">User Management</h1>
+                <a href="${pageContext.request.contextPath}/user/adduser"
+                   class="btn btn-primary"
+                   style="height: 40px;">
+                    <i class="fas fa-user-plus me-1"></i> Add User
+                </a>
             </div>
 
             <form action="${pageContext.request.contextPath}/users" method="GET" class="filter-box">
@@ -193,6 +197,10 @@
                                 </span>
                             </td>
                             <td style="text-align: center; vertical-align: middle;">
+                                <a href="${pageContext.request.contextPath}/user/detail?id=${u.userId}"
+                                   class="btn btn-sm btn-info btn-action">
+                                    <i class="fas fa-eye me-1"></i> View
+                                </a>
                                 <c:if test="${u.status == 'active'}">
                                     <a href="${pageContext.request.contextPath}/users?action=deactivate&userId=${u.userId}"
                                        class="btn btn-sm btn-danger btn-action"
