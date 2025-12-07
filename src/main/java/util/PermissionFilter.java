@@ -30,6 +30,7 @@ public class PermissionFilter implements Filter {
                 path.equals("/forgot-password") ||
                 path.equals("/reset-password") ||
                 path.equals("/verify") ||
+                path.equals("/verify-email-change") ||
                 path.equals("/unauthorized") ||
                 path.equals("/logout")) {
             chain.doFilter(request, response);

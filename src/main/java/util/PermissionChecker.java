@@ -55,6 +55,7 @@ public class PermissionChecker {
                 "/forgot-password".equals(url) ||
                 "/reset-password".equals(url) ||
                 "/verify".equals(url) ||
+                "/verify-email-change".equals(url) ||
                 "/unauthorized".equals(url);
     }
 
