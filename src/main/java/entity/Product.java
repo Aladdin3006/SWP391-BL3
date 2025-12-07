@@ -8,10 +8,12 @@ public class Product {
     private String company;
     private String categoryName;
     private int unit;
+    private int supplierId;
+    private String status;
 
     public Product() {}
 
-    public Product(int id, String productCode, String name, String brand, String company, String categoryName, int unit) {
+    public Product(int id, String productCode, String name, String brand, String company, String categoryName, int unit, int supplierId, String status) {
         this.id = id;
         this.productCode = productCode;
         this.name = name;
@@ -19,6 +21,8 @@ public class Product {
         this.company = company;
         this.categoryName = categoryName;
         this.unit = unit;
+        this.supplierId = supplierId;
+        this.status = status;
     }
 
     public int getId() { return id; }
@@ -35,4 +39,8 @@ public class Product {
     public void setCategoryName(String categoryName) { this.categoryName = categoryName; }
     public int getUnit() { return unit; }
     public void setUnit(int unit) { this.unit = unit; }
+    public int getSupplierId() { return supplierId; }
+    public void setSupplierId(int supplierId) { this.supplierId = supplierId; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 }

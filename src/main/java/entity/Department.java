@@ -1,17 +1,17 @@
 package entity;
 
-public class Workspace {
+public class Department {
     private int id;
-    private String warehouseName;
+    private String departmentName;
     private int storekeeperId;
     private int employeeId;
-    private boolean status;
+    private String status;
 
-    public Workspace() {}
+    public Department() {}
 
-    public Workspace(int id, String warehouseName, int storekeeperId, int employeeId, boolean status) {
+    public Department(int id, String departmentName, int storekeeperId, int employeeId, String status) {
         this.id = id;
-        this.warehouseName = warehouseName;
+        this.departmentName = departmentName;
         this.storekeeperId = storekeeperId;
         this.employeeId = employeeId;
         this.status = status;
@@ -19,12 +19,12 @@ public class Workspace {
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
-    public String getWarehouseName() { return warehouseName; }
-    public void setWarehouseName(String warehouseName) { this.warehouseName = warehouseName; }
+    public String getDepartmentName() { return departmentName; }
+    public void setDepartmentName(String departmentName) { this.departmentName = departmentName; }
     public int getStorekeeperId() { return storekeeperId; }
     public void setStorekeeperId(int storekeeperId) { this.storekeeperId = storekeeperId; }
     public int getEmployeeId() { return employeeId; }
     public void setEmployeeId(int employeeId) { this.employeeId = employeeId; }
-    public boolean isStatus() { return status; }
-    public void setStatus(boolean status) { this.status = status; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 }
