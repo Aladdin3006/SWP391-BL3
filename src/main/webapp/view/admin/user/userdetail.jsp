@@ -56,20 +56,16 @@
 
 <body>
 
-<!-- Navbar -->
 <jsp:include page="/view/fragments/navbar.jsp" />
 
 <div class="container-fluid mt-0">
     <div class="row">
 
-        <!-- Sidebar -->
         <c:set var="activePage" value="user-list" scope="request"/>
         <jsp:include page="/view/fragments/sidebar.jsp"/>
 
-        <!-- MAIN CONTENT -->
         <main class="col-md-10 ms-sm-auto px-4 py-4">
 
-            <!-- Back button -->
             <div class="mb-4">
                 <a href="${pageContext.request.contextPath}/user-list" class="btn btn-secondary">
                     ← Back to List
@@ -80,7 +76,6 @@
 
                 <h3 class="mb-3">User Detail</h3>
 
-                <!-- USER INFO -->
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="form-label fw-bold">User ID</label>
@@ -126,7 +121,6 @@
                     </div>
                 </div>
 
-                <!-- NEW: WORKSPACE INFO -->
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="form-label fw-bold">Workspace ID</label>

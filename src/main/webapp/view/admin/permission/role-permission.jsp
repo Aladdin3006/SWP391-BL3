@@ -36,7 +36,6 @@
                 <h1 class="h2">Role Permission Management – <span class="text-primary">${role.roleName}</span></h1>
             </div>
 
-            <!-- SEARCH + SORT -->
             <form class="row g-3 mb-3">
                 <input type="hidden" name="roleId" value="${roleId}"/>
 
@@ -72,7 +71,6 @@
                 </div>
             </form>
 
-            <!-- TABLE -->
             <table class="table table-bordered table-striped">
                 <thead class="table-info">
                 <tr>
@@ -105,7 +103,6 @@
                         </td>
 
                         <td>
-                            <!-- Assign -->
                             <c:if test="${!assigned.contains(p.permissionId)}">
                                 <form method="post" style="display:inline;">
                                     <input type="hidden" name="action" value="assign"/>
@@ -117,7 +114,6 @@
                                 </form>
                             </c:if>
 
-                            <!-- Remove -->
                             <c:if test="${assigned.contains(p.permissionId)}">
                                 <form method="post" style="display:inline;">
                                     <input type="hidden" name="action" value="remove"/>
@@ -134,7 +130,6 @@
                 </tbody>
             </table>
 
-            <!-- PAGINATION -->
             <nav>
                 <ul class="pagination justify-content-center">
                     <c:forEach begin="1" end="${totalPage}" var="p">

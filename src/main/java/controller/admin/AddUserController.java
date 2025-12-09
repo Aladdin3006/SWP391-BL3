@@ -31,7 +31,6 @@ public class AddUserController extends HttpServlet {
             throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
 
-        // Lấy dữ liệu từ form
         String accountName = request.getParameter("accountName");
         String displayName = request.getParameter("displayName");
         String password = request.getParameter("password");
@@ -43,7 +42,6 @@ public class AddUserController extends HttpServlet {
         if (db.getUserByAccountName(accountName) != null) {
             request.setAttribute("errAccountName", "Username already exists.");
 
-            // Gửi lại dữ liệu đã nhập
             request.setAttribute("accountName", accountName);
             request.setAttribute("displayName", displayName);
             request.setAttribute("email", email);
@@ -53,11 +51,8 @@ public class AddUserController extends HttpServlet {
             return;
         }
 
-
-        // Chuyển roleId và workspaceId về int
         int roleId = Integer.parseInt(roleIdStr);
 
-        // Tạo user mới
         User newUser = new User();
         newUser.setAccountName(accountName);
         newUser.setDisplayName(displayName);

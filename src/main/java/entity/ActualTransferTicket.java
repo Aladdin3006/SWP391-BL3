@@ -1,6 +1,7 @@
 package entity;
 
 import java.sql.Date;
+import java.util.List;
 
 public class ActualTransferTicket {
     private int id;
@@ -10,10 +11,12 @@ public class ActualTransferTicket {
     private String status;
     private int confirmedBy;
     private String note;
+    private List<ProductTransferItem> productTransfers;
 
     public ActualTransferTicket() {}
 
-    public ActualTransferTicket(int id, String ticketCode, int requestTransferId, Date transferDate, String status, int confirmedBy, String note) {
+    public ActualTransferTicket(int id, String ticketCode, int requestTransferId, Date transferDate,
+                                String status, int confirmedBy, String note, List<ProductTransferItem> productTransfers) {
         this.id = id;
         this.ticketCode = ticketCode;
         this.requestTransferId = requestTransferId;
@@ -21,6 +24,7 @@ public class ActualTransferTicket {
         this.status = status;
         this.confirmedBy = confirmedBy;
         this.note = note;
+        this.productTransfers = productTransfers;
     }
 
     public int getId() { return id; }
@@ -37,4 +41,6 @@ public class ActualTransferTicket {
     public void setConfirmedBy(int confirmedBy) { this.confirmedBy = confirmedBy; }
     public String getNote() { return note; }
     public void setNote(String note) { this.note = note; }
+    public List<ProductTransferItem> getProductTransfers() { return productTransfers; }
+    public void setProductTransfers(List<ProductTransferItem> productTransfers) { this.productTransfers = productTransfers; }
 }
