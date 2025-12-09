@@ -6,11 +6,9 @@
 <head>
     <title>Permission Management</title>
 
-    <!-- Bootstrap -->
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"/>
 
-    <!-- FontAwesome Icons -->
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 
@@ -36,16 +34,13 @@
                 <h1 class="h2">Permission Management</h1>
             </div>
 
-            <!-- SEARCH + SORT + ADD -->
             <form method="get" class="row g-3 mb-3">
-                <!-- Search -->
                 <div class="col-md-4">
                     <input type="text" name="search" value="${search}"
                            class="form-control"
                            placeholder="Search permission name..."/>
                 </div>
 
-                <!-- Sort Field -->
                 <div class="col-md-3">
                     <select name="sort" class="form-select">
                         <option value="permissionId" ${sort=="permissionId"?"selected":""}>Sort by ID</option>
@@ -53,7 +48,6 @@
                     </select>
                 </div>
 
-                <!-- Sort Direction -->
                 <div class="col-md-2">
                     <select name="dir" class="form-select">
                         <option value="ASC" ${dir=="ASC"?"selected":""}>ASC</option>
@@ -61,14 +55,12 @@
                     </select>
                 </div>
 
-                <!-- Search Button -->
                 <div class="col-md-1">
                     <button class="btn btn-primary w-100">
                         <i class="fa fa-search"></i>
                     </button>
                 </div>
 
-                <!-- Add Button -->
                 <div class="col-md-2">
                     <button type="button" class="btn btn-success w-100"
                             data-bs-toggle="modal" data-bs-target="#addModal">
@@ -77,7 +69,6 @@
                 </div>
             </form>
 
-            <!-- TABLE -->
             <table class="table table-striped table-bordered align-middle text-center">
                 <thead class="table-primary">
                 <tr>
@@ -102,13 +93,11 @@
                         <td class="text-start">${p.description}</td>
 
                         <td>
-                            <!-- Edit Button -->
                             <button class="btn btn-warning btn-sm"
                                     onclick="openEdit(${p.permissionId},'${p.permissionName}','${p.url}','${p.description}')">
                                 <i class="fa fa-edit"></i> Edit
                             </button>
 
-                            <!-- Delete Button -->
                             <button class="btn btn-danger btn-sm"
                                     onclick="openDelete(${p.permissionId},'${p.permissionName}')">
                                 <i class="fa fa-trash"></i> Delete
@@ -119,7 +108,6 @@
                 </tbody>
             </table>
 
-            <!-- PAGINATION -->
             <nav>
                 <ul class="pagination justify-content-center">
                     <c:forEach begin="1" end="${totalPage}" var="p">
@@ -136,7 +124,6 @@
     </div>
 </div>
 
-<!-- =================== MODAL: ADD =================== -->
 <div class="modal fade" id="addModal">
     <div class="modal-dialog">
         <form method="post" class="modal-content">
@@ -170,7 +157,6 @@
     </div>
 </div>
 
-<!-- =================== MODAL: EDIT =================== -->
 <div class="modal fade" id="editModal">
     <div class="modal-dialog">
         <form method="post" class="modal-content">
@@ -205,7 +191,6 @@
     </div>
 </div>
 
-<!-- =================== MODAL: DELETE =================== -->
 <div class="modal fade" id="deleteModal">
     <div class="modal-dialog">
         <form method="post" class="modal-content">
@@ -234,7 +219,6 @@
     </div>
 </div>
 
-<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
