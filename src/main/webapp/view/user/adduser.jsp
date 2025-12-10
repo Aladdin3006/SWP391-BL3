@@ -152,8 +152,11 @@
                     <div class="col">
                         <label class="form-label">Phone</label>
                         <input type="text" id="phone" name="phone" class="form-control"
-                               value="${phone}">
+                               value="${phone}" minlength="10" maxlength="10" pattern="\d{10}"
+                               required>
+
                         <p class="error-message" id="errPhone">${errPhone}</p>
+
                     </div>
                 </div>
 

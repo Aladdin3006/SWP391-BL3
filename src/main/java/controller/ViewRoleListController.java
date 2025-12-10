@@ -47,7 +47,8 @@ public class ViewRoleListController extends HttpServlet {
         RoleDAO dao = new RoleDAO();
 
         // lấy danh sách role theo điều kiện
-        List<Role> roles = dao.getAllRoles(keyword, status, pageIndex, pageSize);
+        List<Role> roles =
+                dao.getAllRoles(keyword, status, pageIndex, pageSize);
         // đếm tổng record để tính totalPages (nhớ tự thêm hàm này vào DAO)
         int totalRecords = dao.countRoles(keyword, status);
         int totalPages = (int) Math.ceil((double) totalRecords / pageSize);
@@ -63,7 +64,7 @@ public class ViewRoleListController extends HttpServlet {
         request.setAttribute("keyword", keyword == null ? "" : keyword);
         request.setAttribute("status", status == null ? "all" : status);
 
-        // forward tới JSP (sửa lại path nếu bạn dùng cấu trúc khác)
+        // forward tới JSP (sửa lại path nếu bạn dùng cấu   trúc khác)
         request.getRequestDispatcher("/view/admin/role/view-role-list.jsp")
                 .forward(request, response);
     }

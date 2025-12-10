@@ -145,7 +145,7 @@
             <nav aria-label="Role pagination" class="mt-4">
                 <ul class="pagination justify-content-end">
                     <li class="page-item ${pageIndex == 1 ? 'disabled' : ''}">
-                        <a class="page-link" href="view-role-list?page=${pageIndex - 1}&keyword=${keyword}&status=${status}"><</a>
+                        <a class="page-link" href="view-role-list?page=${pageIndex - 1}&keyword=${keyword}&status=${status}">Pre</a>
                     </li>
                     <c:forEach begin="1" end="${totalPages}" var="p">
                         <li class="page-item ${p == pageIndex ? 'active' : ''}">
@@ -153,7 +153,7 @@
                         </li>
                     </c:forEach>
                     <li class="page-item ${pageIndex == totalPages ? 'disabled' : ''}">
-                        <a class="page-link" href="view-role-list?page=${pageIndex + 1}&keyword=${keyword}&status=${status}">></a>
+                        <a class="page-link" href="view-role-list?page=${pageIndex + 1}&keyword=${keyword}&status=${status}">Next</a>
                     </li>
                 </ul>
             </nav>
