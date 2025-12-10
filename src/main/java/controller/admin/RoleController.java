@@ -1,4 +1,4 @@
-package controller;
+package controller.admin;
 
 
 import dal.RoleDAO;
@@ -8,7 +8,6 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 
 import java.io.IOException;
-import java.util.List;
 
 @WebServlet("/role")
 public class RoleController extends HttpServlet {

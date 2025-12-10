@@ -1,4 +1,4 @@
-package controller;
+package controller.admin;
 
 import dal.UserDBContext;
 import entity.User;
@@ -30,7 +30,7 @@ public class UserListController extends HttpServlet {
                 if (action.equals("activate")) db.updateUserStatus(uid, "active");
                 if (action.equals("deactivate")) db.updateUserStatus(uid, "inactive");
 
-                response.sendRedirect("users");
+                response.sendRedirect("user-list");
                 return;
             } catch (NumberFormatException e) {
                 e.printStackTrace();
@@ -59,7 +59,7 @@ public class UserListController extends HttpServlet {
         request.setAttribute("selectedRoleId", roleId == null ? 0 : roleId);
         request.setAttribute("selectedStatus", statusFilter);
 
-        request.getRequestDispatcher("view/admin/user-list.jsp").forward(request, response);
+        request.getRequestDispatcher("view/admin/user/user-list.jsp").forward(request, response);
     }
 
     @Override

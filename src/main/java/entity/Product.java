@@ -10,10 +10,12 @@ public class Product {
     private int unit;
     private int supplierId;
     private String status;
+    private String url;
 
     public Product() {}
 
-    public Product(int id, String productCode, String name, String brand, String company, String categoryName, int unit, int supplierId, String status) {
+    public Product(int id, String productCode, String name, String brand, String company, String categoryName,
+                   int unit, int supplierId, String status, String url) {
         this.id = id;
         this.productCode = productCode;
         this.name = name;
@@ -23,6 +25,7 @@ public class Product {
         this.unit = unit;
         this.supplierId = supplierId;
         this.status = status;
+        this.url = url;
     }
 
     public int getId() { return id; }
@@ -43,4 +46,6 @@ public class Product {
     public void setSupplierId(int supplierId) { this.supplierId = supplierId; }
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+    public String getUrl() { return url; }
+    public void setUrl(String url) { this.url = url; }
 }

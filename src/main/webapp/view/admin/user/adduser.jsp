@@ -93,28 +93,9 @@
 <div class="container-fluid">
     <div class="row">
 
-        <!-- SIDEBAR (column 2) -->
-        <nav class="col-md-2 d-none d-md-block sidebar">
-            <div class="position-sticky pt-3">
-                <ul class="nav flex-column">
+        <c:set var="activePage" value="user-list" scope="request"/>
+        <jsp:include page="/view/fragments/sidebar.jsp"/>
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="${pageContext.request.contextPath}/user-list">
-                            <i class="fas fa-users me-2"></i>Manage Users
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="${pageContext.request.contextPath}/view-role-list">
-                            <i class="fas fa-user-tag me-2"></i>Manage Roles
-                        </a>
-                    </li>
-
-                </ul>
-            </div>
-        </nav>
-
-        <!-- MAIN CONTENT (column 10) -->
         <main class="col-md-10 ms-sm-auto px-md-4 mt-4">
 
             <h2 class="mb-4">Add New User</h2>
@@ -123,7 +104,6 @@
                   action="${pageContext.request.contextPath}/user/adduser"
                   class="card-custom shadow-sm">
 
-                <!-- Row 1 -->
                 <div class="row mb-3">
                     <div class="col">
                         <label class="form-label">Account Name</label>
@@ -140,7 +120,6 @@
                     </div>
                 </div>
 
-                <!-- Row 2 -->
                 <div class="row mb-3">
                     <div class="col">
                         <label class="form-label">Email</label>
@@ -160,7 +139,6 @@
                     </div>
                 </div>
 
-                <!-- Role -->
                 <div class="mb-3">
                     <label class="form-label">Role</label>
                     <select id="roleId" name="roleId" class="form-select" required>
@@ -179,7 +157,6 @@
                     <p class="error-message" id="errRole">${errRole}</p>
                 </div>
 
-                <!-- Row 4 -->
                 <div class="row mb-3">
                     <div class="col">
                         <label class="form-label">Password</label>
@@ -196,7 +173,6 @@
                     </div>
                 </div>
 
-                <!-- Buttons -->
                 <div class="d-flex justify-content-between mt-4 mb-2">
                     <a href="" class="btn btn-secondary btn-cancel" onclick="location.reload(); return false;">
                         Cancel

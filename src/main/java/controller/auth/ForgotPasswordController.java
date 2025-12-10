@@ -1,4 +1,4 @@
-package controller;
+package controller.auth;
 
 import dal.UserDBContext;
 import entity.User;
@@ -16,13 +16,13 @@ public class ForgotPasswordController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         request.getRequestDispatcher("/view/auth/forgot-password.jsp").forward(request, response);
-    } 
+    }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         String email = request.getParameter("email");
         UserDBContext db = new UserDBContext();
         User user = db.getUserByEmail(email);
@@ -33,12 +33,31 @@ public class ForgotPasswordController extends HttpServlet {
             String token = UUID.randomUUID().toString();
             db.updateToken(email, token);
 
+            String baseUrl = getBaseUrl(request);
+
             new Thread(() -> {
-                EmailUtility.sendReset(email, token);
+                EmailUtility.sendReset(email, token, baseUrl);
             }).start();
-            
+
             request.setAttribute("message", "If an account exists with that email, we have sent a reset link.");
         }
         request.getRequestDispatcher("/view/auth/forgot-password.jsp").forward(request, response);
+    }
+
+    private String getBaseUrl(HttpServletRequest request) {
+        String scheme = request.getScheme();
+        String serverName = request.getServerName();
+        int serverPort = request.getServerPort();
+        String contextPath = request.getContextPath();
+
+        StringBuilder url = new StringBuilder();
+        url.append(scheme).append("://").append(serverName);
+
+        if ((serverPort != 80) && (serverPort != 443)) {
+            url.append(":").append(serverPort);
+        }
+
+        url.append(contextPath);
+        return url.toString();
     }
 }

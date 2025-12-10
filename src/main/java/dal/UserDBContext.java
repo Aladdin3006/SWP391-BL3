@@ -404,7 +404,23 @@ public class UserDBContext extends DBContext {
         return null;
     }
 
+    public boolean updateUserWithVerification(User user) {
+        String sql = "UPDATE user SET displayName = ?, phone = ?, verificationCode = ? WHERE userId = ?";
 
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, user.getDisplayName());
+            ps.setString(2, user.getPhone());
+            ps.setString(3, user.getVerificationCode());
+            ps.setInt(4, user.getUserId());
+
+            int rows = ps.executeUpdate();
+            return rows > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
     public static void main(String[] args) {
         UserDBContext dao = new UserDBContext();

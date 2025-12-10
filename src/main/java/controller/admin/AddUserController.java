@@ -1,4 +1,4 @@
-package controller;
+package controller.admin;
 
 import dal.RoleDAO;
 import dal.UserDBContext;
@@ -6,7 +6,7 @@ import entity.Role;
 import entity.User;
 import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -23,7 +23,7 @@ public class AddUserController extends HttpServlet {
         List<Role> roles = roleDB.getAllRoles();
 
         request.setAttribute("roles", roles);
-        request.getRequestDispatcher("/view/user/adduser.jsp").forward(request, response);
+        request.getRequestDispatcher("/view/admin/user/adduser.jsp").forward(request, response);
     }
 
     @Override
@@ -31,7 +31,6 @@ public class AddUserController extends HttpServlet {
             throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
 
-        // Lấy dữ liệu từ form
         String accountName = request.getParameter("accountName");
         String displayName = request.getParameter("displayName");
         String password = request.getParameter("password");
@@ -44,21 +43,17 @@ public class AddUserController extends HttpServlet {
         if (db.getUserByAccountName(accountName) != null) {
             request.setAttribute("errAccountName", "Username already exists.");
 
-            // Gửi lại dữ liệu đã nhập
             request.setAttribute("accountName", accountName);
             request.setAttribute("displayName", displayName);
             request.setAttribute("email", email);
             request.setAttribute("phone", phone);
 
-            request.getRequestDispatcher("/view/user/adduser.jsp").forward(request, response);
+            request.getRequestDispatcher("/view/admin/user/adduser.jsp").forward(request, response);
             return;
         }
 
-
-        // Chuyển roleId và workspaceId về int
         int roleId = Integer.parseInt(roleIdStr);
 
-        // Tạo user mới
         User newUser = new User();
         newUser.setAccountName(accountName);
         newUser.setDisplayName(displayName);
@@ -76,6 +71,6 @@ public class AddUserController extends HttpServlet {
         } else {
             request.setAttribute("errorMessage", "Failed to create new user.");
         }
-        request.getRequestDispatcher("/view/user/adduser.jsp").forward(request, response);
+        request.getRequestDispatcher("/view/admin/user/adduser.jsp").forward(request, response);
     }
 }

@@ -1,4 +1,4 @@
-package controller;
+package controller.admin;
 
 import dal.PermissionDAO;
 import dal.RoleDAO;
@@ -49,7 +49,7 @@ public class RolePermissionController extends HttpServlet {
         req.setAttribute("page", page);
         req.setAttribute("totalPage", totalPage);
 
-        req.getRequestDispatcher("view/admin/role-permission.jsp")
+        req.getRequestDispatcher("view/admin/permission/role-permission.jsp")
                 .forward(req, resp);
     }
 

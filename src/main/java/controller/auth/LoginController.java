@@ -1,4 +1,4 @@
-package controller;
+package controller.auth;
 
 import dal.UserDBContext;
 import entity.User;
@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import util.RoleNavigationHelper;
 
 @WebServlet(name = "LoginController", urlPatterns = {"/login"})
 public class LoginController extends HttpServlet {
@@ -38,7 +39,8 @@ public class LoginController extends HttpServlet {
             session.setAttribute("user", user);
 
             String roleName = (user.getRole() != null) ? user.getRole().getRoleName() : "User";
-            response.sendRedirect("dashboard?role=" + roleName);
+            String redirectPath = RoleNavigationHelper.getRedirectPath(roleName);
+            response.sendRedirect(redirectPath);
         } else {
             request.setAttribute("error", "Invalid username or password.");
             request.getRequestDispatcher("/view/auth/login.jsp").forward(request, response);
