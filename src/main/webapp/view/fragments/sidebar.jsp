@@ -27,39 +27,37 @@
 
                 <c:when test="${sessionScope.user.roleName == 'manager'}">
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'dashboard' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/dashboard">
-                            <i class="fas fa-tachometer-alt me-2"></i>Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link ${activePage == 'inventory' ? 'active' : ''}"
-                           href="#">
-                            <i class="fas fa-boxes me-2"></i>Inventory
+                           href="manager-inventory.jsp">
+                            <i class="fas fa-warehouse me-2"></i>Manager Inventory
                         </a>
                     </li>
+
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'orders' ? 'active' : ''}"
-                           href="#">
-                            <i class="fas fa-shopping-cart me-2"></i>Orders
+                        <a class="nav-link ${activePage == 'products' ? 'active' : ''}"
+                           href="manager-products.jsp">
+                            <i class="fas fa-boxes-stacked me-2"></i>Manager Products
                         </a>
                     </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'department-list' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/department-list">
+                            <i class="fas fa-building me-2"></i>Departments
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'transfer-ticket' ? 'active' : ''}"
+                           href="transfer-tickets.jsp">
+                            <i class="fas fa-exchange-alt me-2"></i>Transfer Tickets
+                        </a>
+                    </li>
+
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'reports' ? 'active' : ''}"
-                           href="#">
-                            <i class="fas fa-chart-line me-2"></i>Reports
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'users' ? 'active' : ''}"
-                           href="#">
-                            <i class="fas fa-users me-2"></i>Users
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'settings' ? 'active' : ''}"
-                           href="#">
-                            <i class="fas fa-cog me-2"></i>Settings
+                           href="reports.jsp">
+                            <i class="fas fa-chart-column me-2"></i>Reports
                         </a>
                     </li>
                 </c:when>
@@ -83,6 +81,12 @@
                             <i class="fas fa-arrow-left me-2"></i>Import Warehouse Request
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'actual-transfer' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/actual-transfer">
+                            <i class="fas fa-dolly-flatbed me-2"></i>Actual Transfers
+                        </a>
+                    </li>
                 </c:when>
 
                 <c:when test="${sessionScope.user.roleName == 'employee'}">
@@ -102,6 +106,12 @@
                         <a class="nav-link ${activePage == 'warehouse-request' ? 'active' : ''}"
                            href="#">
                             <i class="fas fa-clipboard-list me-2"></i>Your Warehouse Request
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'actual-transfer' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/actual-transfer">
+                            <i class="fas fa-dolly-flatbed me-2"></i>Actual Transfers
                         </a>
                     </li>
                 </c:when>

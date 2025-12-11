@@ -62,7 +62,7 @@ public class AddUserController extends HttpServlet {
         newUser.setPhone(phone);
         newUser.setRoleId(roleId);
         newUser.setStatus("active");
-        newUser.setWorkspaceId(1);
+        newUser.setDepartmentId(1);
         User createdUser = db.addNewUser(newUser);
 
         if (createdUser != null) {

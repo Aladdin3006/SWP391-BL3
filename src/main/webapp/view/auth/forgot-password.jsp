@@ -17,7 +17,11 @@
                         </div>
                         <div class="card-body">
                             <c:if test="${not empty message}">
-                                <div class="alert alert-info">${message}</div>
+                                <div class="alert alert-success">${message}</div>
+                            </c:if>
+
+                            <c:if test="${not empty error}">
+                                <div class="alert alert-danger">${error}</div>
                             </c:if>
 
                             <p>Enter your email address and we'll send you a link to reset your password.</p>
@@ -25,7 +29,8 @@
                             <form action="forgot-password" method="post">
                                 <div class="mb-3">
                                     <label class="form-label">Email Address</label>
-                                    <input type="email" name="email" class="form-control" required>
+                                    <input type="email" name="email" class="form-control" 
+                                           value="${requestScope.enteredEmail}" required>
                                 </div>
                                 <div class="d-grid">
                                     <button type="submit" class="btn btn-warning">Send Reset Link</button>

@@ -123,8 +123,8 @@
 
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">Workspace ID</label>
-                        <div class="value-box">${user.workspaceId}</div>
+                        <label class="form-label fw-bold">Department ID</label>
+                        <div class="value-box">${user.departmentId}</div>
                     </div>
                 </div>
                 <div class="row mb-3">

@@ -13,7 +13,7 @@ public class UserDBContext extends DBContext {
 
     public User getUserByAccountName(String accountName) {
         String sql = "SELECT u.userId, u.accountName, u.displayName, u.password, u.email, u.phone, "
-                + "u.roleId, u.status, u.workspaceId, u.verificationCode, "
+                + "u.roleId, u.status, u.departmentId, u.verificationCode, "
                 + "r.roleId as r_roleId, r.roleName, r.roleDescription, r.status as r_status "
                 + "FROM user u "
                 + "LEFT JOIN role r ON u.roleId = r.roleId "
@@ -31,7 +31,7 @@ public class UserDBContext extends DBContext {
                         rs.getString("phone"),
                         rs.getInt("roleId"),
                         rs.getString("status"),
-                        rs.getInt("workspaceId"),
+                        rs.getInt("departmentId"),
                         rs.getString("verificationCode")
                 );
 
@@ -56,7 +56,7 @@ public class UserDBContext extends DBContext {
     public List<User> getAllUsers() {
         List<User> list = new ArrayList<>();
         String sql = "SELECT u.userId, u.accountName, u.displayName, u.password, u.email, u.phone, "
-                + "u.roleId, u.status, u.workspaceId, u.verificationCode, "
+                + "u.roleId, u.status, u.departmentId, u.verificationCode, "
                 + "r.roleId as r_roleId, r.roleName, r.roleDescription, r.status as r_status "
                 + "FROM user u "
                 + "LEFT JOIN role r ON u.roleId = r.roleId "
@@ -76,7 +76,7 @@ public class UserDBContext extends DBContext {
                         rs.getString("phone"),
                         rs.getInt("roleId"),
                         rs.getString("status"),
-                        rs.getInt("workspaceId"),
+                        rs.getInt("departmentId"),
                         rs.getString("verificationCode")
                 );
 
@@ -99,7 +99,7 @@ public class UserDBContext extends DBContext {
     }
     public User getUserByEmail(String email) {
         String sql = "SELECT u.userId, u.accountName, u.displayName, u.password, u.email, u.phone, "
-                + "u.roleId, u.status, u.workspaceId, u.verificationCode, u.reset_token, "
+                + "u.roleId, u.status, u.departmentId, u.verificationCode, u.reset_token, "
                 + "r.roleId as r_roleId, r.roleName, r.roleDescription, r.status as r_status "
                 + "FROM user u "
                 + "LEFT JOIN role r ON u.roleId = r.roleId "
@@ -131,7 +131,7 @@ public class UserDBContext extends DBContext {
     public void registerUser(String accountName, String password, String displayName,
                              String email, String phone, String code) {
         String sql = "INSERT INTO user (accountName, password, displayName, email, phone, "
-                + "roleId, status, workspaceId, verificationCode) "
+                + "roleId, status, departmentId, verificationCode) "
                 + "VALUES (?, ?, ?, ?, ?, 3, 'inactive', 1, ?)";
 
         try (Connection conn = getConnection();
@@ -163,7 +163,7 @@ public class UserDBContext extends DBContext {
 
     public User getUserById(int userId) {
         String sql = "SELECT u.userId, u.accountName, u.displayName, u.password, u.email, u.phone, "
-                + "u.roleId, u.status, u.workspaceId, u.verificationCode, "
+                + "u.roleId, u.status, u.departmentId, u.verificationCode, "
                 + "r.roleId as r_roleId, r.roleName, r.roleDescription, r.status as r_status "
                 + "FROM user u "
                 + "LEFT JOIN role r ON u.roleId = r.roleId "
@@ -181,7 +181,7 @@ public class UserDBContext extends DBContext {
                         rs.getString("phone"),
                         rs.getInt("roleId"),
                         rs.getString("status"),
-                        rs.getInt("workspaceId"),
+                        rs.getInt("departmentId"),
                         rs.getString("verificationCode")
                 );
 
@@ -241,7 +241,7 @@ public class UserDBContext extends DBContext {
                 rs.getString("phone"),
                 rs.getInt("roleId"),
                 rs.getString("status"),
-                rs.getInt("workspaceId"),
+                rs.getInt("departmentId"),
                 rs.getString("verificationCode")
         );
 
@@ -264,7 +264,7 @@ public class UserDBContext extends DBContext {
     }
     public User getUserByToken(String token) {
         String sql = "SELECT u.userId, u.accountName, u.displayName, u.password, u.email, u.phone, "
-                + "u.roleId, u.status, u.workspaceId, u.verificationCode, u.reset_token, "
+                + "u.roleId, u.status, u.departmentId, u.verificationCode, u.reset_token, "
                 + "r.roleId as r_roleId, r.roleName, r.roleDescription, r.status as r_status "
                 + "FROM user u "
                 + "LEFT JOIN role r ON u.roleId = r.roleId "
@@ -291,10 +291,10 @@ public class UserDBContext extends DBContext {
             e.printStackTrace();
         }
     }
-    public List<User> getUsersWithFilter(String searchName, String searchEmail, Integer roleId, String status) {
+    public List<User> getUsersWithFilter(String searchName, String searchEmail, Integer roleId, String status, int offset, int limit) {
         List<User> list = new ArrayList<>();
         String sql = "SELECT u.userId, u.accountName, u.displayName, u.password, u.email, u.phone, "
-                + "u.roleId, u.status, u.workspaceId, u.verificationCode, u.reset_token, "
+                + "u.roleId, u.status, u.departmentId, u.verificationCode, u.reset_token, "
                 + "r.roleId as r_roleId, r.roleName, r.roleDescription, r.status as r_status "
                 + "FROM user u "
                 + "LEFT JOIN role r ON u.roleId = r.roleId "
@@ -319,7 +319,9 @@ public class UserDBContext extends DBContext {
             params.add(status);
         }
 
-        sql += " ORDER BY u.userId ASC";
+        sql += " ORDER BY u.userId ASC LIMIT ? OFFSET ?";
+        params.add(limit);
+        params.add(offset);
 
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -336,6 +338,62 @@ public class UserDBContext extends DBContext {
             e.printStackTrace();
         }
         return list;
+    }
+    public int countUsersWithFilter(String searchName, String searchEmail, Integer roleId, String status) {
+        String sql = "SELECT COUNT(*) as total FROM user u WHERE 1=1 ";
+        List<Object> params = new ArrayList<>();
+
+        if (searchName != null && !searchName.trim().isEmpty()) {
+            sql += " AND u.displayName LIKE ?";
+            params.add("%" + searchName + "%");
+        }
+        if (searchEmail != null && !searchEmail.trim().isEmpty()) {
+            sql += " AND u.email LIKE ?";
+            params.add("%" + searchEmail + "%");
+        }
+        if (roleId != null && roleId != 0) {
+            sql += " AND u.roleId = ?";
+            params.add(roleId);
+        }
+        if (status != null && !status.equals("all") && !status.isEmpty()) {
+            sql += " AND u.status = ?";
+            params.add(status);
+        }
+
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("total");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public boolean updateUserInfo(User user) {
+        String sql = "UPDATE user SET displayName = ?, phone = ?, status = ?, roleId = ? WHERE userId = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, user.getDisplayName());
+            ps.setString(2, user.getPhone());
+            ps.setString(3, user.getStatus());
+            ps.setInt(4, user.getRoleId());
+            ps.setInt(5, user.getUserId());
+
+            int rows = ps.executeUpdate();
+            return rows > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
     public List<Role> getAllRoles() {
         List<Role> list = new ArrayList<>();
@@ -370,7 +428,7 @@ public class UserDBContext extends DBContext {
     }
     public User addNewUser(User user) {
         String sql = "INSERT INTO user (accountName, displayName, password, email, phone, "
-                + "roleId, status, workspaceId, verificationCode) "
+                + "roleId, status, departmentId, verificationCode) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = getConnection();
@@ -383,7 +441,7 @@ public class UserDBContext extends DBContext {
             ps.setString(5, user.getPhone());
             ps.setInt(6, user.getRoleId());
             ps.setString(7, user.getStatus());
-            ps.setInt(8, user.getWorkspaceId());
+            ps.setInt(8, user.getDepartmentId());
             ps.setString(9, user.getVerificationCode());
 
             int affectedRows = ps.executeUpdate();

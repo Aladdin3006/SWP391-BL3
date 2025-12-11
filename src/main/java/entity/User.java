@@ -9,7 +9,7 @@ public class User {
     private String phone;
     private int roleId;
     private String status;
-    private int workspaceId;
+    private int departmentId;
     private String verificationCode;
     private String resetToken; 
     private Role role;
@@ -17,7 +17,7 @@ public class User {
     public User() {}
 
     public User(int userId, String accountName, String displayName, String password,
-                String email, String phone, int roleId, String status, int workspaceId) {
+                String email, String phone, int roleId, String status, int departmentId) {
         this.userId = userId;
         this.accountName = accountName;
         this.displayName = displayName;
@@ -26,11 +26,11 @@ public class User {
         this.phone = phone;
         this.roleId = roleId;
         this.status = status;
-        this.workspaceId = workspaceId;
+        this.departmentId = departmentId;
     }
 
     public User(int userId, String accountName, String displayName, String password,
-                String email, String phone, int roleId, String status, int workspaceId, String verificationCode) {
+                String email, String phone, int roleId, String status, int departmentId, String verificationCode) {
         this.userId = userId;
         this.accountName = accountName;
         this.displayName = displayName;
@@ -39,7 +39,7 @@ public class User {
         this.phone = phone;
         this.roleId = roleId;
         this.status = status;
-        this.workspaceId = workspaceId;
+        this.departmentId = departmentId;
         this.verificationCode = verificationCode;
     }
 
@@ -67,8 +67,8 @@ public class User {
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
 
-    public int getWorkspaceId() { return workspaceId; }
-    public void setWorkspaceId(int workspaceId) { this.workspaceId = workspaceId; }
+    public int getDepartmentId() { return departmentId; }
+    public void setDepartmentId(int departmentId) { this.departmentId = departmentId; }
 
     public String getVerificationCode() { return verificationCode; }
     public void setVerificationCode(String verificationCode) { this.verificationCode = verificationCode; }

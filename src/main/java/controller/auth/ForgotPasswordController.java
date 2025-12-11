@@ -28,7 +28,8 @@ public class ForgotPasswordController extends HttpServlet {
         User user = db.getUserByEmail(email);
 
         if (user == null) {
-            request.setAttribute("message", "If an account exists with that email, we have sent a reset link.");
+            request.setAttribute("error", "This email address is not registered in our system.");
+            request.setAttribute("enteredEmail", email);
         } else {
             String token = UUID.randomUUID().toString();
             db.updateToken(email, token);
@@ -39,7 +40,7 @@ public class ForgotPasswordController extends HttpServlet {
                 EmailUtility.sendReset(email, token, baseUrl);
             }).start();
 
-            request.setAttribute("message", "If an account exists with that email, we have sent a reset link.");
+            request.setAttribute("message", "A reset link has been sent to " + email + ". Please check your inbox.");
         }
         request.getRequestDispatcher("/view/auth/forgot-password.jsp").forward(request, response);
     }
