@@ -5,16 +5,18 @@ import entity.ProductTransferItem;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ActualTransferDAO extends DBContext {
+
     public List<ActualTransferTicket> getAll(String search, String status, int page, int pageSize) {
         List<ActualTransferTicket> list = new ArrayList<>();
-        String sql = "SELECT a.*, u.displayName " +
-                     "FROM actual_transfer_ticket a " +
-                     "LEFT JOIN user u ON a.confirmedBy = u.userId " +
-                     "WHERE 1=1 ";
+        String sql = "SELECT a.*, u.displayName "
+                + "FROM actual_transfer_ticket a "
+                + "LEFT JOIN user u ON a.confirmedBy = u.userId "
+                + "WHERE 1=1 ";
 
         if (search != null && !search.isEmpty()) {
             sql += " AND a.ticketCode LIKE ? ";
@@ -46,7 +48,7 @@ public class ActualTransferDAO extends DBContext {
                 ticket.setStatus(rs.getString("status"));
                 ticket.setConfirmedBy(rs.getInt("confirmedBy"));
                 ticket.setNote(rs.getString("note"));
-                
+
                 list.add(ticket);
             }
         } catch (Exception e) {
@@ -75,7 +77,9 @@ public class ActualTransferDAO extends DBContext {
                 ps.setString(paramIndex++, status);
             }
             ResultSet rs = ps.executeQuery();
-            if (rs.next()) count = rs.getInt(1);
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -108,11 +112,11 @@ public class ActualTransferDAO extends DBContext {
 
     private List<ProductTransferItem> getProductsByTicketId(int ticketId) {
         List<ProductTransferItem> list = new ArrayList<>();
-        String sql = "SELECT i.id, i.product_id, i.quantity, p.productCode, p.name " +
-                     "FROM actual_transfer_item i " +
-                     "JOIN product p ON i.product_id = p.id " +
-                     "WHERE i.actual_ticket_id = ?";
-        
+        String sql = "SELECT i.id, i.product_id, i.quantity, p.productCode, p.name "
+                + "FROM actual_transfer_item i "
+                + "JOIN product p ON i.product_id = p.id "
+                + "WHERE i.actual_ticket_id = ?";
+
         try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, ticketId);
             ResultSet rs = ps.executeQuery();
@@ -129,5 +133,128 @@ public class ActualTransferDAO extends DBContext {
             e.printStackTrace();
         }
         return list;
+    }
+
+    public void insert(ActualTransferTicket ticket) {
+        Connection conn = null;
+        PreparedStatement psTicket = null;
+        PreparedStatement psItem = null;
+        String sqlTicket = "INSERT INTO actual_transfer_ticket "
+                + "(ticketCode, requestTransferId, transferDate, status, confirmedBy, note) "
+                + "VALUES (?, ?, ?, ?, ?, ?)";
+
+        String sqlItem = "INSERT INTO actual_transfer_item (actual_ticket_id, product_id, quantity) VALUES (?, ?, ?)";
+
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false);
+
+            psTicket = conn.prepareStatement(sqlTicket, java.sql.Statement.RETURN_GENERATED_KEYS);
+            psTicket.setString(1, ticket.getTicketCode());
+            psTicket.setInt(2, ticket.getRequestTransferId());
+            psTicket.setDate(3, ticket.getTransferDate());
+            psTicket.setString(4, ticket.getStatus());
+            psTicket.setInt(5, ticket.getConfirmedBy());
+            psTicket.setString(6, ticket.getNote());
+            psTicket.executeUpdate();
+
+            ResultSet rs = psTicket.getGeneratedKeys();
+            int generatedId = 0;
+            if (rs.next()) {
+                generatedId = rs.getInt(1);
+            }
+
+            psItem = conn.prepareStatement(sqlItem);
+            for (ProductTransferItem item : ticket.getProductTransfers()) {
+                psItem.setInt(1, generatedId);
+                psItem.setInt(2, item.getProductId());
+                psItem.setInt(3, item.getQuantity());
+                psItem.addBatch();
+            }
+            psItem.executeBatch();
+
+            conn.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            try {
+                if (conn != null) {
+                    conn.rollback();
+                }
+            } catch (SQLException ex) {
+            }
+        } finally {
+            try {
+                if (psItem != null) {
+                    psItem.close();
+                }
+            } catch (SQLException e) {
+            }
+            try {
+                if (psTicket != null) {
+                    psTicket.close();
+                }
+            } catch (SQLException e) {
+            }
+            try {
+                if (conn != null) {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                }
+            } catch (SQLException e) {
+            }
+        }
+    }
+
+    public void update(ActualTransferTicket ticket) {
+        Connection conn = null;
+        String sqlUpdateTicket = "UPDATE actual_transfer_ticket SET transferDate=?, status=?, note=? WHERE id=?";
+        String sqlDeleteItems = "DELETE FROM actual_transfer_item WHERE actual_ticket_id=?";
+        String sqlInsertItems = "INSERT INTO actual_transfer_item (actual_ticket_id, product_id, quantity) VALUES (?, ?, ?)";
+
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false);
+
+            try (PreparedStatement ps = conn.prepareStatement(sqlUpdateTicket)) {
+                ps.setDate(1, ticket.getTransferDate());
+                ps.setString(2, ticket.getStatus());
+                ps.setString(3, ticket.getNote());
+                ps.setInt(4, ticket.getId());
+                ps.executeUpdate();
+            }
+
+            try (PreparedStatement ps = conn.prepareStatement(sqlDeleteItems)) {
+                ps.setInt(1, ticket.getId());
+                ps.executeUpdate();
+            }
+
+            try (PreparedStatement ps = conn.prepareStatement(sqlInsertItems)) {
+                for (ProductTransferItem item : ticket.getProductTransfers()) {
+                    ps.setInt(1, ticket.getId());
+                    ps.setInt(2, item.getProductId());
+                    ps.setInt(3, item.getQuantity());
+                    ps.addBatch();
+                }
+                ps.executeBatch();
+            }
+
+            conn.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            try {
+                if (conn != null) {
+                    conn.rollback();
+                }
+            } catch (SQLException ex) {
+            }
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                }
+            } catch (SQLException e) {
+            }
+        }
     }
 }
