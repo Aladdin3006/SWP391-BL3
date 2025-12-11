@@ -1,6 +1,10 @@
 package controller.admin;
+
 import dal.ProductDAO;
+import dal.CategoryDAO;
 import entity.Product;
+import entity.Category;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -13,30 +17,31 @@ import java.util.List;
 @WebServlet(name = "ViewProductListController", urlPatterns = {"/view-product-list"})
 public class ViewProductListController extends HttpServlet {
 
-
     private final ProductDAO productDAO = new ProductDAO();
+    private final CategoryDAO categoryDAO = new CategoryDAO();
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        // ----------- GET FILTER + SORT PARAMETERS -----------
         String productCode = request.getParameter("productCode");
         String productName = request.getParameter("productName");
         String brand = request.getParameter("brand");
         String company = request.getParameter("company");
-        String categoryName = request.getParameter("categoryName");
-        String statusFilter = request.getParameter("status");
+        String categoryId = request.getParameter("categoryId"); // dùng categoryId cho filter
+        if ("0".equals(categoryId)) categoryId = null;
+        String statusParam = request.getParameter("status");
         String sortField = request.getParameter("sortField");
         String sortOrder = request.getParameter("sortOrder");
 
-        // Nếu null thì dùng mặc định
+        // default sort
         if (sortField == null) sortField = "id";
         if (sortOrder == null) sortOrder = "asc";
-
 
         // ----------- PAGING -----------
         int pageIndex = 1;
         int pageSize = 10;
-
         try {
             pageIndex = Integer.parseInt(request.getParameter("pageIndex"));
         } catch (Exception ignored) {}
@@ -47,8 +52,8 @@ public class ViewProductListController extends HttpServlet {
                 productName,
                 brand,
                 company,
-                categoryName,
-                statusFilter,
+                categoryId,
+                statusParam,
                 pageIndex,
                 pageSize,
                 sortField,
@@ -60,36 +65,37 @@ public class ViewProductListController extends HttpServlet {
                 productName,
                 brand,
                 company,
-                categoryName,
-                statusFilter
+                categoryId,
+                statusParam
         );
 
         int totalPages = (int) Math.ceil((double) totalRecords / pageSize);
 
+        // ----------- GET CATEGORY LIST FOR DROPDOWN -----------
+        List<Category> categories = categoryDAO.getAllCategories();
+        request.setAttribute("categories", categories);
+
         // ----------- SET ATTRIBUTE -----------
         request.setAttribute("products", products);
-
         request.setAttribute("productCode", productCode);
         request.setAttribute("productName", productName);
         request.setAttribute("brand", brand);
         request.setAttribute("company", company);
-        request.setAttribute("categoryName", categoryName);
-        request.setAttribute("status", statusFilter);
-
+        request.setAttribute("categoryId", categoryId); // để dropdown giữ giá trị
+        request.setAttribute("status", statusParam);
         request.setAttribute("sortField", sortField);
         request.setAttribute("sortOrder", sortOrder);
         request.setAttribute("pageIndex", pageIndex);
         request.setAttribute("totalPages", totalPages);
 
-        // ----------- FORWARD -----------
+        // ----------- FORWARD TO JSP -----------
         request.getRequestDispatcher("/view/admin/product/view-product-list.jsp")
                 .forward(request, response);
-
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        // Nếu có xử lý form POST thì thêm ở đây
     }
 }
