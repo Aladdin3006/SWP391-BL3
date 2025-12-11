@@ -24,7 +24,8 @@
                     </c:if>
 
                     <c:if test="${not empty sessionScope.user}">
-                        <c:if test="${sessionScope.user.roleName == 'Admin' || sessionScope.user.roleName == 'Manager'}">
+                        <c:set var="roleName" value="${sessionScope.user.role != null ? sessionScope.user.role.roleName : ''}"/>
+                        <c:if test="${roleName == 'admin' || roleName == 'manager'}">
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="manageDropdown" role="button" data-bs-toggle="dropdown">
                                     Management
@@ -37,7 +38,7 @@
                             </li>
                         </c:if>
 
-                        <c:if test="${sessionScope.user.roleName == 'Admin' || sessionScope.user.roleName == 'Manager' || sessionScope.user.roleName == 'Staff'}">
+                        <c:if test="${roleName == 'admin' || roleName == 'manager' || roleName == 'employee' || roleName == 'storekeeper'}">
                             <li class="nav-item">
                                 <a class="nav-link" href="#">Inventory</a>
                             </li>
@@ -45,11 +46,14 @@
                                 <a class="nav-link" href="#">Orders</a>
                             </li>
                             <li class="nav-item">
+                                <a class="nav-link" href="${pageContext.request.contextPath}/transfer-tickets">Transfer Tickets</a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link" href="#">Reports</a>
                             </li>
                         </c:if>
 
-                        <c:if test="${sessionScope.user.roleName == 'User'}">
+                        <c:if test="${roleName == 'user'}">
                             <li class="nav-item">
                                 <a class="nav-link" href="#">View Products</a>
                             </li>
@@ -70,7 +74,7 @@
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     <li><span class="dropdown-item-text">
-                                    <small>Role: ${sessionScope.user.roleName}</small>
+                                    <small>Role: ${roleName}</small>
                                 </span></li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" href="${pageContext.request.contextPath}/profile">
