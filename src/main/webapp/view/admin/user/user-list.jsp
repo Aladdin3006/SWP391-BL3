@@ -47,16 +47,70 @@
         .status-active { background-color: #d1e7dd; color: #0f5132; border: 1px solid #badbcc; }
         .status-inactive { background-color: #f8d7da; color: #842029; border: 1px solid #f5c2c7; }
 
-        .btn-action { padding: 6px 12px; font-size: 12px; border-radius: 4px; text-decoration: none; color: white; display: inline-block; }
+        .btn-action { padding: 6px 10px; font-size: 12px; border-radius: 4px; text-decoration: none; color: white; display: inline-block; margin: 2px; }
         .btn-lock { background-color: #dc3545; }
         .btn-lock:hover { background-color: #c82333; }
         .btn-unlock { background-color: #28a745; }
         .btn-unlock:hover { background-color: #218838; }
+        .btn-edit { background-color: #ffc107; }
+        .btn-edit:hover { background-color: #e0a800; }
 
         .page-title { color: #2c3e50; font-weight: 600; margin-bottom: 20px; }
 
         .empty-state {
             text-align: center; padding: 40px; color: #6c757d;
+        }
+
+        .pagination-container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .pagination {
+            display: flex;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .page-item {
+            margin: 0 2px;
+        }
+
+        .page-link {
+            padding: 6px 12px;
+            border: 1px solid #dee2e6;
+            background-color: white;
+            color: #0d6efd;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .page-link:hover {
+            background-color: #e9ecef;
+            border-color: #dee2e6;
+        }
+
+        .page-item.active .page-link {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+            color: white;
+        }
+
+        .page-item.disabled .page-link {
+            color: #6c757d;
+            pointer-events: none;
+            background-color: white;
+            border-color: #dee2e6;
+        }
+
+        .pagination-info {
+            margin-left: 20px;
+            color: #6c757d;
+            font-size: 14px;
         }
     </style>
 </head>
@@ -144,7 +198,7 @@
                     </c:if>
                     <c:forEach items="${users}" var="u" varStatus="loop">
                         <tr>
-                            <td style="text-align: center; vertical-align: middle;">${loop.index + 1}</td>
+                            <td style="text-align: center; vertical-align: middle;">${(currentPage - 1) * recordsPerPage + loop.index + 1}</td>
                             <td style="vertical-align: middle;">
                                 <strong>${u.displayName}</strong><br>
                                 <span style="font-size: 13px; color: #6c757d;">@${u.accountName}</span>
@@ -167,21 +221,28 @@
                                 </span>
                             </td>
                             <td style="text-align: center; vertical-align: middle;">
-                                    <a href="${pageContext.request.contextPath}/user/detail?id=${u.userId}"
+                                <a href="${pageContext.request.contextPath}/user/detail?id=${u.userId}"
                                    class="btn btn-sm btn-info btn-action">
                                     <i class="fas fa-eye me-1"></i> View
                                 </a>
+                                <a href="${pageContext.request.contextPath}/user/update?id=${u.userId}"
+                                   class="btn-action btn-edit"
+                                   title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
                                 <c:if test="${u.status == 'active'}">
-                                    <a href="${pageContext.request.contextPath}/user-list?action=deactivate&userId=${u.userId}"
-                                       class="btn btn-sm btn-danger btn-action"
+                                    <a href="${pageContext.request.contextPath}/user-list?action=deactivate&userId=${u.userId}&page=${currentPage}&searchName=${searchName}&searchEmail=${searchEmail}&roleId=${selectedRoleId}&status=${selectedStatus}"
+                                       class="btn-action btn-lock"
+                                       title="Deactivate"
                                        onclick="return confirm('Are you sure you want to deactivate this user?')">
-                                        <i class="fas fa-lock me-1"></i> Deactivate
+                                        <i class="fas fa-lock"></i>
                                     </a>
                                 </c:if>
                                 <c:if test="${u.status == 'inactive'}">
-                                    <a href="${pageContext.request.contextPath}/user-list?action=activate&userId=${u.userId}"
-                                       class="btn btn-sm btn-success btn-action">
-                                        <i class="fas fa-unlock me-1"></i> Activate
+                                    <a href="${pageContext.request.contextPath}/user-list?action=activate&userId=${u.userId}&page=${currentPage}&searchName=${searchName}&searchEmail=${searchEmail}&roleId=${selectedRoleId}&status=${selectedStatus}"
+                                       class="btn-action btn-unlock"
+                                       title="Activate">
+                                        <i class="fas fa-unlock"></i>
                                     </a>
                                 </c:if>
                             </td>
@@ -189,6 +250,56 @@
                     </c:forEach>
                     </tbody>
                 </table>
+
+                <div class="d-flex justify-content-between align-items-center mt-3 px-3 pb-3">
+                    <div class="pagination-info">
+                        Showing ${(currentPage - 1) * recordsPerPage + 1} to
+                        ${currentPage * recordsPerPage > totalRecords ? totalRecords : currentPage * recordsPerPage}
+                        of ${totalRecords} users
+                    </div>
+
+                    <c:if test="${totalPages > 1}">
+                        <nav>
+                            <ul class="pagination">
+                                <c:if test="${currentPage > 1}">
+                                    <li class="page-item">
+                                        <a class="page-link"
+                                           href="?page=${currentPage - 1}&searchName=${searchName}&searchEmail=${searchEmail}&roleId=${selectedRoleId}&status=${selectedStatus}">
+                                            &laquo;
+                                        </a>
+                                    </li>
+                                </c:if>
+
+                                <c:forEach begin="1" end="${totalPages}" var="i">
+                                    <c:choose>
+                                        <c:when test="${currentPage == i}">
+                                            <li class="page-item active">
+                                                <span class="page-link">${i}</span>
+                                            </li>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <li class="page-item">
+                                                <a class="page-link"
+                                                   href="?page=${i}&searchName=${searchName}&searchEmail=${searchEmail}&roleId=${selectedRoleId}&status=${selectedStatus}">
+                                                        ${i}
+                                                </a>
+                                            </li>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:forEach>
+
+                                <c:if test="${currentPage < totalPages}">
+                                    <li class="page-item">
+                                        <a class="page-link"
+                                           href="?page=${currentPage + 1}&searchName=${searchName}&searchEmail=${searchEmail}&roleId=${selectedRoleId}&status=${selectedStatus}">
+                                            &raquo;
+                                        </a>
+                                    </li>
+                                </c:if>
+                            </ul>
+                        </nav>
+                    </c:if>
+                </div>
             </div>
         </main>
     </div>
