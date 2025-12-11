@@ -291,7 +291,7 @@ public class UserDBContext extends DBContext {
             e.printStackTrace();
         }
     }
-    public List<User> getUsersWithFilter(String searchName, String searchEmail, Integer roleId, String status) {
+    public List<User> getUsersWithFilter(String searchName, String searchEmail, Integer roleId, String status, int offset, int limit) {
         List<User> list = new ArrayList<>();
         String sql = "SELECT u.userId, u.accountName, u.displayName, u.password, u.email, u.phone, "
                 + "u.roleId, u.status, u.departmentId, u.verificationCode, u.reset_token, "
@@ -319,7 +319,9 @@ public class UserDBContext extends DBContext {
             params.add(status);
         }
 
-        sql += " ORDER BY u.userId ASC";
+        sql += " ORDER BY u.userId ASC LIMIT ? OFFSET ?";
+        params.add(limit);
+        params.add(offset);
 
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -336,6 +338,62 @@ public class UserDBContext extends DBContext {
             e.printStackTrace();
         }
         return list;
+    }
+    public int countUsersWithFilter(String searchName, String searchEmail, Integer roleId, String status) {
+        String sql = "SELECT COUNT(*) as total FROM user u WHERE 1=1 ";
+        List<Object> params = new ArrayList<>();
+
+        if (searchName != null && !searchName.trim().isEmpty()) {
+            sql += " AND u.displayName LIKE ?";
+            params.add("%" + searchName + "%");
+        }
+        if (searchEmail != null && !searchEmail.trim().isEmpty()) {
+            sql += " AND u.email LIKE ?";
+            params.add("%" + searchEmail + "%");
+        }
+        if (roleId != null && roleId != 0) {
+            sql += " AND u.roleId = ?";
+            params.add(roleId);
+        }
+        if (status != null && !status.equals("all") && !status.isEmpty()) {
+            sql += " AND u.status = ?";
+            params.add(status);
+        }
+
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("total");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public boolean updateUserInfo(User user) {
+        String sql = "UPDATE user SET displayName = ?, phone = ?, status = ?, roleId = ? WHERE userId = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, user.getDisplayName());
+            ps.setString(2, user.getPhone());
+            ps.setString(3, user.getStatus());
+            ps.setInt(4, user.getRoleId());
+            ps.setInt(5, user.getUserId());
+
+            int rows = ps.executeUpdate();
+            return rows > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
     public List<Role> getAllRoles() {
         List<Role> list = new ArrayList<>();

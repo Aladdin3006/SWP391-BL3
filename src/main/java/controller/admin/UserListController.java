@@ -20,7 +20,6 @@ public class UserListController extends HttpServlet {
 
         UserDBContext db = new UserDBContext();
 
-
         String action = request.getParameter("action");
         String idStr = request.getParameter("userId");
 
@@ -37,8 +36,6 @@ public class UserListController extends HttpServlet {
             }
         }
 
-
-
         String searchName = request.getParameter("searchName");
         String searchEmail = request.getParameter("searchEmail");
         String roleIdRaw = request.getParameter("roleId");
@@ -47,17 +44,30 @@ public class UserListController extends HttpServlet {
         Integer roleId = (roleIdRaw == null || roleIdRaw.equals("0") || roleIdRaw.isEmpty()) ? null : Integer.parseInt(roleIdRaw);
         String statusFilter = (status == null) ? "all" : status;
 
+        int page = 1;
+        int recordsPerPage = 10;
+        try {
+            page = Integer.parseInt(request.getParameter("page"));
+        } catch (NumberFormatException e) {
+        }
 
-        List<User> listUser = db.getUsersWithFilter(searchName, searchEmail, roleId, statusFilter);
+        int offset = (page - 1) * recordsPerPage;
+
+        List<User> listUser = db.getUsersWithFilter(searchName, searchEmail, roleId, statusFilter, offset, recordsPerPage);
         List<Role> listRole = db.getAllRoles();
+        int totalRecords = db.countUsersWithFilter(searchName, searchEmail, roleId, statusFilter);
+        int totalPages = (int) Math.ceil((double) totalRecords / recordsPerPage);
 
         request.setAttribute("users", listUser);
         request.setAttribute("roles", listRole);
-
         request.setAttribute("searchName", searchName);
         request.setAttribute("searchEmail", searchEmail);
         request.setAttribute("selectedRoleId", roleId == null ? 0 : roleId);
         request.setAttribute("selectedStatus", statusFilter);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
+        request.setAttribute("totalRecords", totalRecords);
+        request.setAttribute("recordsPerPage", recordsPerPage);
 
         request.getRequestDispatcher("view/admin/user/user-list.jsp").forward(request, response);
     }
