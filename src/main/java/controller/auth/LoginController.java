@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import util.RoleNavigationHelper;
+import util.MD5;
 
 @WebServlet(name = "LoginController", urlPatterns = {"/login"})
 public class LoginController extends HttpServlet {
@@ -29,9 +30,11 @@ public class LoginController extends HttpServlet {
         UserDBContext db = new UserDBContext();
         User user = db.getUserByAccountName(u);
 
-        if (user != null && user.getPassword().equals(p)) {
+        String hashedPassword = MD5.getMd5(p);
+
+        if (user != null && user.getPassword().equals(hashedPassword)) {
             if (!"active".equals(user.getStatus())) {
-                request.setAttribute("error", "Please verify your email before logging in.");
+                request.setAttribute("error", "Your account is inactive or pending Admin approval.");
                 request.getRequestDispatcher("/view/auth/login.jsp").forward(request, response);
                 return;
             }

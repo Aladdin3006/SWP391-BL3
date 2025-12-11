@@ -8,6 +8,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import util.MD5;
 
 @WebServlet(name="ResetPasswordController", urlPatterns={"/reset-password"})
 public class ResetPasswordController extends HttpServlet {
@@ -47,7 +48,8 @@ public class ResetPasswordController extends HttpServlet {
         User user = db.getUserByToken(token);
         
         if (user != null) {
-            db.updatePassword(user.getUserId(), password);
+            String hashedPassword = MD5.getMd5(password);
+            db.updatePassword(user.getUserId(), hashedPassword);
             request.setAttribute("message", "Password reset successful. Please login.");
             request.getRequestDispatcher("/view/auth/login.jsp").forward(request, response);
         } else {
