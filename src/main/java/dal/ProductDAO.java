@@ -128,4 +128,28 @@ public class ProductDAO extends DBContext {
 
         return total;
     }
+    public void insertProduct(Product p) {
+        String sql = "INSERT INTO product (product_code, name, brand, company, category_name, unit, supplier_id, status, url) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try (Connection conn = new DBContext().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, p.getProductCode());
+            ps.setString(2, p.getName());
+            ps.setString(3, p.getBrand());
+            ps.setString(4, p.getCompany());
+            ps.setString(5, p.getCategoryName());
+            ps.setInt(6, p.getUnit());
+            ps.setInt(7, p.getSupplierId());
+            ps.setString(8, p.getStatus());
+            ps.setString(9, p.getUrl());
+
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }
