@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.UUID;
 import util.EmailUtility;
+import util.MD5;
 
 @WebServlet(name="RegisterController", urlPatterns={"/register"})
 public class RegisterController extends HttpServlet {
@@ -56,39 +57,11 @@ public class RegisterController extends HttpServlet {
             return;
         }
 
-        String code = UUID.randomUUID().toString();
+        String hashedPassword = MD5.getMd5(pass);
 
-        db.registerUser(user, pass, display, email, phone, code);
+        db.registerUser(user, hashedPassword, display, email, phone, null);
 
-        User newUser = new User();
-        newUser.setEmail(email);
-        newUser.setDisplayName(display);
-        newUser.setVerificationCode(code);
-
-        String baseUrl = getBaseUrl(request);
-
-        new Thread(() -> {
-            EmailUtility.sendPost(newUser, baseUrl);
-        }).start();
-
-        request.setAttribute("message", "Registration successful! Please check your email to verify your account.");
+        request.setAttribute("message", "Registration successful! Your account is pending Admin approval.");
         request.getRequestDispatcher("/view/auth/login.jsp").forward(request, response);
-    }
-
-    private String getBaseUrl(HttpServletRequest request) {
-        String scheme = request.getScheme();
-        String serverName = request.getServerName();
-        int serverPort = request.getServerPort();
-        String contextPath = request.getContextPath();
-
-        StringBuilder url = new StringBuilder();
-        url.append(scheme).append("://").append(serverName);
-
-        if ((serverPort != 80) && (serverPort != 443)) {
-            url.append(":").append(serverPort);
-        }
-
-        url.append(contextPath);
-        return url.toString();
     }
 }
