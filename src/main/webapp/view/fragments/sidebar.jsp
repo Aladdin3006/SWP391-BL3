@@ -23,6 +23,7 @@
                             <i class="fas fa-key me-2"></i>Manage Permissions
                         </a>
                     </li>
+
                 </c:when>
 
                 <c:when test="${sessionScope.user.roleName == 'manager'}">
@@ -70,6 +71,18 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link ${activePage == 'request-transfer' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/request-transfer">
+                            <i class="fas fa-file-invoice me-2"></i>Request Transfers
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'actual-transfer' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/actual-transfer">
+                            <i class="fas fa-dolly-flatbed me-2"></i>Actual Transfers
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link ${activePage == 'export' ? 'active' : ''}"
                            href="#">
                             <i class="fas fa-arrow-right me-2"></i>Export Warehouse Request
@@ -79,12 +92,6 @@
                         <a class="nav-link ${activePage == 'import' ? 'active' : ''}"
                            href="#">
                             <i class="fas fa-arrow-left me-2"></i>Import Warehouse Request
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'actual-transfer' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/actual-transfer">
-                            <i class="fas fa-dolly-flatbed me-2"></i>Actual Transfers
                         </a>
                     </li>
                 </c:when>
