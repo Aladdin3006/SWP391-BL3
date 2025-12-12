@@ -36,7 +36,7 @@ public class PermissionFilter implements Filter {
                 //
                 path.equals("/view-product-list") ||
                 path.equals("/add-product") ||
-                path.equals("/view/admin/product/Add-Product.jsp")) {
+                path.equals("/view/admin/product/aadd-Product.jsp")) {
 
             chain.doFilter(request, response);
             return;
