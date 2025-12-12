@@ -1,4 +1,4 @@
-package controller.admin;
+package controller.manager;
 
 import dal.ProductDAO;
 import dal.CategoryDAO;
