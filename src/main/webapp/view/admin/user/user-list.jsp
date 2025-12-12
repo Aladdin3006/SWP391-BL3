@@ -223,7 +223,6 @@
                             <td style="text-align: center; vertical-align: middle;">
                                 <a href="${pageContext.request.contextPath}/user/detail?id=${u.userId}"
                                    class="btn btn-sm btn-info btn-action">
-                                    <i class="fas fa-eye me-1"></i> View
                                 </a>
                                 <a href="${pageContext.request.contextPath}/user/update?id=${u.userId}"
                                    class="btn-action btn-edit"

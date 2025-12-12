@@ -312,15 +312,38 @@ public class DepartmentDBContext extends DBContext {
             conn = getConnection();
             conn.setAutoCommit(false);
 
-            String sql = "UPDATE Department SET departmentName = ?, status = ? WHERE id = ?";
+            String sql = "UPDATE Department SET departmentName = ?, storekeeperId = ?, status = ? WHERE id = ?";
             try (PreparedStatement ps = conn.prepareStatement(sql)) {
                 ps.setString(1, dept.getDepartmentName());
-                ps.setString(2, dept.getStatus());
-                ps.setInt(3, dept.getId());
+                ps.setInt(2, dept.getStorekeeperId());
+                ps.setString(3, dept.getStatus());
+                ps.setInt(4, dept.getId());
                 ps.executeUpdate();
             }
 
-            String removeEmployees = "UPDATE user SET departmentId = 0 WHERE departmentId = ? AND userId IN (SELECT userId FROM user JOIN role ON user.roleId = role.roleId WHERE role.roleName = 'employee')";
+            String updateStorekeeper = "UPDATE user SET departmentId = ? WHERE userId = ?";
+            try (PreparedStatement ps = conn.prepareStatement(updateStorekeeper)) {
+                ps.setInt(1, dept.getId());
+                ps.setInt(2, dept.getStorekeeperId());
+                ps.executeUpdate();
+            }
+
+            List<Integer> currentEmpIds = new ArrayList<>();
+            String getCurrentEmployees = """
+            SELECT u.userId 
+            FROM user u
+            JOIN role r ON u.roleId = r.roleId
+            WHERE u.departmentId = ? AND r.roleName = 'employee'
+            """;
+            try (PreparedStatement ps = conn.prepareStatement(getCurrentEmployees)) {
+                ps.setInt(1, dept.getId());
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    currentEmpIds.add(rs.getInt("userId"));
+                }
+            }
+
+            String removeEmployees = "UPDATE user SET departmentId = 0 WHERE departmentId = ?";
             try (PreparedStatement ps = conn.prepareStatement(removeEmployees)) {
                 ps.setInt(1, dept.getId());
                 ps.executeUpdate();
@@ -338,12 +361,27 @@ public class DepartmentDBContext extends DBContext {
                 }
             }
 
+            String addStorekeeper = "UPDATE user SET departmentId = ? WHERE userId = ?";
+            try (PreparedStatement ps = conn.prepareStatement(addStorekeeper)) {
+                ps.setInt(1, dept.getId());
+                ps.setInt(2, dept.getStorekeeperId());
+                ps.executeUpdate();
+            }
+
             conn.commit();
         } catch (Exception e) {
-            try { if (conn != null) conn.rollback(); } catch (Exception ex) {}
+            try {
+                if (conn != null) conn.rollback();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
             throw new RuntimeException("Update failed", e);
         } finally {
-            try { if (conn != null) conn.setAutoCommit(true); } catch (Exception ex) {}
+            try {
+                if (conn != null) conn.setAutoCommit(true);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
     }
 
