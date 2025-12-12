@@ -76,6 +76,15 @@
             border-radius: 8px;
             margin-top: 20px;
         }
+
+        .email-warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 15px;
+            color: #856404;
+        }
     </style>
 </head>
 <body>
@@ -99,6 +108,13 @@
 
                 <c:if test="${not empty message}">
                     <div class="alert alert-success">${message}</div>
+                </c:if>
+
+                <c:if test="${not empty emailChangeMessage}">
+                    <div class="email-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                            ${emailChangeMessage}
+                    </div>
                 </c:if>
 
                 <div class="row">
@@ -182,7 +198,7 @@
                         <h4>Edit Profile Information</h4>
                         <form method="post" action="profile">
                             <input type="hidden" name="action" value="update">
-                            <input type="hidden" name="userId" value="${profileUser.userId}">
+                            <input type="hidden" name="currentEmail" value="${profileUser.email}">
 
                             <div class="row">
                                 <div class="col-md-6 mb-3">
@@ -192,6 +208,7 @@
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Email</label>
                                     <input type="email" class="form-control" name="email" value="${profileUser.email}" required>
+                                    <div class="form-text">Changing email requires verification</div>
                                 </div>
                             </div>
 

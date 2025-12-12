@@ -72,4 +72,3 @@ public class RequestTransferTicket {
     public List<ProductTransferItem> getItems() { return items; }
     public void setItems(List<ProductTransferItem> items) { this.items = items; }
 }
-
