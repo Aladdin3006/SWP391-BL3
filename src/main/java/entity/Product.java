@@ -13,6 +13,25 @@ public class Product {
     private String status;
     private String url;
     private String categoryName;
+    private String supplierName;
+
+
+    public Product(int id, String productCode, String name, String brand, String company, int categoryId, int unit, int supplierId, String status, String url, String supplierName, String categoryName) {
+        this.id = id;
+        this.productCode = productCode;
+        this.name = name;
+        this.brand = brand;
+        this.company = company;
+        this.categoryId = categoryId;
+        this.unit = unit;
+        this.supplierId = supplierId;
+        this.status = status;
+        this.url = url;
+        this.supplierName = supplierName;
+        this.categoryName = categoryName;
+    }
+
+
 
     public Product(int id, String productCode, String name, String brand, String company, int categoryId, int unit, int supplierId, String status, String url, String categoryName) {
         this.id = id;
@@ -81,5 +100,12 @@ public class Product {
 
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
+    }
+    public String getSupplierName() {
+        return supplierName;
+    }
+
+    public void setSupplierName(String supplierName) {
+        this.supplierName = supplierName;
     }
 }

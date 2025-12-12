@@ -11,7 +11,11 @@
 <body class="bg-light">
 
 <div class="container mt-4">
-    <h2 class="mb-3 text-center">Product List</h2>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Product List</h2>
+        <!-- Nút Add Product -->
+        <a href="${pageContext.request.contextPath}/add-product" class="btn btn-success">+ Add Product</a>
+    </div>
 
     <!-- ===================== FILTER FORM ===================== -->
     <form action="${pageContext.request.contextPath}/view-product-list" method="get" class="card p-3 mb-3">
@@ -114,8 +118,8 @@
                             </span>
                         </td>
                         <td>
-                            <a href="${pageContext.request.contextPath}/product/detail?id=${p.id}" class="btn btn-sm btn-info text-white">View</a>
-                            <a href="${pageContext.request.contextPath}/product/edit?id=${p.id}" class="btn btn-sm btn-warning">Edit</a>
+                            <a href="${pageContext.request.contextPath}/view-product-detail?id=${p.id}" class="btn btn-sm btn-info text-white">View</a>
+                            <a href="${pageContext.request.contextPath}/edit-product?id=${p.id}" class="btn btn-sm btn-warning">Edit</a>
                         </td>
                     </tr>
                 </c:forEach>

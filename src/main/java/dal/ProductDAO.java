@@ -4,6 +4,7 @@ import entity.Product;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -129,9 +130,115 @@ public class ProductDAO extends DBContext {
         return total;
     }
 
-    public void insertProduct(Product p) {
+    public int insertProduct(Product p) {
         String sql = "INSERT INTO product (productCode, name, brand, company, categoryId, unit, supplierId, status, url) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            ps.setString(1, p.getProductCode());
+            ps.setString(2, p.getName());
+            ps.setString(3, p.getBrand());
+            ps.setString(4, p.getCompany());
+            ps.setInt(5, p.getCategoryId());
+            ps.setInt(6, p.getUnit());
+            ps.setInt(7, p.getSupplierId());
+            ps.setString(8, p.getStatus());
+            ps.setString(9, p.getUrl());
+
+            int affectedRows = ps.executeUpdate();
+            if (affectedRows > 0) {
+                try (ResultSet rs = ps.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        return rs.getInt(1); // trả về id mới
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return -1; // trả về -1 nếu insert thất bại
+    }
+
+    public boolean isProductCodeExist(String productCode) {
+        String sql = "SELECT COUNT(*) FROM product WHERE productCode = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, productCode);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0; // true nếu tồn tại
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+    public Product getProductById(int id) {
+        String sql = """
+        SELECT 
+            p.id,
+            p.productCode,
+            p.name,
+            p.brand,
+            p.company,
+            p.categoryId,
+            p.unit,
+            p.supplierId,
+            p.status,
+            p.url,
+            s.name AS supplierName,
+            c.categoryName AS categoryName
+        FROM Product p
+        LEFT JOIN Supplier s ON p.supplierId = s.id
+        LEFT JOIN Category c ON p.categoryId = c.categoryId
+        WHERE p.id = ?
+    """;
+
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return new Product(
+                        rs.getInt("id"),
+                        rs.getString("productCode"),
+                        rs.getString("name"),
+                        rs.getString("brand"),
+                        rs.getString("company"),
+                        rs.getInt("categoryId"),
+                        rs.getInt("unit"),
+                        rs.getInt("supplierId"),
+                        rs.getString("status"),
+                        rs.getString("url"),
+                        rs.getString("supplierName"),
+                        rs.getString("categoryName")
+                );
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public boolean updateProduct(Product p) {
+        String sql = "UPDATE product SET productCode = ?, name = ?, brand = ?, company = ?, " +
+                "categoryId = ?, unit = ?, supplierId = ?, status = ?, url = ? " +
+                "WHERE id = ?";
+
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -144,10 +251,17 @@ public class ProductDAO extends DBContext {
             ps.setInt(7, p.getSupplierId());
             ps.setString(8, p.getStatus());
             ps.setString(9, p.getUrl());
+            ps.setInt(10, p.getId());
 
-            ps.executeUpdate();
+            int affectedRows = ps.executeUpdate();
+            return affectedRows > 0;
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return false;
     }
+
+
+
 }

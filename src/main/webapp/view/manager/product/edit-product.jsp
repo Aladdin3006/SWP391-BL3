@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Add Product</title>
+    <title>Edit Product</title>
     <style>
         body {
             background: linear-gradient(135deg, #6a11cb, #2575fc);
@@ -33,29 +33,26 @@
         .upload-container {
             width: 45%;
             display: flex;
-            flex-direction: column; /* xếp dọc ảnh + input */
-            gap: 8px; /* khoảng cách giữa ảnh và input */
+            flex-direction: column;
+            gap: 8px;
         }
-
         .upload-box {
             width: 100%;
-            height: 260px; /* giữ khung như trước */
+            height: 260px;
             border: 2px dashed #bbb;
             background: #fafafa;
             border-radius: 12px;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden; /* ngăn ảnh tràn */
+            overflow: hidden;
         }
-
         .upload-box img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             border-radius: 12px;
         }
-
         .upload-container input[type="text"] {
             width: 100%;
             padding: 8px;
@@ -91,6 +88,7 @@
             display: flex;
             gap: 15px;
             margin-top: 20px;
+            justify-content: flex-end;
         }
         .btn {
             padding: 12px 24px;
@@ -100,25 +98,12 @@
             cursor: pointer;
             font-size: 15px;
         }
-        .button-row {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-            justify-content: flex-end; /* đẩy các nút sang phải */
-        }
         .btn-save {
             background: #ff8b22;
             color: white;
         }
         .btn-save:hover {
             background: #e57a14;
-        }
-        .btn-another {
-            background: #4b6ef5;
-            color: white;
-        }
-        .btn-another:hover {
-            background: #3a58d5;
         }
         .btn-cancel {
             background: #ddd;
@@ -139,62 +124,56 @@
 
 <div class="container">
 
-    <h2>Add Product</h2>
+    <h2>Edit Product</h2>
 
-    <form action="${pageContext.request.contextPath}/add-product" method="post">
+    <form action="${pageContext.request.contextPath}/edit-product" method="post">
+        <!-- Hidden field để giữ ID -->
+        <input type="hidden" name="id" value="${product.id}">
 
         <div class="flex-box">
             <div class="upload-container">
                 <div class="upload-box">
-                    <img id="previewImg" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHICWZcFeQ7UuaU7N30-E4Vt1GaTYIU1DIEA&s" alt="Preview">
+                    <img id="previewImg" src="${product.url != null ? product.url : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHICWZcFeQ7UuaU7N30-E4Vt1GaTYIU1DIEA&s'}" alt="Preview">
                 </div>
                 <label>Enter Image Url...</label>
-                <input type="text" name="url" id="imageUrl" placeholder="Enter image URL..." value="${url}">
+                <input type="text" name="url" id="imageUrl" placeholder="Enter image URL..." value="${product.url}">
                 <div class="error-text" id="err-url"></div>
             </div>
 
             <div class="form-section">
                 <label>Product Code</label>
-                <input type="text" name="productCode" value="${productCode}">
-                <div class="error-text" id="err-productCode">
-                    <c:if test="${not empty errProductCode}">
-                        ${errProductCode}
-                    </c:if>
-                </div>
+                <input type="text" value="${product.productCode}" disabled>
+                <input type="hidden" name="productCode" value="${product.productCode}">
+                <div class="error-text" id="err-productCode"></div>
 
                 <label>Product Name</label>
-                <input type="text" name="name" value="${name}">
+                <input type="text" name="name" value="${product.name}">
                 <div class="error-text" id="err-name"></div>
 
-
                 <label>Brand</label>
-                <input type="text" name="brand" value="${brand}">
+                <input type="text" name="brand" value="${product.brand}">
                 <div class="error-text" id="err-brand"></div>
 
-
                 <label>Company</label>
-                <input type="text" name="company" value="${company}">
+                <input type="text" name="company" value="${product.company}">
                 <div class="error-text" id="err-company"></div>
 
                 <label>Category</label>
                 <select name="categoryId">
-                    <option value="0">--- Select Category --</option>
+                    <option value="0">--- Select Category ---</option>
                     <c:forEach items="${categories}" var="c">
-                        <option value="${c.categoryId}" ${c.categoryId == categoryId ? "selected" : ""}>
+                        <option value="${c.categoryId}" ${c.categoryId == product.categoryId ? "selected" : ""}>
                                 ${c.categoryName}
                         </option>
                     </c:forEach>
                 </select>
                 <div class="error-text" id="err-categoryId"></div>
 
-
-
                 <label>Supplier</label>
                 <select name="supplierId">
                     <option value="">--- Select Supplier ---</option>
                     <c:forEach items="${suppliers}" var="s">
-                        <option value="${s.id}"
-                            ${s.id == supplierId ? "selected" : ""}>
+                        <option value="${s.id}" ${s.id == product.supplierId ? "selected" : ""}>
                                 ${s.name}
                         </option>
                     </c:forEach>
@@ -202,30 +181,28 @@
                 <div class="error-text" id="err-supplierId"></div>
 
                 <label>Unit</label>
-                <input type="number" name="unit" min="0" value="${unit}">
+                <input type="number" name="unit" min="0" value="${product.unit}">
                 <div class="error-text" id="err-unit"></div>
 
-
-
+                <label>Status</label>
+                <select name="status">
+                    <option value="active" ${product.status == 'active' ? 'selected' : ''}>Active</option>
+                    <option value="inactive" ${product.status == 'inactive' ? 'selected' : ''}>Inactive</option>
+                </select>
+                <div class="error-text" id="err-status"></div>
 
             </div>
         </div>
 
         <div class="button-row">
             <button type="submit" class="btn btn-save">SAVE</button>
+            <a href="${pageContext.request.contextPath}/view-product-detail?id=${product.id}" class="btn btn-cancel">CANCEL</a>
         </div>
 
     </form>
-    <c:if test="${success != null && success == true}">
-        <script>
-            const newId = ${newProductId};
-            alert("Add product successful!");
-            window.location.href = "${pageContext.request.contextPath}/view-product-detail?id=" + newId;
-        </script>
-    </c:if>
-
 
 </div>
+
 <script>
     const previewImg = document.getElementById('previewImg');
     const imageUrlInput = document.getElementById('imageUrl');
@@ -234,14 +211,12 @@
     imageUrlInput.addEventListener('input', () => {
         const url = imageUrlInput.value.trim();
         if (!url) {
-            previewImg.src = defaultImg; // nếu rỗng thì về default
+            previewImg.src = defaultImg;
             return;
         }
-
-        // Tạo ảnh tạm để kiểm tra URL có hợp lệ không
         const tempImg = new Image();
-        tempImg.onload = () => previewImg.src = url; // load thành công thì hiển thị
-        tempImg.onerror = () => previewImg.src = defaultImg; // lỗi thì về default
+        tempImg.onload = () => previewImg.src = url;
+        tempImg.onerror = () => previewImg.src = defaultImg;
         tempImg.src = url;
     });
 
@@ -249,13 +224,12 @@
         document.getElementById(id).textContent = message;
     }
 
-
     function isEmpty(v) {
         return !v || v.trim().length === 0;
     }
 
     document.querySelector("form").addEventListener("submit", function (e) {
-        document.querySelectorAll(".error-text").forEach(e => e.textContent = "");
+        document.querySelectorAll(".error-text").forEach(el => el.textContent = "");
         let hasError = false;
 
         const productCode = document.querySelector("input[name='productCode']");
@@ -266,54 +240,20 @@
         const categoryId = document.querySelector("select[name='categoryId']");
         const supplierId = document.querySelector("select[name='supplierId']");
         const unit = document.querySelector("input[name='unit']");
+        const status = document.querySelector("select[name='status']");
 
-        if (isEmpty(productCode.value)) {
-            showError("err-productCode", "Product code is required.");
-            hasError = true;
-        }
+        if (isEmpty(productCode.value)) { showError("err-productCode", "Product code is required."); hasError = true; }
+        if (isEmpty(name.value)) { showError("err-name", "Product name is required."); hasError = true; }
+        if (isEmpty(brand.value)) { showError("err-brand", "Brand is required."); hasError = true; }
+        if (isEmpty(company.value)) { showError("err-company", "Company is required."); hasError = true; }
+        if (isEmpty(url.value)) { showError("err-url", "Image URL is required."); hasError = true; }
+        else if (url.value.length > 255) { showError("err-url", "Image URL too long."); hasError = true; }
+        if (supplierId.value === "") { showError("err-supplierId", "Please select a supplier."); hasError = true; }
+        if (isEmpty(unit.value) || Number(unit.value) < 0) { showError("err-unit", "Unit must be a number ≥ 0."); hasError = true; }
 
-        if (isEmpty(name.value)) {
-            showError("err-name", "Product name is required.");
-            hasError = true;
-        }
-
-        if (isEmpty(brand.value)) {
-            showError("err-brand", "Brand is required.");
-            hasError = true;
-        }
-
-        if (isEmpty(company.value)) {
-            showError("err-company", "Company is required.");
-            hasError = true;
-        }
-
-        if (isEmpty(url.value)) {
-            showError("err-url", "Image URL is required.");
-            hasError = true;
-        }
-
-        if (isEmpty(url.value)) {
-            showError("err-url", "Image URL is required.");
-            hasError = true;
-        } else if (url.value.length > 255) {
-            showError("err-url", "Image URL too long.");
-            hasError = true;
-        }
-
-        if (supplierId.value === "") {
-            showError("err-supplierId", "Please select a supplier.");
-            hasError = true;
-        }
-
-        if (isEmpty(unit.value) || Number(unit.value) < 0) {
-            showError("err-unit", "Unit must be a number ≥ 0.");
-            hasError = true;
-        }
-
-        if (hasError) {
-            e.preventDefault(); // chặn submit
-        }
+        if (hasError) e.preventDefault();
     });
 </script>
+
 </body>
 </html>

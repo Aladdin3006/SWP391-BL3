@@ -89,7 +89,7 @@ public class ViewProductListController extends HttpServlet {
         request.setAttribute("totalPages", totalPages);
 
         // ----------- FORWARD TO JSP -----------
-        request.getRequestDispatcher("/view/admin/product/view-product-list.jsp")
+        request.getRequestDispatcher("/view/manager/product/view-product-list.jsp")
                 .forward(request, response);
     }
 

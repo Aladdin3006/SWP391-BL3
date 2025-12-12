@@ -33,7 +33,7 @@ public class AddProductController extends HttpServlet {
         request.setAttribute("categories", categories);
         request.setAttribute("suppliers", suppliers);
 
-        request.getRequestDispatcher("/view/admin/product/add-Product.jsp")
+        request.getRequestDispatcher("/view/manager/product/add-product.jsp")
                 .forward(request, response);
     }
 
@@ -44,7 +44,7 @@ public class AddProductController extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
 
         // Lấy dữ liệu từ form
-        String productCode = request.getParameter("productCode");
+        String pCode = request.getParameter("productCode");
         String name = request.getParameter("name");
         String brand = request.getParameter("brand");
         String company = request.getParameter("company");
@@ -54,14 +54,17 @@ public class AddProductController extends HttpServlet {
         String url = request.getParameter("url");
 
         // Validate tối thiểu: ProductCode & Name không được trống
-        String error = null;
-        if (productCode == null || productCode.isEmpty()) error = "Product code is required.";
-        else if (name == null || name.isEmpty()) error = "Product name is required.";
+        boolean hasError = false;
 
-        if (error != null) {
-            request.setAttribute("error", error);
+        // Chỉ check UNIQUE ProductCode
+        if (productDAO.isProductCodeExist(pCode)) {
+            request.setAttribute("errProductCode", "Product code already exists.");
+            hasError = true;
+        }
+
+        if (hasError) {
             // Gửi lại dữ liệu đã nhập
-            request.setAttribute("productCode", productCode);
+            request.setAttribute("productCode", pCode);
             request.setAttribute("name", name);
             request.setAttribute("brand", brand);
             request.setAttribute("company", company);
@@ -70,11 +73,12 @@ public class AddProductController extends HttpServlet {
             request.setAttribute("supplierId", supplierIdStr);
             request.setAttribute("url", url);
 
-            // Load lại danh sách category
-            List<Category> categories = categoryDAO.getAllCategories();
-            request.setAttribute("categories", categories);
+            // Load dropdown lại
+            loadDropdownData(request);
 
-            request.getRequestDispatcher("/view/manager/product/add-Product.jsp").forward(request, response);
+            // Forward lại để hiển thị lỗi
+            request.getRequestDispatcher("/view/manager/product/add-product.jsp")
+                    .forward(request, response);
             return;
         }
 
@@ -88,7 +92,7 @@ public class AddProductController extends HttpServlet {
 
         // Tạo product mới
         Product p = new Product();
-        p.setProductCode(productCode);
+        p.setProductCode(pCode);
         p.setName(name);
         p.setBrand(brand);
         p.setCompany(company);
@@ -99,10 +103,27 @@ public class AddProductController extends HttpServlet {
         p.setUrl(url);
 
         // Insert vào DB
-        productDAO.insertProduct(p);
+        int newId = productDAO.insertProduct(p);
+        if (newId > 0) {
+            // Forward về add-product.jsp để hiện alert
+            request.setAttribute("success", true);
+            request.setAttribute("newProductId", newId);
+            request.getRequestDispatcher("/view/manager/product/add-product.jsp")
+                    .forward(request, response);
+        } else {
+            request.setAttribute("errorMessage", "Failed to create new product.");
+            loadDropdownData(request);
+            request.getRequestDispatcher("/view/manager/product/add-product.jsp")
+                    .forward(request, response);
+        }
 
-        request.setAttribute("message", "Add product successful!");
-        // Chuyển hướng về danh sách sản phẩm hoặc quay lại form
-        response.sendRedirect("view-product-list");
+
+
+    }
+    private void loadDropdownData(HttpServletRequest request) {
+        List<Category> categories = categoryDAO.getAllCategories();
+        List<Supplier> suppliers = supplierDAO.getAllSuppliers();
+        request.setAttribute("categories", categories);
+        request.setAttribute("suppliers", suppliers);
     }
 }
