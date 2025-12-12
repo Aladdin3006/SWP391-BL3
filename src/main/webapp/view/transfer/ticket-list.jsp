@@ -342,14 +342,32 @@
         </div>
 
         <c:if test="${totalPages > 1}">
-            <div class="pagination">
-                <c:forEach begin="1" end="${totalPages}" var="i">
-                    <a href="${pageContext.request.contextPath}/transfer-tickets?page=${i}&search=${search}&type=${type}&status=${status}" 
-                       class="${i == currentPage ? 'active' : ''}">
-                        ${i}
-                    </a>
-                </c:forEach>
-            </div>
+            <nav aria-label="Ticket pagination" class="d-flex justify-content-center mt-3">
+                <ul class="pagination">
+                    <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
+                        <a class="page-link"
+                           href="${pageContext.request.contextPath}/transfer-tickets?page=${currentPage - 1 > 0 ? currentPage - 1 : 1}&search=${search}&type=${type}&status=${status}">
+                            «
+                        </a>
+                    </li>
+
+                    <c:forEach begin="1" end="${totalPages}" var="i">
+                        <li class="page-item ${i == currentPage ? 'active' : ''}">
+                            <a class="page-link"
+                               href="${pageContext.request.contextPath}/transfer-tickets?page=${i}&search=${search}&type=${type}&status=${status}">
+                                ${i}
+                            </a>
+                        </li>
+                    </c:forEach>
+
+                    <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
+                        <a class="page-link"
+                           href="${pageContext.request.contextPath}/transfer-tickets?page=${currentPage + 1 <= totalPages ? currentPage + 1 : totalPages}&search=${search}&type=${type}&status=${status}">
+                            »
+                        </a>
+                    </li>
+                </ul>
+            </nav>
         </c:if>
     </div>
 </body>
