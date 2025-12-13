@@ -32,13 +32,7 @@ public class PermissionFilter implements Filter {
                 path.equals("/verify") ||
                 path.equals("/verify-email-change") ||
                 path.equals("/unauthorized") ||
-                path.equals("/logout") ||
-                //
-                path.equals("/view-product-list") ||
-                path.equals("/add-product") ||
-                path.equals("/view-product-detail") ||
-                path.equals("/edit-product") ||
-                path.equals("/view/admin/product/aadd-product.jsp")) {
+                path.equals("/logout")) {
 
             chain.doFilter(request, response);
             return;
