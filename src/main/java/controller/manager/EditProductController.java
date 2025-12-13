@@ -29,7 +29,7 @@ public class EditProductController extends HttpServlet {
         int id = 0;
         try { id = Integer.parseInt(idStr); } catch (NumberFormatException ignored) {}
 
-        Product product = productDAO.getProductById(id); // cần viết method trong DAO
+        Product product = productDAO.getProductByPId(id); // cần viết method trong DAO
         if (product == null) {
             request.setAttribute("error", "Product not found");
             request.getRequestDispatcher("/view/manager/product/edit-product.jsp").forward(request, response);
@@ -80,14 +80,14 @@ public class EditProductController extends HttpServlet {
 
         if (hasError) {
             request.setAttribute("error", "Please fill all required fields correctly.");
-            request.setAttribute("product", productDAO.getProductById(id));
+            request.setAttribute("product", productDAO.getProductByPId(id));
             request.setAttribute("categories", categoryDAO.getAllCategories());
             request.setAttribute("suppliers", supplierDAO.getAllSuppliers());
             request.getRequestDispatcher("/view/manager/product/edit-product.jsp").forward(request, response);
             return;
         }
 
-        Product existingProduct = productDAO.getProductById(id);
+        Product existingProduct = productDAO.getProductByPId(id);
 
         // Tạo product object để update
         Product p = new Product();

@@ -14,7 +14,7 @@ public class ProductDAO extends DBContext {
             "id", "productCode", "name", "brand", "company", "categoryId", "unit", "status"
     );
 
-    public List<Product> getAllProducts(String productCode, String productName, String brand,
+    public List<Product> getProducts(String productCode, String productName, String brand,
                                         String company, String cateId, String statusFilter,
                                         int pageIndex, int pageSize,
                                         String sortField, String sortOrder) {

@@ -29,7 +29,7 @@ public class ViewProductDetailController extends HttpServlet {
             int id = Integer.parseInt(idRaw);
 
             ProductDAO dao = new ProductDAO();
-            Product product = dao.getProductById(id);
+            Product product = dao.getProductByPId(id);
 
             if (product == null) {
                 request.setAttribute("error", "Product not found.");

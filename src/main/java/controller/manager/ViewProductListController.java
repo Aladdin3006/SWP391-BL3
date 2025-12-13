@@ -47,7 +47,7 @@ public class ViewProductListController extends HttpServlet {
         } catch (Exception ignored) {}
 
         // ----------- GET DATA -----------
-        List<Product> products = productDAO.getAllProducts(
+        List<Product> products = productDAO.getProducts(
                 productCode,
                 productName,
                 brand,
