@@ -278,7 +278,7 @@ public class ProductDAO extends DBContext {
                 p.setName(rs.getString("name"));
                 p.setBrand(rs.getString("brand"));
                 p.setCompany(rs.getString("company"));
-                p.setCategoryName(rs.getString("categoryName"));
+                p.setCategoryId(rs.getInt("categoryId"));
                 p.setUnit(rs.getInt("unit"));
                 p.setSupplierId(rs.getInt("supplierId"));
                 p.setStatus(rs.getString("status"));
@@ -304,7 +304,7 @@ public class ProductDAO extends DBContext {
                 p.setName(rs.getString("name"));
                 p.setBrand(rs.getString("brand"));
                 p.setCompany(rs.getString("company"));
-                p.setCategoryName(rs.getString("categoryName"));
+                p.setCategoryId(rs.getInt("categoryId"));
                 p.setUnit(rs.getInt("unit"));
                 p.setSupplierId(rs.getInt("supplierId"));
                 p.setStatus(rs.getString("status"));
