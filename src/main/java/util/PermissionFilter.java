@@ -33,9 +33,11 @@ public class PermissionFilter implements Filter {
                 path.equals("/verify-email-change") ||
                 path.equals("/unauthorized") ||
                 path.equals("/logout")) {
+
             chain.doFilter(request, response);
             return;
         }
+
 
         if (!PermissionChecker.hasPermission(req)) {
             resp.sendRedirect(req.getContextPath() + "/unauthorized");

@@ -39,6 +39,7 @@ public class AddUserController extends HttpServlet {
         String phone = request.getParameter("phone");
         String roleIdStr = request.getParameter("roleId");
         UserDBContext db = new UserDBContext();
+
         if (db.getUserByAccountName(accountName) != null) {
             request.setAttribute("errAccountName", "Username already exists.");
 
