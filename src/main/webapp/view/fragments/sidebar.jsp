@@ -35,8 +35,8 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'products' ? 'active' : ''}"
-                           href="manager-products.jsp">
+                        <a class="nav-link ${activePage == 'view-product-list' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/view-product-list">
                             <i class="fas fa-boxes-stacked me-2"></i>Manager Products
                         </a>
                     </li>
@@ -65,9 +65,9 @@
 
                 <c:when test="${sessionScope.user.roleName == 'storekeeper'}">
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'dashboard' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/dashboard">
-                            <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                        <a class="nav-link ${activePage == 'view-product-list' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/view-product-list">
+                            <i class="fas fa-boxes-stacked me-2"></i>View Products
                         </a>
                     </li>
                     <li class="nav-item">
@@ -82,31 +82,13 @@
                             <i class="fas fa-dolly-flatbed me-2"></i>Actual Transfers
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'export' ? 'active' : ''}"
-                           href="#">
-                            <i class="fas fa-arrow-right me-2"></i>Export Warehouse Request
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'import' ? 'active' : ''}"
-                           href="#">
-                            <i class="fas fa-arrow-left me-2"></i>Import Warehouse Request
-                        </a>
-                    </li>
                 </c:when>
 
                 <c:when test="${sessionScope.user.roleName == 'employee'}">
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'dashboard' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/dashboard">
-                            <i class="fas fa-tachometer-alt me-2"></i>Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'items' ? 'active' : ''}"
-                           href="#">
-                            <i class="fas fa-box me-2"></i>Items
+                        <a class="nav-link ${activePage == 'view-product-list' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/view-product-list">
+                            <i class="fas fa-boxes-stacked me-2"></i>View Products
                         </a>
                     </li>
                     <li class="nav-item">

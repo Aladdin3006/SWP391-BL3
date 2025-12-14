@@ -15,20 +15,18 @@ public class ProductDAO extends DBContext {
     );
 
     public List<Product> getProducts(String productCode, String productName, String brand,
-                                        String company, String cateId, String statusFilter,
-                                        int pageIndex, int pageSize,
-                                        String sortField, String sortOrder) {
+                                     String company, String cateId, String statusFilter,
+                                     int pageIndex, int pageSize,
+                                     String sortField, String sortOrder) {
 
         List<Product> list = new ArrayList<>();
 
-        // Thêm p. vào sortField để tránh ambiguous nếu sort theo categoryId hoặc status
         if (sortField == null || !ALLOWED_SORT_FIELDS.contains(sortField)) sortField = "p.id";
-        else sortField = "p." + sortField; // Đảm bảo sort cũng dùng alias p.
+        else sortField = "p." + sortField;
 
         if (sortOrder == null || !(sortOrder.equalsIgnoreCase("asc") || sortOrder.equalsIgnoreCase("desc")))
             sortOrder = "asc";
 
-        // --- SỬA CÂU SQL TẠI ĐÂY ---
         String sql =
                 "SELECT p.id, p.productCode, p.name, p.brand, p.company, " +
                         "p.categoryId, c.categoryName, p.unit, p.supplierId, p.status, p.url " +
@@ -36,7 +34,6 @@ public class ProductDAO extends DBContext {
                         "LEFT JOIN category c ON p.categoryId = c.categoryId " +
                         "WHERE 1=1 ";
 
-        // Thêm 'p.' vào trước các tên cột
         if (productCode != null && !productCode.trim().isEmpty()) sql += " AND p.productCode LIKE ? ";
         if (productName != null && !productName.trim().isEmpty()) sql += " AND p.name LIKE ? ";
         if (brand != null && !brand.trim().isEmpty()) sql += " AND p.brand LIKE ? ";
@@ -44,7 +41,6 @@ public class ProductDAO extends DBContext {
 
         if (cateId != null && !cateId.trim().isEmpty()) sql += " AND p.categoryId = ? ";
 
-        // Nên thêm p.status để an toàn
         if (statusFilter != null && !statusFilter.trim().isEmpty() && !"all".equalsIgnoreCase(statusFilter))
             sql += " AND p.status = ? ";
 
@@ -59,7 +55,6 @@ public class ProductDAO extends DBContext {
             if (brand != null && !brand.trim().isEmpty()) ps.setString(idx++, "%" + brand.trim() + "%");
             if (company != null && !company.trim().isEmpty()) ps.setString(idx++, "%" + company.trim() + "%");
 
-            // Parse int cho categoryId
             if (cateId != null && !cateId.trim().isEmpty()) ps.setInt(idx++, Integer.parseInt(cateId));
 
             if (statusFilter != null && !statusFilter.trim().isEmpty() && !"all".equalsIgnoreCase(statusFilter))
@@ -88,7 +83,6 @@ public class ProductDAO extends DBContext {
                 }
             }
         } catch (Exception e) {
-            // Bạn nên in e.getMessage() để thấy rõ lỗi ambiguous nếu nó xảy ra
             e.printStackTrace();
         }
 
@@ -99,14 +93,14 @@ public class ProductDAO extends DBContext {
                              String company, String cateId, String statusFilter) {
 
         int total = 0;
-        String sql = "SELECT COUNT(*) FROM product WHERE 1=1 ";
-        if (productCode != null && !productCode.trim().isEmpty()) sql += " AND productCode LIKE ? ";
-        if (productName != null && !productName.trim().isEmpty()) sql += " AND name LIKE ? ";
-        if (brand != null && !brand.trim().isEmpty()) sql += " AND brand LIKE ? ";
-        if (company != null && !company.trim().isEmpty()) sql += " AND company LIKE ? ";
-        if (cateId != null && !cateId.trim().isEmpty()) sql += " AND categoryId = ? ";
+        String sql = "SELECT COUNT(*) FROM product p WHERE 1=1 ";
+        if (productCode != null && !productCode.trim().isEmpty()) sql += " AND p.productCode LIKE ? ";
+        if (productName != null && !productName.trim().isEmpty()) sql += " AND p.name LIKE ? ";
+        if (brand != null && !brand.trim().isEmpty()) sql += " AND p.brand LIKE ? ";
+        if (company != null && !company.trim().isEmpty()) sql += " AND p.company LIKE ? ";
+        if (cateId != null && !cateId.trim().isEmpty()) sql += " AND p.categoryId = ? ";
         if (statusFilter != null && !statusFilter.trim().isEmpty() && !"all".equalsIgnoreCase(statusFilter))
-            sql += " AND status = ? ";
+            sql += " AND p.status = ? ";
 
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -151,7 +145,7 @@ public class ProductDAO extends DBContext {
             if (affectedRows > 0) {
                 try (ResultSet rs = ps.getGeneratedKeys()) {
                     if (rs.next()) {
-                        return rs.getInt(1); // trả về id mới
+                        return rs.getInt(1);
                     }
                 }
             }
@@ -160,7 +154,7 @@ public class ProductDAO extends DBContext {
             e.printStackTrace();
         }
 
-        return -1; // trả về -1 nếu insert thất bại
+        return -1;
     }
 
     public boolean isProductCodeExist(String productCode) {
@@ -173,7 +167,7 @@ public class ProductDAO extends DBContext {
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    return rs.getInt(1) > 0; // true nếu tồn tại
+                    return rs.getInt(1) > 0;
                 }
             }
 
@@ -183,26 +177,9 @@ public class ProductDAO extends DBContext {
 
         return false;
     }
+
     public Product getProductByPId(int id) {
-        String sql = """
-        SELECT 
-            p.id,
-            p.productCode,
-            p.name,
-            p.brand,
-            p.company,
-            p.categoryId,
-            p.unit,
-            p.supplierId,
-            p.status,
-            p.url,
-            s.name AS supplierName,
-            c.categoryName AS categoryName
-        FROM Product p
-        LEFT JOIN Supplier s ON p.supplierId = s.id
-        LEFT JOIN Category c ON p.categoryId = c.categoryId
-        WHERE p.id = ?
-    """;
+        String sql = "SELECT p.id, p.productCode, p.name, p.brand, p.company, p.categoryId, p.unit, p.supplierId, p.status, p.url, s.name AS supplierName, c.categoryName AS categoryName FROM Product p LEFT JOIN Supplier s ON p.supplierId = s.id LEFT JOIN Category c ON p.categoryId = c.categoryId WHERE p.id = ?";
 
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -235,9 +212,7 @@ public class ProductDAO extends DBContext {
     }
 
     public boolean updateProduct(Product p) {
-        String sql = "UPDATE product SET productCode = ?, name = ?, brand = ?, company = ?, " +
-                "categoryId = ?, unit = ?, supplierId = ?, status = ?, url = ? " +
-                "WHERE id = ?";
+        String sql = "UPDATE product SET productCode = ?, name = ?, brand = ?, company = ?, categoryId = ?, unit = ?, supplierId = ?, status = ?, url = ? WHERE id = ?";
 
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -262,15 +237,14 @@ public class ProductDAO extends DBContext {
         return false;
     }
 
-
     public List<Product> getAllProducts() {
         List<Product> list = new ArrayList<>();
-        String sql = "SELECT * FROM product WHERE status = 'active' ORDER BY name";
-        
+        String sql = "SELECT p.*, c.categoryName FROM product p LEFT JOIN category c ON p.categoryId = c.categoryId WHERE p.status = 'active' ORDER BY p.name";
+
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
-            
+
             while (rs.next()) {
                 Product p = new Product();
                 p.setId(rs.getInt("id"));
@@ -278,6 +252,7 @@ public class ProductDAO extends DBContext {
                 p.setName(rs.getString("name"));
                 p.setBrand(rs.getString("brand"));
                 p.setCompany(rs.getString("company"));
+                p.setCategoryId(rs.getInt("categoryId"));
                 p.setCategoryName(rs.getString("categoryName"));
                 p.setUnit(rs.getInt("unit"));
                 p.setSupplierId(rs.getInt("supplierId"));
@@ -292,7 +267,7 @@ public class ProductDAO extends DBContext {
     }
 
     public Product getProductById(int id) {
-        String sql = "SELECT * FROM product WHERE id = ?";
+        String sql = "SELECT p.*, c.categoryName FROM product p LEFT JOIN category c ON p.categoryId = c.categoryId WHERE p.id = ?";
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
@@ -304,6 +279,7 @@ public class ProductDAO extends DBContext {
                 p.setName(rs.getString("name"));
                 p.setBrand(rs.getString("brand"));
                 p.setCompany(rs.getString("company"));
+                p.setCategoryId(rs.getInt("categoryId"));
                 p.setCategoryName(rs.getString("categoryName"));
                 p.setUnit(rs.getInt("unit"));
                 p.setSupplierId(rs.getInt("supplierId"));
@@ -317,4 +293,3 @@ public class ProductDAO extends DBContext {
         return null;
     }
 }
-

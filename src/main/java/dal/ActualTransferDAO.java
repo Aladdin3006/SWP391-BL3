@@ -113,9 +113,9 @@ public class ActualTransferDAO extends DBContext {
     private List<ProductTransferItem> getProductsByTicketId(int ticketId) {
         List<ProductTransferItem> list = new ArrayList<>();
         String sql = "SELECT i.id, i.product_id, i.quantity, p.productCode, p.name "
-                + "FROM actual_transfer_item i "
+                + "FROM product_transfer_item i "
                 + "JOIN product p ON i.product_id = p.id "
-                + "WHERE i.actual_ticket_id = ?";
+                + "WHERE i.ticket_id = ?";
 
         try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, ticketId);
@@ -143,7 +143,7 @@ public class ActualTransferDAO extends DBContext {
                 + "(ticketCode, requestTransferId, transferDate, status, confirmedBy, note) "
                 + "VALUES (?, ?, ?, ?, ?, ?)";
 
-        String sqlItem = "INSERT INTO actual_transfer_item (actual_ticket_id, product_id, quantity) VALUES (?, ?, ?)";
+        String sqlItem = "INSERT INTO product_transfer_item (ticket_id, product_id, quantity) VALUES (?, ?, ?)";
 
         try {
             conn = getConnection();
@@ -208,8 +208,8 @@ public class ActualTransferDAO extends DBContext {
     public void update(ActualTransferTicket ticket) {
         Connection conn = null;
         String sqlUpdateTicket = "UPDATE actual_transfer_ticket SET transferDate=?, status=?, note=? WHERE id=?";
-        String sqlDeleteItems = "DELETE FROM actual_transfer_item WHERE actual_ticket_id=?";
-        String sqlInsertItems = "INSERT INTO actual_transfer_item (actual_ticket_id, product_id, quantity) VALUES (?, ?, ?)";
+        String sqlDeleteItems = "DELETE FROM product_transfer_item WHERE ticket_id=?";
+        String sqlInsertItems = "INSERT INTO product_transfer_item (ticket_id, product_id, quantity) VALUES (?, ?, ?)";
 
         try {
             conn = getConnection();
