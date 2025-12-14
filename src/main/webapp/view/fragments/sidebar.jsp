@@ -42,6 +42,13 @@
                     </li>
 
                     <li class="nav-item">
+                        <a class="nav-link ${activePage == 'supplier-list' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/supplier-list">
+                            <i class="fas fa-truck me-2"></i>Manager Supplier
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
                         <a class="nav-link ${activePage == 'department-list' ? 'active' : ''}"
                            href="${pageContext.request.contextPath}/department-list">
                             <i class="fas fa-building me-2"></i>Departments
