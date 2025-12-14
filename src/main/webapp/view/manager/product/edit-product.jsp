@@ -4,16 +4,36 @@
 <html>
 <head>
     <title>Edit Product</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         body {
-            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
             font-family: "Segoe UI", sans-serif;
-            margin: 0;
-            padding: 0;
         }
-        .container {
-            width: 850px;
-            margin: 40px auto;
+        .sidebar {
+            background-color: #343a40;
+            color: white;
+            min-height: calc(100vh - 56px);
+            padding-top: 20px;
+        }
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 10px 15px;
+        }
+        .sidebar .nav-link:hover {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .sidebar .nav-link.active {
+            color: white;
+            background-color: #0d6efd;
+        }
+        .main-content {
+            padding: 30px;
+        }
+        .container-box {
             background: white;
             padding: 30px 40px;
             border-radius: 16px;
@@ -52,13 +72,6 @@
             height: 100%;
             object-fit: cover;
             border-radius: 12px;
-        }
-        .upload-container input[type="text"] {
-            width: 100%;
-            padding: 8px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            font-size: 14px;
         }
         .form-section {
             width: 55%;
@@ -121,104 +134,107 @@
     </style>
 </head>
 <body>
+<jsp:include page="/view/fragments/navbar.jsp"/>
 
-<div class="container">
+<div class="container-fluid">
+    <div class="row">
+        <c:set var="activePage" value="product-list" scope="request"/>
+        <jsp:include page="/view/fragments/sidebar.jsp"/>
 
-    <h2>Edit Product</h2>
+        <main class="col-md-10 ms-sm-auto main-content">
+            <div class="container-box">
+                <h2>Edit Product</h2>
 
-    <form action="${pageContext.request.contextPath}/edit-product" method="post">
-        <!-- Hidden field để giữ ID -->
-        <input type="hidden" name="id" value="${product.id}">
+                <form action="${pageContext.request.contextPath}/edit-product" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="id" value="${product.id}">
 
-        <div class="flex-box">
-            <div class="upload-container">
-                <div class="upload-box">
-                    <img id="previewImg" src="${product.url != null ? product.url : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHICWZcFeQ7UuaU7N30-E4Vt1GaTYIU1DIEA&s'}" alt="Preview">
-                </div>
-                <label>Enter Image Url...</label>
-                <input type="text" name="url" id="imageUrl" placeholder="Enter image URL..." value="${product.url}">
-                <div class="error-text" id="err-url"></div>
+                    <div class="flex-box">
+                        <div class="upload-container">
+                            <div class="upload-box">
+                                <img id="previewImg" src="${product.url != null ? product.url : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHICWZcFeQ7UuaU7N30-E4Vt1GaTYIU1DIEA&s'}" alt="Preview">
+                            </div>
+                            <label>Upload Image File</label>
+                            <input type="file" name="imageFile" id="imageFile" accept="image/*" onchange="previewFile()">
+                            <div class="error-text" id="err-url">
+                                <c:if test="${not empty errImage}">${errImage}</c:if>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <label>Product Code</label>
+                            <input type="text" value="${product.productCode}" disabled>
+                            <input type="hidden" name="productCode" value="${product.productCode}">
+
+                            <label>Product Name</label>
+                            <input type="text" name="name" value="${product.name}">
+                            <div class="error-text" id="err-name"></div>
+
+                            <label>Brand</label>
+                            <input type="text" name="brand" value="${product.brand}">
+                            <div class="error-text" id="err-brand"></div>
+
+                            <label>Company</label>
+                            <input type="text" name="company" value="${product.company}">
+                            <div class="error-text" id="err-company"></div>
+
+                            <label>Category</label>
+                            <select name="categoryId">
+                                <option value="0">--- Select Category ---</option>
+                                <c:forEach items="${categories}" var="c">
+                                    <option value="${c.categoryId}" ${c.categoryId == product.categoryId ? "selected" : ""}>
+                                            ${c.categoryName}
+                                    </option>
+                                </c:forEach>
+                            </select>
+                            <div class="error-text" id="err-categoryId"></div>
+
+                            <label>Supplier</label>
+                            <select name="supplierId">
+                                <option value="">--- Select Supplier ---</option>
+                                <c:forEach items="${suppliers}" var="s">
+                                    <option value="${s.id}" ${s.id == product.supplierId ? "selected" : ""}>
+                                            ${s.name}
+                                    </option>
+                                </c:forEach>
+                            </select>
+                            <div class="error-text" id="err-supplierId"></div>
+
+                            <label>Unit</label>
+                            <input type="number" name="unit" min="0" value="${product.unit}">
+                            <div class="error-text" id="err-unit"></div>
+
+                            <label>Status</label>
+                            <select name="status">
+                                <option value="active" ${product.status == 'active' ? 'selected' : ''}>Active</option>
+                                <option value="inactive" ${product.status == 'inactive' ? 'selected' : ''}>Inactive</option>
+                            </select>
+                            <div class="error-text" id="err-status"></div>
+                        </div>
+                    </div>
+
+                    <div class="button-row">
+                        <button type="submit" class="btn btn-save">SAVE</button>
+                        <a href="${pageContext.request.contextPath}/view-product-detail?id=${product.id}" class="btn btn-cancel">CANCEL</a>
+                    </div>
+                </form>
             </div>
-
-            <div class="form-section">
-                <label>Product Code</label>
-                <input type="text" value="${product.productCode}" disabled>
-                <input type="hidden" name="productCode" value="${product.productCode}">
-                <div class="error-text" id="err-productCode"></div>
-
-                <label>Product Name</label>
-                <input type="text" name="name" value="${product.name}">
-                <div class="error-text" id="err-name"></div>
-
-                <label>Brand</label>
-                <input type="text" name="brand" value="${product.brand}">
-                <div class="error-text" id="err-brand"></div>
-
-                <label>Company</label>
-                <input type="text" name="company" value="${product.company}">
-                <div class="error-text" id="err-company"></div>
-
-                <label>Category</label>
-                <select name="categoryId">
-                    <option value="0">--- Select Category ---</option>
-                    <c:forEach items="${categories}" var="c">
-                        <option value="${c.categoryId}" ${c.categoryId == product.categoryId ? "selected" : ""}>
-                                ${c.categoryName}
-                        </option>
-                    </c:forEach>
-                </select>
-                <div class="error-text" id="err-categoryId"></div>
-
-                <label>Supplier</label>
-                <select name="supplierId">
-                    <option value="">--- Select Supplier ---</option>
-                    <c:forEach items="${suppliers}" var="s">
-                        <option value="${s.id}" ${s.id == product.supplierId ? "selected" : ""}>
-                                ${s.name}
-                        </option>
-                    </c:forEach>
-                </select>
-                <div class="error-text" id="err-supplierId"></div>
-
-                <label>Unit</label>
-                <input type="number" name="unit" min="0" value="${product.unit}">
-                <div class="error-text" id="err-unit"></div>
-
-                <label>Status</label>
-                <select name="status">
-                    <option value="active" ${product.status == 'active' ? 'selected' : ''}>Active</option>
-                    <option value="inactive" ${product.status == 'inactive' ? 'selected' : ''}>Inactive</option>
-                </select>
-                <div class="error-text" id="err-status"></div>
-
-            </div>
-        </div>
-
-        <div class="button-row">
-            <button type="submit" class="btn btn-save">SAVE</button>
-            <a href="${pageContext.request.contextPath}/view-product-detail?id=${product.id}" class="btn btn-cancel">CANCEL</a>
-        </div>
-
-    </form>
-
+        </main>
+    </div>
 </div>
 
 <script>
-    const previewImg = document.getElementById('previewImg');
-    const imageUrlInput = document.getElementById('imageUrl');
-    const defaultImg = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHICWZcFeQ7UuaU7N30-E4Vt1GaTYIU1DIEA&s";
+    function previewFile() {
+        const fileInput = document.getElementById('imageFile');
+        const preview = document.getElementById('previewImg');
 
-    imageUrlInput.addEventListener('input', () => {
-        const url = imageUrlInput.value.trim();
-        if (!url) {
-            previewImg.src = defaultImg;
-            return;
+        if (fileInput.files && fileInput.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+            }
+            reader.readAsDataURL(fileInput.files[0]);
         }
-        const tempImg = new Image();
-        tempImg.onload = () => previewImg.src = url;
-        tempImg.onerror = () => previewImg.src = defaultImg;
-        tempImg.src = url;
-    });
+    }
 
     function showError(id, message) {
         document.getElementById(id).textContent = message;
@@ -236,7 +252,6 @@
         const name = document.querySelector("input[name='name']");
         const brand = document.querySelector("input[name='brand']");
         const company = document.querySelector("input[name='company']");
-        const url = document.querySelector("input[name='url']");
         const categoryId = document.querySelector("select[name='categoryId']");
         const supplierId = document.querySelector("select[name='supplierId']");
         const unit = document.querySelector("input[name='unit']");
@@ -246,8 +261,6 @@
         if (isEmpty(name.value)) { showError("err-name", "Product name is required."); hasError = true; }
         if (isEmpty(brand.value)) { showError("err-brand", "Brand is required."); hasError = true; }
         if (isEmpty(company.value)) { showError("err-company", "Company is required."); hasError = true; }
-        if (isEmpty(url.value)) { showError("err-url", "Image URL is required."); hasError = true; }
-        else if (url.value.length > 255) { showError("err-url", "Image URL too long."); hasError = true; }
         if (supplierId.value === "") { showError("err-supplierId", "Please select a supplier."); hasError = true; }
         if (isEmpty(unit.value) || Number(unit.value) < 0) { showError("err-unit", "Unit must be a number ≥ 0."); hasError = true; }
 
@@ -255,5 +268,6 @@
     });
 </script>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
