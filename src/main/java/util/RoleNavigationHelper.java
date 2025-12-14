@@ -12,7 +12,9 @@ public class RoleNavigationHelper {
 
         return switch (roleName.toLowerCase()) {
             case "admin" -> "user-list";
-            case "manager", "storekeeper", "employee" -> "dashboard";
+            case "manager" -> "view-product-list";
+            case "storekeeper" -> "request-transfer";
+            case "employee" -> "actual-transfer";
             default -> "dashboard";
         };
     }
