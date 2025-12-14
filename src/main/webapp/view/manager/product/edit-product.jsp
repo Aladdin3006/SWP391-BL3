@@ -82,7 +82,7 @@
             display: block;
             color: #444;
         }
-        input, select {
+        input, select, textarea {
             width: 100%;
             padding: 12px;
             border-radius: 10px;
@@ -92,7 +92,11 @@
             transition: 0.2s;
             box-sizing: border-box;
         }
-        input:focus, select:focus {
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        input:focus, select:focus, textarea:focus {
             border-color: #2575fc;
             box-shadow: 0 0 5px rgba(37,117,252,0.4);
             outline: none;
@@ -131,6 +135,15 @@
             margin-top: -12px;
             margin-bottom: 12px;
         }
+        .unit-note-container {
+            display: none;
+            margin-top: 5px;
+            margin-bottom: 18px;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #ff8b22;
+        }
     </style>
 </head>
 <body>
@@ -147,6 +160,7 @@
 
                 <form action="${pageContext.request.contextPath}/edit-product" method="post" enctype="multipart/form-data">
                     <input type="hidden" name="id" value="${product.id}">
+                    <input type="hidden" id="originalUnit" value="${product.unit}">
 
                     <div class="flex-box">
                         <div class="upload-container">
@@ -200,8 +214,13 @@
                             <div class="error-text" id="err-supplierId"></div>
 
                             <label>Unit</label>
-                            <input type="number" name="unit" min="0" value="${product.unit}">
+                            <input type="number" name="unit" id="unitInput" min="0" value="${product.unit}" oninput="checkUnitChange()">
                             <div class="error-text" id="err-unit"></div>
+
+                            <div class="unit-note-container" id="unitNoteContainer">
+                                <label>Note for Unit Change</label>
+                                <textarea name="note" id="noteTextarea" placeholder="Enter note for unit change (optional)"></textarea>
+                            </div>
 
                             <label>Status</label>
                             <select name="status">
@@ -243,6 +262,25 @@
     function isEmpty(v) {
         return !v || v.trim().length === 0;
     }
+
+    function checkUnitChange() {
+        const originalUnit = parseInt(document.getElementById('originalUnit').value);
+        const currentUnit = parseInt(document.getElementById('unitInput').value) || 0;
+        const noteContainer = document.getElementById('unitNoteContainer');
+        const noteTextarea = document.getElementById('noteTextarea');
+
+        if (originalUnit !== currentUnit) {
+            noteContainer.style.display = 'block';
+            noteTextarea.required = false;
+        } else {
+            noteContainer.style.display = 'none';
+            noteTextarea.value = '';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        checkUnitChange();
+    });
 
     document.querySelector("form").addEventListener("submit", function (e) {
         document.querySelectorAll(".error-text").forEach(el => el.textContent = "");

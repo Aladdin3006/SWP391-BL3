@@ -9,7 +9,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserDBContext extends DBContext {
+public class UserDAO extends DBContext {
 
     public User getUserByAccountName(String accountName) {
         String sql = "SELECT u.userId, u.accountName, u.displayName, u.password, u.email, u.phone, "
@@ -481,7 +481,7 @@ public class UserDBContext extends DBContext {
     }
 
     public static void main(String[] args) {
-        UserDBContext dao = new UserDBContext();
+        UserDAO dao = new UserDAO();
         User user = dao.getUserByAccountName("admin");
         if (user != null) {
             System.out.println("Found: " + user.getDisplayName() +

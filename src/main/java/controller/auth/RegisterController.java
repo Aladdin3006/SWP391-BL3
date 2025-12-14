@@ -1,7 +1,7 @@
 package controller.auth;
 
-import dal.UserDBContext;
-import entity.User;
+import dal.UserDAO;
+
 import java.io.IOException;
 
 import jakarta.servlet.ServletException;
@@ -9,8 +9,6 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.UUID;
-import util.EmailUtility;
 import util.MD5;
 
 @WebServlet(name="RegisterController", urlPatterns={"/register"})
@@ -32,7 +30,7 @@ public class RegisterController extends HttpServlet {
         String email = request.getParameter("email");
         String phone = request.getParameter("phone");
 
-        UserDBContext db = new UserDBContext();
+        UserDAO db = new UserDAO();
         String error = null;
 
         if (user == null || user.trim().isEmpty() ||

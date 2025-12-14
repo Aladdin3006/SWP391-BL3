@@ -6,7 +6,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DepartmentDBContext extends DBContext {
+public class DepartmentDAO extends DBContext {
 
     public List<Department> getDepartmentListWithPaging(String search, String statusFilter, int page, int pageSize) {
         List<Department> list = new ArrayList<>();

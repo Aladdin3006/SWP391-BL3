@@ -1,7 +1,7 @@
 package controller.transfer;
 
 import dal.RequestTransferDAO;
-import dal.UserDBContext;
+import dal.UserDAO;
 import entity.RequestTransferTicket;
 import entity.User;
 import java.io.IOException;
@@ -26,7 +26,7 @@ public class RequestTransferDetailController extends HttpServlet {
 
         int id = Integer.parseInt(idStr);
         RequestTransferDAO dao = new RequestTransferDAO();
-        UserDBContext userDao = new UserDBContext();
+        UserDAO userDao = new UserDAO();
         
         RequestTransferTicket ticket = dao.getById(id);
         if (ticket == null) {

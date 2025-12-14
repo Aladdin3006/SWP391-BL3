@@ -1,6 +1,6 @@
 package controller.manager;
 
-import dal.DepartmentDBContext;
+import dal.DepartmentDAO;
 import entity.Department;
 import entity.User;
 import jakarta.servlet.ServletException;
@@ -26,7 +26,7 @@ public class UpdateDepartmentController extends HttpServlet {
         }
 
         int id = Integer.parseInt(idRaw);
-        DepartmentDBContext db = new DepartmentDBContext();
+        DepartmentDAO db = new DepartmentDAO();
 
         Department dept = db.getDepartmentById(id);
         if (dept == null) {
@@ -83,7 +83,7 @@ public class UpdateDepartmentController extends HttpServlet {
             }
         }
 
-        DepartmentDBContext db = new DepartmentDBContext();
+        DepartmentDAO db = new DepartmentDAO();
         db.updateDepartment(dept, employeeIdList);
 
         response.sendRedirect("department-list?success=updated");

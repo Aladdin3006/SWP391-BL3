@@ -1,7 +1,7 @@
 package controller.admin;
 
 import dal.RoleDAO;
-import dal.UserDBContext;
+import dal.UserDAO;
 import entity.Role;
 import entity.User;
 import jakarta.servlet.ServletException;
@@ -15,7 +15,7 @@ import java.util.List;
 @WebServlet("/user/update")
 public class UpdateUserController extends HttpServlet {
 
-    private UserDBContext userDB = new UserDBContext();
+    private UserDAO userDB = new UserDAO();
     private RoleDAO roleDAO = new RoleDAO();
 
     @Override

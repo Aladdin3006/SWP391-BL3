@@ -1,6 +1,6 @@
 package controller.manager;
 
-import dal.DepartmentDBContext;
+import dal.DepartmentDAO;
 import entity.Department;
 import entity.User;
 import jakarta.servlet.ServletException;
@@ -19,7 +19,7 @@ public class AddDepartmentController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        DepartmentDBContext db = new DepartmentDBContext();
+        DepartmentDAO db = new DepartmentDAO();
         List<User> storekeepers = db.getStorekeepersNotInAnyDepartment();
         List<User> employees = db.getAvailableEmployees();
 
@@ -57,7 +57,7 @@ public class AddDepartmentController extends HttpServlet {
         }
 
         try {
-            DepartmentDBContext db = new DepartmentDBContext();
+            DepartmentDAO db = new DepartmentDAO();
             db.addDepartment(dept, employeeIdList);
             response.sendRedirect("../department-list");
         } catch (Exception e) {

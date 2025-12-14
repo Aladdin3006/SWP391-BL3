@@ -1,7 +1,7 @@
 package controller.admin;
 
 import dal.RoleDAO;
-import dal.UserDBContext;
+import dal.UserDAO;
 import entity.Role;
 import entity.User;
 import java.io.IOException;
@@ -38,7 +38,7 @@ public class AddUserController extends HttpServlet {
         String email = request.getParameter("email");
         String phone = request.getParameter("phone");
         String roleIdStr = request.getParameter("roleId");
-        UserDBContext db = new UserDBContext();
+        UserDAO db = new UserDAO();
 
         if (db.getUserByAccountName(accountName) != null) {
             request.setAttribute("errAccountName", "Username already exists.");

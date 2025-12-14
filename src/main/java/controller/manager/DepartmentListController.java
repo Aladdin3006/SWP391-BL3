@@ -1,6 +1,6 @@
 package controller.manager;
 
-import dal.DepartmentDBContext;
+import dal.DepartmentDAO;
 import entity.Department;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -19,7 +19,7 @@ public class DepartmentListController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        DepartmentDBContext db = new DepartmentDBContext();
+        DepartmentDAO db = new DepartmentDAO();
 
         String action = request.getParameter("action");
         String idRaw = request.getParameter("id");

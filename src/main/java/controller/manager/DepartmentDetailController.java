@@ -1,6 +1,6 @@
 package controller.manager;
 
-import dal.DepartmentDBContext;
+import dal.DepartmentDAO;
 import entity.Department;
 import entity.User;
 import jakarta.servlet.ServletException;
@@ -25,7 +25,7 @@ public class DepartmentDetailController extends HttpServlet {
         }
 
         int id = Integer.parseInt(idRaw);
-        DepartmentDBContext db = new DepartmentDBContext();
+        DepartmentDAO db = new DepartmentDAO();
 
         Department dept = db.getDepartmentById(id);
         if (dept == null) {

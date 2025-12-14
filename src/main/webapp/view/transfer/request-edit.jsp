@@ -75,16 +75,8 @@
                                     <div class="col-md-6">
                                         <label class="form-label fw-bold">Transfer Type <span class="text-danger">*</span></label>
                                         <select name="type" class="form-select" required>
-                                            <option value="Internal Transfer" ${ticket.type == 'Internal Transfer' ? 'selected' : ''}>Internal Transfer</option>
-                                            <option value="Supplier Return" ${ticket.type == 'Supplier Return' ? 'selected' : ''}>Supplier Return</option>
-                                            <option value="Store Transfer" ${ticket.type == 'Store Transfer' ? 'selected' : ''}>Store Transfer</option>
-                                            <option value="Inventory Adjustment" ${ticket.type == 'Inventory Adjustment' ? 'selected' : ''}>Inventory Adjustment</option>
-                                            <option value="Emergency Transfer" ${ticket.type == 'Emergency Transfer' ? 'selected' : ''}>Emergency Transfer</option>
-                                            <option value="Seasonal Stock" ${ticket.type == 'Seasonal Stock' ? 'selected' : ''}>Seasonal Stock</option>
-                                            <option value="Clearance Sale" ${ticket.type == 'Clearance Sale' ? 'selected' : ''}>Clearance Sale</option>
-                                            <option value="New Store Opening" ${ticket.type == 'New Store Opening' ? 'selected' : ''}>New Store Opening</option>
-                                            <option value="Warehouse Relocation" ${ticket.type == 'Warehouse Relocation' ? 'selected' : ''}>Warehouse Relocation</option>
-                                            <option value="Supplier Exchange" ${ticket.type == 'Supplier Exchange' ? 'selected' : ''}>Supplier Exchange</option>
+                                            <option value="Internal Transfer" ${ticket.type == 'Import' ? 'selected' : ''}>Import</option>
+                                            <option value="Supplier Return" ${ticket.type == 'Export' ? 'selected' : ''}>Export</option>
                                         </select>
                                     </div>
                                     <div class="col-md-6">

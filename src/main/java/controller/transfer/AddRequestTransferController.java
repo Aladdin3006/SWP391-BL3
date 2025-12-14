@@ -2,7 +2,7 @@ package controller.transfer;
 
 import dal.ProductDAO;
 import dal.RequestTransferDAO;
-import dal.UserDBContext;
+import dal.UserDAO;
 import entity.Product;
 import entity.ProductTransferItem;
 import entity.RequestTransferTicket;
@@ -35,7 +35,7 @@ public class AddRequestTransferController extends HttpServlet {
 
         ProductDAO productDao = new ProductDAO();
         RequestTransferDAO requestDao = new RequestTransferDAO();
-        UserDBContext userDao = new UserDBContext();
+        UserDAO userDao = new UserDAO();
         
         List<Product> products = productDao.getAllProducts();
         String ticketCode = requestDao.generateTicketCode();
