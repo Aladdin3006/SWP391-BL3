@@ -1,6 +1,6 @@
 package controller.auth;
 
-import dal.UserDBContext;
+import dal.UserDAO;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -16,7 +16,7 @@ public class VerifyController extends HttpServlet {
     throws ServletException, IOException {
         String code = request.getParameter("code");
         
-        UserDBContext db = new UserDBContext();
+        UserDAO db = new UserDAO();
         boolean verified = db.verifyAccount(code);
         
         if (verified) {

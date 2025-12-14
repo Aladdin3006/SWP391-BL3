@@ -1,6 +1,6 @@
 package controller.common;
 
-import dal.UserDBContext;
+import dal.UserDAO;
 import entity.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -27,7 +27,7 @@ public class ProfileController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        UserDBContext db = new UserDBContext();
+        UserDAO db = new UserDAO();
         HttpSession session = request.getSession();
         User sessionUser = (User) session.getAttribute("user");
 
@@ -45,7 +45,7 @@ public class ProfileController extends HttpServlet {
             throws ServletException, IOException {
 
         String action = request.getParameter("action");
-        UserDBContext db = new UserDBContext();
+        UserDAO db = new UserDAO();
         HttpSession session = request.getSession();
 
         if ("update".equals(action)) {

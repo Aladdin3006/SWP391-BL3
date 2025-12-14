@@ -1,6 +1,6 @@
 package controller.admin;
 
-import dal.UserDBContext;
+import dal.UserDAO;
 import entity.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -12,7 +12,7 @@ import java.io.IOException;
 @WebServlet("/user/detail")
 public class ViewUserDetailController extends HttpServlet {
 
-    private UserDBContext userDB = new UserDBContext();
+    private UserDAO userDB = new UserDAO();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)

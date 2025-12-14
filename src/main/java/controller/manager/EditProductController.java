@@ -3,9 +3,11 @@ package controller.manager;
 import dal.ProductDAO;
 import dal.CategoryDAO;
 import dal.SupplierDAO;
+import dal.ProductChangeDAO;
 import entity.Product;
 import entity.Category;
 import entity.Supplier;
+import entity.ProductChange;
 import util.CloudinaryUploadUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -14,9 +16,12 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.util.List;
+import java.sql.Date;
+import java.time.LocalDate;
 
 @WebServlet(name = "EditProductController", urlPatterns = {"/edit-product"})
 @MultipartConfig(
@@ -28,6 +33,7 @@ public class EditProductController extends HttpServlet {
     private final ProductDAO productDAO = new ProductDAO();
     private final CategoryDAO categoryDAO = new CategoryDAO();
     private final SupplierDAO supplierDAO = new SupplierDAO();
+    private final ProductChangeDAO productChangeDAO = new ProductChangeDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -56,6 +62,40 @@ public class EditProductController extends HttpServlet {
             throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
 
+        HttpSession session = request.getSession();
+
+        Object userObj = session.getAttribute("user");
+        if (userObj == null) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
+
+        int createdBy = 0;
+
+        Integer sessionUserId = (Integer) session.getAttribute("userId");
+        if (sessionUserId != null) {
+            createdBy = sessionUserId;
+        } else {
+            try {
+                java.lang.reflect.Method getUserIdMethod = userObj.getClass().getMethod("getUserId");
+                Object result = getUserIdMethod.invoke(userObj);
+                if (result instanceof Integer) {
+                    createdBy = (Integer) result;
+                }
+            } catch (Exception e) {
+                try {
+                    java.lang.reflect.Method getIdMethod = userObj.getClass().getMethod("getId");
+                    Object result = getIdMethod.invoke(userObj);
+                    if (result instanceof Integer) {
+                        createdBy = (Integer) result;
+                    }
+                } catch (Exception ex) {
+                    response.sendRedirect(request.getContextPath() + "/login");
+                    return;
+                }
+            }
+        }
+
         String idStr = request.getParameter("id");
         String name = request.getParameter("name");
         String brand = request.getParameter("brand");
@@ -64,6 +104,7 @@ public class EditProductController extends HttpServlet {
         String supplierIdStr = request.getParameter("supplierId");
         String unitStr = request.getParameter("unit");
         String status = request.getParameter("status");
+        String note = request.getParameter("note");
         Part imageFile = request.getPart("imageFile");
 
         int id = 0, categoryId = 0, supplierId = 0, unit = 0;
@@ -124,7 +165,26 @@ public class EditProductController extends HttpServlet {
         p.setUrl(uploadedImageUrl);
 
         boolean updated = productDAO.updateProduct(p);
+
         if (updated) {
+            int oldUnit = existingProduct.getUnit();
+            int newUnit = unit;
+
+            if (oldUnit != newUnit) {
+                ProductChange productChange = new ProductChange();
+                productChange.setProductId(id);
+                productChange.setChangeType("MANUAL");
+                productChange.setChangeDate(Date.valueOf(LocalDate.now()));
+                productChange.setBeforeChange(oldUnit);
+                productChange.setAfterChange(newUnit);
+                productChange.setChangeAmount(newUnit - oldUnit);
+                productChange.setTicketId(null);
+                productChange.setNote(note);
+                productChange.setCreatedBy(createdBy);
+
+                productChangeDAO.insert(productChange);
+            }
+
             response.sendRedirect(request.getContextPath() + "/view-product-detail?id=" + id + "&updated=1");
         } else {
             request.setAttribute("error", "Update failed.");

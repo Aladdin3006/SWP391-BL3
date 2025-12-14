@@ -1,6 +1,6 @@
 package controller.auth;
 
-import dal.UserDBContext;
+import dal.UserDAO;
 import entity.User;
 import util.EmailUtility;
 import java.io.IOException;
@@ -24,7 +24,7 @@ public class ForgotPasswordController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String email = request.getParameter("email");
-        UserDBContext db = new UserDBContext();
+        UserDAO db = new UserDAO();
         User user = db.getUserByEmail(email);
 
         if (user == null) {

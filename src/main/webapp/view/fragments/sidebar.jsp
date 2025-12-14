@@ -29,8 +29,8 @@
                 <c:when test="${sessionScope.user.roleName == 'manager'}">
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'inventory' ? 'active' : ''}"
-                           href="manager-inventory.jsp">
-                            <i class="fas fa-warehouse me-2"></i>Manager Inventory
+                           href="${pageContext.request.contextPath}/view-inventory">
+                            <i class="fas fa-boxes me-2"></i> Inventory Report
                         </a>
                     </li>
 
@@ -55,12 +55,12 @@
                         </a>
                     </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'reports' ? 'active' : ''}"
-                           href="reports.jsp">
-                            <i class="fas fa-chart-column me-2"></i>Reports
-                        </a>
-                    </li>
+<%--                    <li class="nav-item">--%>
+<%--                        <a class="nav-link ${activePage == 'reports' ? 'active' : ''}"--%>
+<%--                           href="reports.jsp">--%>
+<%--                            <i class="fas fa-chart-column me-2"></i>Reports--%>
+<%--                        </a>--%>
+<%--                    </li>--%>
                 </c:when>
 
                 <c:when test="${sessionScope.user.roleName == 'storekeeper'}">

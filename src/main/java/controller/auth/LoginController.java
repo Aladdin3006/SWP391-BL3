@@ -1,6 +1,6 @@
 package controller.auth;
 
-import dal.UserDBContext;
+import dal.UserDAO;
 import entity.User;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
@@ -27,7 +27,7 @@ public class LoginController extends HttpServlet {
         String u = request.getParameter("username");
         String p = request.getParameter("password");
 
-        UserDBContext db = new UserDBContext();
+        UserDAO db = new UserDAO();
         User user = db.getUserByAccountName(u);
 
         String hashedPassword = MD5.getMd5(p);

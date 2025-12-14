@@ -1,6 +1,6 @@
 package controller.auth;
 
-import dal.UserDBContext;
+import dal.UserDAO;
 import entity.User;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
@@ -17,7 +17,7 @@ public class ResetPasswordController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         String token = request.getParameter("token");
-        UserDBContext db = new UserDBContext();
+        UserDAO db = new UserDAO();
         User user = db.getUserByToken(token);
 
         if (user == null) {
@@ -44,7 +44,7 @@ public class ResetPasswordController extends HttpServlet {
             return;
         }
         
-        UserDBContext db = new UserDBContext();
+        UserDAO db = new UserDAO();
         User user = db.getUserByToken(token);
         
         if (user != null) {

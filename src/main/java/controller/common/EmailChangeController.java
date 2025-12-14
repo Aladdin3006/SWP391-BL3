@@ -1,6 +1,6 @@
 package controller.common;
 
-import dal.UserDBContext;
+import dal.UserDAO;
 import entity.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -28,7 +28,7 @@ public class EmailChangeController extends HttpServlet {
             return;
         }
 
-        UserDBContext db = new UserDBContext();
+        UserDAO db = new UserDAO();
         User user = db.getUserById(userId);
 
         if (user != null && token != null && token.equals(user.getVerificationCode())) {

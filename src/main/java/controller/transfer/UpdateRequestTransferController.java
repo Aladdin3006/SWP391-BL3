@@ -2,7 +2,7 @@ package controller.transfer;
 
 import dal.ProductDAO;
 import dal.RequestTransferDAO;
-import dal.UserDBContext;
+import dal.UserDAO;
 import entity.Product;
 import entity.ProductTransferItem;
 import entity.RequestTransferTicket;
@@ -56,7 +56,7 @@ public class UpdateRequestTransferController extends HttpServlet {
         }
 
         List<Product> products = productDao.getAllProducts();
-        UserDBContext userDao = new UserDBContext();
+        UserDAO userDao = new UserDAO();
         
         // Get employees based on user role and department
         List<User> employees = new ArrayList<>();

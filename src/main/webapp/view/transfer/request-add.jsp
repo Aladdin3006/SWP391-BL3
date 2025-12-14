@@ -66,16 +66,8 @@
                                         <label class="form-label fw-bold">Transfer Type <span class="text-danger">*</span></label>
                                         <select name="type" class="form-select" required>
                                             <option value="">-- Select Type --</option>
-                                            <option value="Internal Transfer">Internal Transfer</option>
-                                            <option value="Supplier Return">Supplier Return</option>
-                                            <option value="Store Transfer">Store Transfer</option>
-                                            <option value="Inventory Adjustment">Inventory Adjustment</option>
-                                            <option value="Emergency Transfer">Emergency Transfer</option>
-                                            <option value="Seasonal Stock">Seasonal Stock</option>
-                                            <option value="Clearance Sale">Clearance Sale</option>
-                                            <option value="New Store Opening">New Store Opening</option>
-                                            <option value="Warehouse Relocation">Warehouse Relocation</option>
-                                            <option value="Supplier Exchange">Supplier Exchange</option>
+                                            <option value="Internal Transfer">Import</option>
+                                            <option value="Supplier Return">Export</option>
                                         </select>
                                     </div>
                                     <div class="col-md-6">

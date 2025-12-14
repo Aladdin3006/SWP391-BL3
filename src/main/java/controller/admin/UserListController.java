@@ -1,6 +1,6 @@
 package controller.admin;
 
-import dal.UserDBContext;
+import dal.UserDAO;
 import entity.User;
 import entity.Role;
 import jakarta.servlet.ServletException;
@@ -18,7 +18,7 @@ public class UserListController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        UserDBContext db = new UserDBContext();
+        UserDAO db = new UserDAO();
 
         String action = request.getParameter("action");
         String idStr = request.getParameter("userId");
