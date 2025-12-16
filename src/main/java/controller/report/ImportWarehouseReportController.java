@@ -4,6 +4,9 @@ import dal.ActualTransferDAO;
 import entity.ActualTransferTicket;
 import entity.User;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -11,6 +14,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.Map;
 
 @WebServlet(name="ImportWarehouseReportController", urlPatterns={"/import-warehouse-report"})
 public class ImportWarehouseReportController extends HttpServlet {
@@ -36,14 +40,22 @@ public class ImportWarehouseReportController extends HttpServlet {
 
         int page = (pageStr == null || pageStr.isEmpty()) ? 1 : Integer.parseInt(pageStr);
         int pageSize = 10;
-        
-        // Filter by Import type, date range and assigned storekeeper
-        Integer storekeeperId = user.getUserId(); // Only show actual transfers assigned to this storekeeper
-        List<ActualTransferTicket> list = dao.getAllByTypeAndDateAndStorekeeper("Import", dateFrom, dateTo, search, storekeeperId, page, pageSize);
-        int totalRecords = dao.countByTypeAndDateAndStorekeeper("Import", dateFrom, dateTo, search, storekeeperId);
+
+        if (dateFrom == null || dateFrom.isEmpty()) {
+            Calendar cal = Calendar.getInstance();
+            cal.set(Calendar.DAY_OF_MONTH, 1);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            dateFrom = sdf.format(cal.getTime());
+        }
+
+        if (dateTo == null || dateTo.isEmpty()) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            dateTo = sdf.format(new Date());
+        }
+        List<Map<String, Object>> list = dao.getAllByTypeAndDate("Import", dateFrom, dateTo, search, page, pageSize); list = dao.getAllByTypeAndDate("Import", dateFrom, dateTo, search, page, pageSize);
+        int totalRecords = dao.countByTypeAndDate("Import", dateFrom, dateTo, search);
         int totalPages = (int) Math.ceil((double) totalRecords / pageSize);
 
-        // Calculate display range
         int fromRecord = totalRecords > 0 ? ((page - 1) * pageSize + 1) : 0;
         int toRecord = Math.min(page * pageSize, totalRecords);
 
@@ -58,6 +70,6 @@ public class ImportWarehouseReportController extends HttpServlet {
         request.setAttribute("dateTo", dateTo);
         request.setAttribute("reportType", "Import");
 
-        request.getRequestDispatcher("/view/report/warehouse-report.jsp").forward(request, response);
+        request.getRequestDispatcher("/view/manager/report/warehouse-report.jsp").forward(request, response);
     }
 }

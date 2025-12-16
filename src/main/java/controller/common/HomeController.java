@@ -27,6 +27,6 @@ public class HomeController extends HttpServlet {
             return;
         }
 
-        request.getRequestDispatcher("/view/home/home.jsp").forward(request, response);
+        request.getRequestDispatcher("/view/fragments/home.jsp").forward(request, response);
     }
 }

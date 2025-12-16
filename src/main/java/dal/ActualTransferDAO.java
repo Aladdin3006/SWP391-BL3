@@ -7,7 +7,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ActualTransferDAO extends DBContext {
 
@@ -257,62 +259,62 @@ public class ActualTransferDAO extends DBContext {
             }
         }
     }
-    
-    public List<ActualTransferTicket> getAllByTypeAndDateAndStorekeeper(String type, String dateFrom, String dateTo, String search, Integer storekeeperId, int page, int pageSize) {
-        List<ActualTransferTicket> list = new ArrayList<>();
+
+    public List<Map<String, Object>> getAllByTypeAndDate(String type, String dateFrom, String dateTo, String search, int page, int pageSize) {
+        List<Map<String, Object>> list = new ArrayList<>();
         StringBuilder sql = new StringBuilder("SELECT a.*, ")
-                .append("cb.displayName as confirmedByName, ")
                 .append("r.ticketCode as requestTicketCode, ")
-                .append("r.type as requestType ")
+                .append("u.displayName as confirmedByName, ")
+                .append("r.type as reportType ")
                 .append("FROM actual_transfer_ticket a ")
-                .append("LEFT JOIN user cb ON a.confirmedBy = cb.userId ")
                 .append("LEFT JOIN request_transfer_ticket r ON a.requestTransferId = r.id ")
-                .append("WHERE r.type = ? AND r.employeeId = ? ");
-        
+                .append("LEFT JOIN user u ON a.confirmedBy = u.userId ")
+                .append("WHERE r.type = ? ");
+
         List<Object> params = new ArrayList<>();
         params.add(type);
-        params.add(storekeeperId);
-        
+
         if (dateFrom != null && !dateFrom.trim().isEmpty()) {
             sql.append("AND a.transferDate >= ? ");
             params.add(dateFrom);
         }
-        
+
         if (dateTo != null && !dateTo.trim().isEmpty()) {
             sql.append("AND a.transferDate <= ? ");
             params.add(dateTo);
         }
-        
+
         if (search != null && !search.trim().isEmpty()) {
             sql.append("AND (a.ticketCode LIKE ? OR a.note LIKE ?) ");
             params.add("%" + search + "%");
             params.add("%" + search + "%");
         }
-        
+
         sql.append("ORDER BY a.transferDate DESC, a.createdAt DESC LIMIT ? OFFSET ?");
         params.add(pageSize);
         params.add((page - 1) * pageSize);
-        
+
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql.toString())) {
-            
+
             for (int i = 0; i < params.size(); i++) {
                 ps.setObject(i + 1, params.get(i));
             }
-            
+
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                ActualTransferTicket a = new ActualTransferTicket();
-                a.setId(rs.getInt("id"));
-                a.setTicketCode(rs.getString("ticketCode"));
-                a.setRequestTransferId(rs.getInt("requestTransferId"));
-                a.setTransferDate(rs.getDate("transferDate"));
-                a.setStatus(rs.getString("status"));
-                a.setConfirmedBy(rs.getInt("confirmedBy"));
-                a.setConfirmedByName(rs.getString("confirmedByName"));
-                a.setRequestTicketCode(rs.getString("requestTicketCode"));
-                a.setNote(rs.getString("note"));
-                list.add(a);
+                Map<String, Object> map = new HashMap<>();
+                map.put("id", rs.getInt("id"));
+                map.put("reportType", rs.getString("reportType"));
+                map.put("ticketCode", rs.getString("ticketCode"));
+                map.put("requestTransferId", rs.getInt("requestTransferId"));
+                map.put("transferDate", rs.getDate("transferDate"));
+                map.put("status", rs.getString("status"));
+                map.put("confirmedBy", rs.getInt("confirmedBy"));
+                map.put("note", rs.getString("note"));
+                map.put("requestTicketCode", rs.getString("requestTicketCode"));
+                map.put("confirmedByName", rs.getString("confirmedByName"));
+                list.add(map);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -320,13 +322,12 @@ public class ActualTransferDAO extends DBContext {
         return list;
     }
     
-    public int countByTypeAndDateAndStorekeeper(String type, String dateFrom, String dateTo, String search, Integer storekeeperId) {
+    public int countByTypeAndDate(String type, String dateFrom, String dateTo, String search) {
         StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM actual_transfer_ticket a ")
                 .append("LEFT JOIN request_transfer_ticket r ON a.requestTransferId = r.id ")
-                .append("WHERE r.type = ? AND r.employeeId = ? ");
+                .append("WHERE r.type = ? ");
         List<Object> params = new ArrayList<>();
         params.add(type);
-        params.add(storekeeperId);
         
         if (dateFrom != null && !dateFrom.trim().isEmpty()) {
             sql.append("AND a.transferDate >= ? ");

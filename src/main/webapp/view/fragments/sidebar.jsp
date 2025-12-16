@@ -55,19 +55,20 @@
                         </a>
                     </li>
 
+
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'transfer-ticket' ? 'active' : ''}"
-                           href="transfer-tickets.jsp">
-                            <i class="fas fa-exchange-alt me-2"></i>Transfer Tickets
+                        <a class="nav-link ${activePage == 'import-report' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/import-warehouse-report">
+                            <i class="fas fa-download me-2"></i>Import Warehouse Report
                         </a>
                     </li>
 
-<%--                    <li class="nav-item">--%>
-<%--                        <a class="nav-link ${activePage == 'reports' ? 'active' : ''}"--%>
-<%--                           href="reports.jsp">--%>
-<%--                            <i class="fas fa-chart-column me-2"></i>Reports--%>
-<%--                        </a>--%>
-<%--                    </li>--%>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'export-report' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/export-warehouse-report">
+                            <i class="fas fa-upload me-2"></i>Export Warehouse Report
+                        </a>
+                    </li>
                 </c:when>
 
                 <c:when test="${sessionScope.user.roleName == 'storekeeper'}">
@@ -81,18 +82,6 @@
                         <a class="nav-link ${activePage == 'actual-transfer' ? 'active' : ''}"
                            href="${pageContext.request.contextPath}/actual-transfer">
                             <i class="fas fa-dolly-flatbed me-2"></i>Actual Transfers
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'import-report' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/import-warehouse-report">
-                            <i class="fas fa-download me-2"></i>Import Warehouse Report
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'export-report' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/export-warehouse-report">
-                            <i class="fas fa-upload me-2"></i>Export Warehouse Report
                         </a>
                     </li>
                 </c:when>
