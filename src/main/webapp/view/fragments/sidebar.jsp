@@ -84,6 +84,12 @@
                             <i class="fas fa-dolly-flatbed me-2"></i>Actual Transfers
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'evaluate-list' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/evaluate-list">
+                            <i class="fas fa-dolly-flatbed me-2"></i>Evaluate Employee
+                        </a>
+                    </li>
                 </c:when>
 
                 <c:when test="${sessionScope.user.roleName == 'employee'}">
