@@ -66,8 +66,8 @@
                                         <label class="form-label fw-bold">Transfer Type <span class="text-danger">*</span></label>
                                         <select name="type" class="form-select" required>
                                             <option value="">-- Select Type --</option>
-                                            <option value="Internal Transfer">Import</option>
-                                            <option value="Supplier Return">Export</option>
+                                            <option value="Import">Import</option>
+                                            <option value="Export">Export</option>
                                         </select>
                                     </div>
                                     <div class="col-md-6">
@@ -75,14 +75,16 @@
                                         <input type="date" name="requestDate" class="form-control" required>
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label fw-bold">Assign Employee</label>
-                                        <select name="employeeId" class="form-select">
-                                            <option value="">-- Not Assigned --</option>
-                                            <c:forEach items="${employees}" var="emp">
-                                                <option value="${emp.userId}">${emp.displayName} (${emp.accountName})</option>
+                                        <label class="form-label fw-bold">Assign Storekeeper <span class="text-danger">*</span></label>
+                                        <select name="employeeId" class="form-select" required>
+                                            <option value="">-- Select Storekeeper --</option>
+                                            <c:forEach items="${storekeepers}" var="sk">
+                                                <option value="${sk.userId}">${sk.displayName} (${sk.accountName})</option>
                                             </c:forEach>
                                         </select>
-                                        <div class="form-text">Select employee responsible for this transfer</div>
+                                        <div class="form-text">
+                                            <i class="fas fa-info-circle"></i> Select storekeeper in your department to handle this request
+                                        </div>
                                     </div>
                                     <div class="col-12">
                                         <label class="form-label fw-bold">Note</label>

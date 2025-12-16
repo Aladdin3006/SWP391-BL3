@@ -1,4 +1,4 @@
-package controller.transfer;
+package controller.report;
 
 import dal.RequestTransferDAO;
 import entity.RequestTransferTicket;
@@ -12,8 +12,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-@WebServlet(name="RequestTransferListController", urlPatterns={"/request-transfer"})
-public class RequestTransferListController extends HttpServlet {
+@WebServlet(name="ExportWarehouseReportController", urlPatterns={"/export-warehouse-report"})
+public class ExportWarehouseReportController extends HttpServlet {
    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -30,28 +30,17 @@ public class RequestTransferListController extends HttpServlet {
         RequestTransferDAO dao = new RequestTransferDAO();
 
         String search = request.getParameter("search");
-        String status = request.getParameter("status");
+        String dateFrom = request.getParameter("dateFrom");
+        String dateTo = request.getParameter("dateTo");
         String pageStr = request.getParameter("page");
 
         int page = (pageStr == null || pageStr.isEmpty()) ? 1 : Integer.parseInt(pageStr);
         int pageSize = 10;
         
-        // Filter by department if user is employee
-        Integer filterEmployeeId = null;
-        Integer filterDepartmentId = null;
-        String roleName = user.getRole() != null ? user.getRole().getRoleName() : "";
-        if ("employee".equals(roleName)) {
-            // Employee sees tickets from their department
-            if (user.getDepartmentId() > 0) {
-                filterDepartmentId = user.getDepartmentId();
-            } else {
-                // If no department, only see their own tickets
-                filterEmployeeId = user.getUserId();
-            }
-        }
-
-        List<RequestTransferTicket> list = dao.getAll(search, status, page, pageSize, filterEmployeeId, filterDepartmentId);
-        int totalRecords = dao.count(search, status, filterEmployeeId, filterDepartmentId);
+        // Filter by Export type, date range and assigned storekeeper
+        Integer storekeeperId = user.getUserId(); // Only show requests assigned to this storekeeper
+        List<RequestTransferTicket> list = dao.getAllByTypeAndDateAndStorekeeper("Export", dateFrom, dateTo, search, storekeeperId, page, pageSize);
+        int totalRecords = dao.countByTypeAndDateAndStorekeeper("Export", dateFrom, dateTo, search, storekeeperId);
         int totalPages = (int) Math.ceil((double) totalRecords / pageSize);
 
         // Calculate display range
@@ -65,9 +54,10 @@ public class RequestTransferListController extends HttpServlet {
         request.setAttribute("fromRecord", fromRecord);
         request.setAttribute("toRecord", toRecord);
         request.setAttribute("search", search);
-        request.setAttribute("status", status);
+        request.setAttribute("dateFrom", dateFrom);
+        request.setAttribute("dateTo", dateTo);
+        request.setAttribute("reportType", "Export");
 
-        request.getRequestDispatcher("/view/transfer/request-list.jsp").forward(request, response);
+        request.getRequestDispatcher("/view/report/warehouse-report.jsp").forward(request, response);
     }
 }
-

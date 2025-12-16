@@ -40,24 +40,15 @@ public class AddRequestTransferController extends HttpServlet {
         List<Product> products = productDao.getAllProducts();
         String ticketCode = requestDao.generateTicketCode();
         
-        // Get employees based on user role and department
-        List<User> employees = new ArrayList<>();
-        String roleName = user.getRole() != null ? user.getRole().getRoleName() : "";
-        
-        if ("admin".equals(roleName) || user.getDepartmentId() <= 0) {
-            // Admin or users without department can see all employees
-            employees = userDao.getAllUsers().stream()
-                .filter(u -> u.getRole() != null && "employee".equals(u.getRole().getRoleName()))
-                .filter(u -> "active".equals(u.getStatus()))
-                .collect(java.util.stream.Collectors.toList());
-        } else {
-            // Storekeeper with department can only see employees in same department
-            employees = requestDao.getEmployeesByDepartment(user.getDepartmentId());
+        // Get storekeepers in same department
+        List<User> storekeepers = new ArrayList<>();
+        if (user.getDepartmentId() > 0) {
+            storekeepers = requestDao.getStorekeepersByDepartment(user.getDepartmentId());
         }
 
         request.setAttribute("products", products);
         request.setAttribute("ticketCode", ticketCode);
-        request.setAttribute("employees", employees);
+        request.setAttribute("storekeepers", storekeepers);
 
         request.getRequestDispatcher("/view/transfer/request-add.jsp").forward(request, response);
     }

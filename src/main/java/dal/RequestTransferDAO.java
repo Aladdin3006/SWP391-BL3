@@ -35,6 +35,14 @@ public class RequestTransferDAO extends DBContext {
     }
 
     public List<RequestTransferTicket> getAll(String search, String status, int page, int pageSize) {
+        return getAll(search, status, page, pageSize, null, null);
+    }
+    
+    public List<RequestTransferTicket> getAll(String search, String status, int page, int pageSize, Integer employeeId) {
+        return getAll(search, status, page, pageSize, employeeId, null);
+    }
+    
+    public List<RequestTransferTicket> getAll(String search, String status, int page, int pageSize, Integer employeeId, Integer departmentId) {
         List<RequestTransferTicket> list = new ArrayList<>();
         StringBuilder sql = new StringBuilder("SELECT r.*, ")
                 .append("cb.displayName as creatorName, ")
@@ -45,6 +53,19 @@ public class RequestTransferDAO extends DBContext {
                 .append("WHERE 1=1 ");
         
         List<Object> params = new ArrayList<>();
+        
+        if (departmentId != null && departmentId > 0) {
+            // Filter by department: show tickets where assigned employee or creator is in same department
+            sql.append("AND (r.employeeId IN (SELECT userId FROM user WHERE departmentId = ?) ")
+               .append("OR r.createdBy IN (SELECT userId FROM user WHERE departmentId = ?)) ");
+            params.add(departmentId);
+            params.add(departmentId);
+        } else if (employeeId != null && employeeId > 0) {
+            // Fallback: filter by specific employee
+            sql.append("AND (r.employeeId = ? OR r.createdBy = ?) ");
+            params.add(employeeId);
+            params.add(employeeId);
+        }
         
         if (search != null && !search.trim().isEmpty()) {
             sql.append("AND (r.ticketCode LIKE ? OR r.note LIKE ?) ");
@@ -88,8 +109,29 @@ public class RequestTransferDAO extends DBContext {
     }
 
     public int count(String search, String status) {
+        return count(search, status, null, null);
+    }
+    
+    public int count(String search, String status, Integer employeeId) {
+        return count(search, status, employeeId, null);
+    }
+    
+    public int count(String search, String status, Integer employeeId, Integer departmentId) {
         StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM request_transfer_ticket WHERE 1=1 ");
         List<Object> params = new ArrayList<>();
+        
+        if (departmentId != null && departmentId > 0) {
+            // Filter by department
+            sql.append("AND (employeeId IN (SELECT userId FROM user WHERE departmentId = ?) ")
+               .append("OR createdBy IN (SELECT userId FROM user WHERE departmentId = ?)) ");
+            params.add(departmentId);
+            params.add(departmentId);
+        } else if (employeeId != null && employeeId > 0) {
+            // Fallback: filter by specific employee
+            sql.append("AND (employeeId = ? OR createdBy = ?) ");
+            params.add(employeeId);
+            params.add(employeeId);
+        }
         
         if (search != null && !search.trim().isEmpty()) {
             sql.append("AND (ticketCode LIKE ? OR note LIKE ?) ");
@@ -335,5 +377,225 @@ public class RequestTransferDAO extends DBContext {
             e.printStackTrace();
         }
         return list;
+    }
+    
+    public List<User> getStorekeepersByDepartment(int departmentId) {
+        List<User> list = new ArrayList<>();
+        String sql = "SELECT u.userId, u.accountName, u.displayName "
+                + "FROM user u "
+                + "JOIN role r ON u.roleId = r.roleId "
+                + "WHERE u.departmentId = ? AND u.status = 'active' AND r.roleName = 'storekeeper'";
+        
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, departmentId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                User user = new User();
+                user.setUserId(rs.getInt("userId"));
+                user.setAccountName(rs.getString("accountName"));
+                user.setDisplayName(rs.getString("displayName"));
+                list.add(user);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    public List<RequestTransferTicket> getAllByTypeAndDate(String type, String dateFrom, String dateTo, String search, int page, int pageSize) {
+        List<RequestTransferTicket> list = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT r.*, ")
+                .append("cb.displayName as creatorName, ")
+                .append("emp.displayName as employeeName ")
+                .append("FROM request_transfer_ticket r ")
+                .append("LEFT JOIN user cb ON r.createdBy = cb.userId ")
+                .append("LEFT JOIN user emp ON r.employeeId = emp.userId ")
+                .append("WHERE r.type = ? ");
+        
+        List<Object> params = new ArrayList<>();
+        params.add(type);
+        
+        if (dateFrom != null && !dateFrom.trim().isEmpty()) {
+            sql.append("AND r.requestDate >= ? ");
+            params.add(dateFrom);
+        }
+        
+        if (dateTo != null && !dateTo.trim().isEmpty()) {
+            sql.append("AND r.requestDate <= ? ");
+            params.add(dateTo);
+        }
+        
+        if (search != null && !search.trim().isEmpty()) {
+            sql.append("AND (r.ticketCode LIKE ? OR r.note LIKE ?) ");
+            params.add("%" + search + "%");
+            params.add("%" + search + "%");
+        }
+        
+        sql.append("ORDER BY r.requestDate DESC, r.createdAt DESC LIMIT ? OFFSET ?");
+        params.add(pageSize);
+        params.add((page - 1) * pageSize);
+        
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+            
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+            
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                RequestTransferTicket r = new RequestTransferTicket();
+                r.setId(rs.getInt("id"));
+                r.setTicketCode(rs.getString("ticketCode"));
+                r.setType(rs.getString("type"));
+                r.setRequestDate(rs.getDate("requestDate"));
+                r.setStatus(rs.getString("status"));
+                r.setCreatedBy(rs.getInt("createdBy"));
+                r.setNote(rs.getString("note"));
+                r.setEmployeeId(rs.getInt("employeeId"));
+                list.add(r);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    public int countByTypeAndDate(String type, String dateFrom, String dateTo, String search) {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM request_transfer_ticket WHERE type = ? ");
+        List<Object> params = new ArrayList<>();
+        params.add(type);
+        
+        if (dateFrom != null && !dateFrom.trim().isEmpty()) {
+            sql.append("AND requestDate >= ? ");
+            params.add(dateFrom);
+        }
+        
+        if (dateTo != null && !dateTo.trim().isEmpty()) {
+            sql.append("AND requestDate <= ? ");
+            params.add(dateTo);
+        }
+        
+        if (search != null && !search.trim().isEmpty()) {
+            sql.append("AND (ticketCode LIKE ? OR note LIKE ?) ");
+            params.add("%" + search + "%");
+            params.add("%" + search + "%");
+        }
+        
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+            
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+            
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    
+    public List<RequestTransferTicket> getAllByTypeAndDateAndStorekeeper(String type, String dateFrom, String dateTo, String search, Integer storekeeperId, int page, int pageSize) {
+        List<RequestTransferTicket> list = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT r.*, ")
+                .append("cb.displayName as creatorName, ")
+                .append("emp.displayName as employeeName ")
+                .append("FROM request_transfer_ticket r ")
+                .append("LEFT JOIN user cb ON r.createdBy = cb.userId ")
+                .append("LEFT JOIN user emp ON r.employeeId = emp.userId ")
+                .append("WHERE r.type = ? AND r.employeeId = ? ");
+        
+        List<Object> params = new ArrayList<>();
+        params.add(type);
+        params.add(storekeeperId);
+        
+        if (dateFrom != null && !dateFrom.trim().isEmpty()) {
+            sql.append("AND r.requestDate >= ? ");
+            params.add(dateFrom);
+        }
+        
+        if (dateTo != null && !dateTo.trim().isEmpty()) {
+            sql.append("AND r.requestDate <= ? ");
+            params.add(dateTo);
+        }
+        
+        if (search != null && !search.trim().isEmpty()) {
+            sql.append("AND (r.ticketCode LIKE ? OR r.note LIKE ?) ");
+            params.add("%" + search + "%");
+            params.add("%" + search + "%");
+        }
+        
+        sql.append("ORDER BY r.requestDate DESC, r.createdAt DESC LIMIT ? OFFSET ?");
+        params.add(pageSize);
+        params.add((page - 1) * pageSize);
+        
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+            
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+            
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                RequestTransferTicket r = new RequestTransferTicket();
+                r.setId(rs.getInt("id"));
+                r.setTicketCode(rs.getString("ticketCode"));
+                r.setType(rs.getString("type"));
+                r.setRequestDate(rs.getDate("requestDate"));
+                r.setStatus(rs.getString("status"));
+                r.setCreatedBy(rs.getInt("createdBy"));
+                r.setNote(rs.getString("note"));
+                r.setEmployeeId(rs.getInt("employeeId"));
+                list.add(r);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    public int countByTypeAndDateAndStorekeeper(String type, String dateFrom, String dateTo, String search, Integer storekeeperId) {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM request_transfer_ticket WHERE type = ? AND employeeId = ? ");
+        List<Object> params = new ArrayList<>();
+        params.add(type);
+        params.add(storekeeperId);
+        
+        if (dateFrom != null && !dateFrom.trim().isEmpty()) {
+            sql.append("AND requestDate >= ? ");
+            params.add(dateFrom);
+        }
+        
+        if (dateTo != null && !dateTo.trim().isEmpty()) {
+            sql.append("AND requestDate <= ? ");
+            params.add(dateTo);
+        }
+        
+        if (search != null && !search.trim().isEmpty()) {
+            sql.append("AND (ticketCode LIKE ? OR note LIKE ?) ");
+            params.add("%" + search + "%");
+            params.add("%" + search + "%");
+        }
+        
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+            
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+            
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 }

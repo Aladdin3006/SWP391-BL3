@@ -124,14 +124,14 @@
                                             </div>
                                         </div>
                                         <div class="col-md-6">
-                                            <label class="text-muted small">Assigned Employee</label>
+                                            <label class="text-muted small">Assigned Storekeeper</label>
                                             <div class="fw-bold">
                                                 <c:choose>
                                                     <c:when test="${employee != null}">
                                                         <i class="fas fa-user-check text-success me-1"></i> ${employee.displayName}
                                                     </c:when>
                                                     <c:when test="${ticket.employeeId > 0}">
-                                                        Employee #${ticket.employeeId}
+                                                        Storekeeper #${ticket.employeeId}
                                                     </c:when>
                                                     <c:otherwise>
                                                         <span class="text-muted">Not Assigned</span>

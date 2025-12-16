@@ -75,8 +75,8 @@
                                     <div class="col-md-6">
                                         <label class="form-label fw-bold">Transfer Type <span class="text-danger">*</span></label>
                                         <select name="type" class="form-select" required>
-                                            <option value="Internal Transfer" ${ticket.type == 'Import' ? 'selected' : ''}>Import</option>
-                                            <option value="Supplier Return" ${ticket.type == 'Export' ? 'selected' : ''}>Export</option>
+                                            <option value="Import" ${ticket.type == 'Import' ? 'selected' : ''}>Import</option>
+                                            <option value="Export" ${ticket.type == 'Export' ? 'selected' : ''}>Export</option>
                                         </select>
                                     </div>
                                     <div class="col-md-6">
@@ -93,16 +93,18 @@
                                         </select>
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label fw-bold">Assign Employee</label>
-                                        <select name="employeeId" class="form-select">
-                                            <option value="">-- Not Assigned --</option>
-                                            <c:forEach items="${employees}" var="emp">
-                                                <option value="${emp.userId}" ${ticket.employeeId == emp.userId ? 'selected' : ''}>
-                                                    ${emp.displayName} (${emp.accountName})
+                                        <label class="form-label fw-bold">Assign Storekeeper <span class="text-danger">*</span></label>
+                                        <select name="employeeId" class="form-select" required>
+                                            <option value="">-- Select Storekeeper --</option>
+                                            <c:forEach items="${storekeepers}" var="sk">
+                                                <option value="${sk.userId}" ${ticket.employeeId == sk.userId ? 'selected' : ''}>
+                                                    ${sk.displayName} (${sk.accountName})
                                                 </option>
                                             </c:forEach>
                                         </select>
-                                        <div class="form-text">Select employee responsible for this transfer</div>
+                                        <div class="form-text">
+                                            <i class="fas fa-info-circle"></i> Select storekeeper in your department to handle this request
+                                        </div>
                                     </div>
                                     <div class="col-12">
                                         <label class="form-label fw-bold">Note</label>

@@ -78,15 +78,21 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'request-transfer' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/request-transfer">
-                            <i class="fas fa-file-invoice me-2"></i>Request Transfers
-                        </a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link ${activePage == 'actual-transfer' ? 'active' : ''}"
                            href="${pageContext.request.contextPath}/actual-transfer">
                             <i class="fas fa-dolly-flatbed me-2"></i>Actual Transfers
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'import-report' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/import-warehouse-report">
+                            <i class="fas fa-download me-2"></i>Import Warehouse Report
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'export-report' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/export-warehouse-report">
+                            <i class="fas fa-upload me-2"></i>Export Warehouse Report
                         </a>
                     </li>
                 </c:when>
@@ -99,8 +105,8 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'warehouse-request' ? 'active' : ''}"
-                           href="#">
+                        <a class="nav-link ${activePage == 'request-transfer' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/request-transfer">
                             <i class="fas fa-clipboard-list me-2"></i>Your Warehouse Request
                         </a>
                     </li>

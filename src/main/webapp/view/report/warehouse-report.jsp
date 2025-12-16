@@ -5,7 +5,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Request Transfer Tickets - WMS</title>
+        <title>${reportType} Warehouse Report - WMS</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
         <style>
@@ -63,51 +63,42 @@
 
         <div class="container-fluid">
             <div class="row">
-                <c:set var="activePage" value="request-transfer" scope="request"/>
+                <c:set var="activePage" value="${reportType == 'Import' ? 'import-report' : 'export-report'}" scope="request"/>
                 <jsp:include page="/view/fragments/sidebar.jsp"/>
 
                 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
 
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h2 class="text-primary fw-bold mb-0">Request Transfer Tickets</h2>
-                        <a href="${pageContext.request.contextPath}/request-transfer/add" class="btn btn-success fw-bold">
-                            <i class="fas fa-plus me-1"></i> Create Request
-                        </a>
+                        <h2 class="text-primary fw-bold mb-0">
+                            <i class="fas ${reportType == 'Import' ? 'fa-download' : 'fa-upload'} me-2"></i>
+                            ${reportType} Warehouse Report
+                        </h2>
                     </div>
-
-                    <c:if test="${param.success == 'added'}">
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            <i class="fas fa-check-circle me-2"></i>Request transfer ticket created successfully!
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        </div>
-                    </c:if>
 
                     <div class="card shadow-sm border-0 mb-4">
                         <div class="card-body p-4">
-                            <form action="${pageContext.request.contextPath}/request-transfer" method="GET">
+                            <form action="${pageContext.request.contextPath}/${reportType == 'Import' ? 'import' : 'export'}-warehouse-report" method="GET">
                                 <div class="row g-3">
-                                    <div class="col-md-5">
+                                    <div class="col-md-3">
+                                        <label class="form-label fw-bold text-secondary small text-uppercase">FROM DATE</label>
+                                        <input type="date" name="dateFrom" value="${dateFrom}" class="form-control">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label fw-bold text-secondary small text-uppercase">TO DATE</label>
+                                        <input type="date" name="dateTo" value="${dateTo}" class="form-control">
+                                    </div>
+                                    <div class="col-md-4">
                                         <label class="form-label fw-bold text-secondary small text-uppercase">SEARCH</label>
                                         <div class="input-group">
                                             <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
                                             <input type="text" name="search" value="${search}" class="form-control border-start-0" placeholder="Search by Ticket Code or Note...">
                                         </div>
                                     </div>
-                                    <div class="col-md-5">
-                                        <label class="form-label fw-bold text-secondary small text-uppercase">STATUS</label>
-                                        <select name="status" class="form-select">
-                                            <option value="">All Status</option>
-                                            <option value="Pending" ${status == 'Pending' ? 'selected' : ''}>Pending</option>
-                                            <option value="Approved" ${status == 'Approved' ? 'selected' : ''}>Approved</option>
-                                            <option value="Completed" ${status == 'Completed' ? 'selected' : ''}>Completed</option>
-                                            <option value="Rejected" ${status == 'Rejected' ? 'selected' : ''}>Rejected</option>
-                                        </select>
-                                    </div>
                                     <div class="col-md-2 d-flex align-items-end gap-2">
                                         <button type="submit" class="btn btn-primary fw-bold flex-fill" style="height: 38px;">
                                             <i class="fas fa-filter me-1"></i> Filter
                                         </button>
-                                        <a href="${pageContext.request.contextPath}/request-transfer" class="btn btn-outline-secondary fw-bold flex-fill" style="height: 38px;" title="Reset filters">
+                                        <a href="${pageContext.request.contextPath}/${reportType == 'Import' ? 'import' : 'export'}-warehouse-report" class="btn btn-outline-secondary fw-bold flex-fill" style="height: 38px;" title="Reset filters">
                                             <i class="fas fa-redo"></i>
                                         </a>
                                     </div>
@@ -122,10 +113,10 @@
                                 <thead class="table-light text-uppercase small">
                                     <tr>
                                         <th class="ps-4 py-3 text-secondary">Ticket Code</th>
-                                        <th class="py-3 text-secondary">Type</th>
                                         <th class="py-3 text-secondary">Request Date</th>
                                         <th class="py-3 text-secondary">Status</th>
                                         <th class="py-3 text-secondary">Assigned Storekeeper</th>
+                                        <th class="py-3 text-secondary">Note</th>
                                         <th class="py-3 text-center text-secondary">Action</th>
                                     </tr>
                                 </thead>
@@ -133,14 +124,14 @@
                                     <c:if test="${empty transfers}">
                                         <tr>
                                             <td colspan="6" class="text-center py-5 text-muted">
-                                                <i class="fas fa-folder-open fa-2x mb-3 text-secondary"></i><br>No records found.
+                                                <i class="fas fa-folder-open fa-2x mb-3 text-secondary"></i><br>
+                                                No ${reportType} records found for the selected date range.
                                             </td>
                                         </tr>
                                     </c:if>
                                     <c:forEach items="${transfers}" var="t">
                                         <tr>
                                             <td class="ps-4 fw-bold text-primary">${t.ticketCode}</td>
-                                            <td>${t.type}</td>
                                             <td>${t.requestDate}</td>
                                             <td>
                                                 <c:choose>
@@ -171,19 +162,24 @@
                                                     </c:otherwise>
                                                 </c:choose>
                                             </td>
+                                            <td>
+                                                <c:choose>
+                                                    <c:when test="${not empty t.note && t.note.length() > 50}">
+                                                        ${t.note.substring(0, 50)}...
+                                                    </c:when>
+                                                    <c:when test="${not empty t.note}">
+                                                        ${t.note}
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <span class="text-muted">-</span>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </td>
                                             <td class="text-center">
-                                                <div class="btn-group">
-                                                    <a href="${pageContext.request.contextPath}/request-transfer/detail?id=${t.id}" 
-                                                       class="btn btn-sm btn-outline-secondary" title="View Detail">
-                                                        <i class="fas fa-eye"></i>
-                                                    </a>
-                                                    <c:if test="${t.status == 'Pending'}">
-                                                        <a href="${pageContext.request.contextPath}/request-transfer/edit?id=${t.id}" 
-                                                           class="btn btn-sm btn-outline-primary" title="Edit Request">
-                                                            <i class="fas fa-edit"></i>
-                                                        </a>
-                                                    </c:if>
-                                                </div>
+                                                <a href="${pageContext.request.contextPath}/request-transfer/detail?id=${t.id}" 
+                                                   class="btn btn-sm btn-outline-secondary" title="View Detail">
+                                                    <i class="fas fa-eye"></i> View
+                                                </a>
                                             </td>
                                         </tr>
                                     </c:forEach>
@@ -206,88 +202,39 @@
                                 <!-- Pagination Controls -->
                                 <c:if test="${totalPages > 1}">
                                     <nav aria-label="Page navigation">
+                                        <c:set var="baseUrl" value="${reportType == 'Import' ? 'import' : 'export'}-warehouse-report"/>
                                         <ul class="pagination mb-0">
                                             <!-- First Page -->
                                             <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
-                                                <a class="page-link" href="request-transfer?page=1&search=${search}&status=${status}" aria-label="First">
+                                                <a class="page-link" href="${baseUrl}?page=1&search=${search}&dateFrom=${dateFrom}&dateTo=${dateTo}" aria-label="First">
                                                     <i class="fas fa-angle-double-left"></i>
                                                 </a>
                                             </li>
 
                                             <!-- Previous Page -->
                                             <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
-                                                <a class="page-link" href="request-transfer?page=${currentPage - 1}&search=${search}&status=${status}" aria-label="Previous">
+                                                <a class="page-link" href="${baseUrl}?page=${currentPage - 1}&search=${search}&dateFrom=${dateFrom}&dateTo=${dateTo}" aria-label="Previous">
                                                     <i class="fas fa-angle-left"></i>
                                                 </a>
                                             </li>
 
                                             <!-- Page Numbers -->
-                                            <c:choose>
-                                                <c:when test="${totalPages <= 7}">
-                                                    <!-- Show all pages if 7 or less -->
-                                                    <c:forEach begin="1" end="${totalPages}" var="i">
-                                                        <li class="page-item ${currentPage == i ? 'active' : ''}">
-                                                            <a class="page-link" href="request-transfer?page=${i}&search=${search}&status=${status}">${i}</a>
-                                                        </li>
-                                                    </c:forEach>
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <!-- Smart pagination for many pages -->
-                                                    <c:choose>
-                                                        <c:when test="${currentPage <= 4}">
-                                                            <!-- Near start -->
-                                                            <c:forEach begin="1" end="5" var="i">
-                                                                <li class="page-item ${currentPage == i ? 'active' : ''}">
-                                                                    <a class="page-link" href="request-transfer?page=${i}&search=${search}&status=${status}">${i}</a>
-                                                                </li>
-                                                            </c:forEach>
-                                                            <li class="page-item disabled"><span class="page-link">...</span></li>
-                                                            <li class="page-item">
-                                                                <a class="page-link" href="request-transfer?page=${totalPages}&search=${search}&status=${status}">${totalPages}</a>
-                                                            </li>
-                                                        </c:when>
-                                                        <c:when test="${currentPage >= totalPages - 3}">
-                                                            <!-- Near end -->
-                                                            <li class="page-item">
-                                                                <a class="page-link" href="request-transfer?page=1&search=${search}&status=${status}">1</a>
-                                                            </li>
-                                                            <li class="page-item disabled"><span class="page-link">...</span></li>
-                                                            <c:forEach begin="${totalPages - 4}" end="${totalPages}" var="i">
-                                                                <li class="page-item ${currentPage == i ? 'active' : ''}">
-                                                                    <a class="page-link" href="request-transfer?page=${i}&search=${search}&status=${status}">${i}</a>
-                                                                </li>
-                                                            </c:forEach>
-                                                        </c:when>
-                                                        <c:otherwise>
-                                                            <!-- In middle -->
-                                                            <li class="page-item">
-                                                                <a class="page-link" href="request-transfer?page=1&search=${search}&status=${status}">1</a>
-                                                            </li>
-                                                            <li class="page-item disabled"><span class="page-link">...</span></li>
-                                                            <c:forEach begin="${currentPage - 1}" end="${currentPage + 1}" var="i">
-                                                                <li class="page-item ${currentPage == i ? 'active' : ''}">
-                                                                    <a class="page-link" href="request-transfer?page=${i}&search=${search}&status=${status}">${i}</a>
-                                                                </li>
-                                                            </c:forEach>
-                                                            <li class="page-item disabled"><span class="page-link">...</span></li>
-                                                            <li class="page-item">
-                                                                <a class="page-link" href="request-transfer?page=${totalPages}&search=${search}&status=${status}">${totalPages}</a>
-                                                            </li>
-                                                        </c:otherwise>
-                                                    </c:choose>
-                                                </c:otherwise>
-                                            </c:choose>
+                                            <c:forEach begin="1" end="${totalPages > 5 ? 5 : totalPages}" var="i">
+                                                <li class="page-item ${currentPage == i ? 'active' : ''}">
+                                                    <a class="page-link" href="${baseUrl}?page=${i}&search=${search}&dateFrom=${dateFrom}&dateTo=${dateTo}">${i}</a>
+                                                </li>
+                                            </c:forEach>
 
                                             <!-- Next Page -->
                                             <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
-                                                <a class="page-link" href="request-transfer?page=${currentPage + 1}&search=${search}&status=${status}" aria-label="Next">
+                                                <a class="page-link" href="${baseUrl}?page=${currentPage + 1}&search=${search}&dateFrom=${dateFrom}&dateTo=${dateTo}" aria-label="Next">
                                                     <i class="fas fa-angle-right"></i>
                                                 </a>
                                             </li>
 
                                             <!-- Last Page -->
                                             <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
-                                                <a class="page-link" href="request-transfer?page=${totalPages}&search=${search}&status=${status}" aria-label="Last">
+                                                <a class="page-link" href="${baseUrl}?page=${totalPages}&search=${search}&dateFrom=${dateFrom}&dateTo=${dateTo}" aria-label="Last">
                                                     <i class="fas fa-angle-double-right"></i>
                                                 </a>
                                             </li>
@@ -305,4 +252,3 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     </body>
 </html>
-
