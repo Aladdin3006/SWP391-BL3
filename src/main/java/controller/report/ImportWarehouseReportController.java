@@ -70,6 +70,6 @@ public class ImportWarehouseReportController extends HttpServlet {
         request.setAttribute("dateTo", dateTo);
         request.setAttribute("reportType", "Import");
 
-        request.getRequestDispatcher("/view/manager/report/warehouse-report.jsp").forward(request, response);
+        request.getRequestDispatcher("/view/report/warehouse-report.jsp").forward(request, response);
     }
 }

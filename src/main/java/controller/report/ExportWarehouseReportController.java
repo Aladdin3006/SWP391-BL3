@@ -71,6 +71,6 @@ public class ExportWarehouseReportController extends HttpServlet {
         request.setAttribute("dateTo", dateTo);
         request.setAttribute("reportType", "Export");
 
-        request.getRequestDispatcher("/view/manager/report/warehouse-report.jsp").forward(request, response);
+        request.getRequestDispatcher("/view/report/warehouse-report.jsp").forward(request, response);
     }
 }
