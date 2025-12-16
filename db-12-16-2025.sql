@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.44, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.42, for Win64 (x86_64)
 --
--- Host: localhost    Database: swp
+-- Host: 127.0.0.1    Database: swp
 -- ------------------------------------------------------
--- Server version	8.0.44
+-- Server version	9.3.0
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -107,6 +107,35 @@ INSERT INTO `department` VALUES (1,'daaa',9,'active','2025-12-11 14:15:05'),(2,'
 UNLOCK TABLES;
 
 --
+-- Table structure for table `inventory`
+--
+
+DROP TABLE IF EXISTS `inventory`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `inventory` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `product_id` int NOT NULL,
+  `change_id` int NOT NULL,
+  `quantity` int NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_product_change` (`product_id`,`change_id`),
+  KEY `change_id` (`change_id`),
+  CONSTRAINT `inventory_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`),
+  CONSTRAINT `inventory_ibfk_2` FOREIGN KEY (`change_id`) REFERENCES `product_change` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `inventory`
+--
+
+LOCK TABLES `inventory` WRITE;
+/*!40000 ALTER TABLE `inventory` DISABLE KEYS */;
+/*!40000 ALTER TABLE `inventory` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `permission`
 --
 
@@ -120,7 +149,7 @@ CREATE TABLE `permission` (
   `description` varchar(255) DEFAULT NULL,
   `createdAt` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`permissionId`)
-) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -221,7 +250,7 @@ CREATE TABLE `product_transfer_item` (
   PRIMARY KEY (`id`),
   KEY `fk_transfer_item_product` (`product_id`),
   CONSTRAINT `fk_transfer_item_product` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -230,7 +259,7 @@ CREATE TABLE `product_transfer_item` (
 
 LOCK TABLES `product_transfer_item` WRITE;
 /*!40000 ALTER TABLE `product_transfer_item` DISABLE KEYS */;
-INSERT INTO `product_transfer_item` VALUES (1,1,'request',1,20,'2025-11-30 19:00:00'),(2,1,'request',4,35,'2025-11-30 19:00:00'),(3,1,'request',5,16,'2025-11-30 19:00:00'),(4,2,'request',2,10,'2025-12-01 20:15:00'),(5,2,'request',3,15,'2025-12-01 20:15:00'),(6,3,'request',6,25,'2025-12-02 21:30:00'),(7,3,'request',7,20,'2025-12-02 21:30:00'),(8,4,'request',2,8,'2025-12-04 00:45:00'),(9,4,'request',3,12,'2025-12-04 00:45:00'),(10,5,'request',1,20,'2025-12-04 18:20:00'),(11,5,'request',10,15,'2025-12-04 18:20:00'),(12,6,'request',4,10,'2025-12-05 23:10:00'),(13,6,'request',5,5,'2025-12-05 23:10:00'),(14,7,'request',2,8,'2025-12-06 20:30:00'),(15,7,'request',3,12,'2025-12-06 20:30:00'),(16,8,'request',8,30,'2025-12-08 02:45:00'),(17,8,'request',9,25,'2025-12-08 02:45:00'),(18,9,'request',6,18,'2025-12-08 19:15:00'),(19,9,'request',7,10,'2025-12-08 19:15:00'),(20,10,'request',1,5,'2025-12-09 21:20:00'),(21,10,'request',10,10,'2025-12-09 21:20:00'),(22,11,'request',4,12,'2025-12-11 00:35:00'),(23,11,'request',5,8,'2025-12-11 00:35:00'),(24,12,'request',2,6,'2025-12-11 20:50:00'),(25,12,'request',3,8,'2025-12-11 20:50:00'),(26,13,'request',6,15,'2025-12-13 01:25:00'),(27,13,'request',7,10,'2025-12-13 01:25:00'),(28,14,'request',8,25,'2025-12-13 19:40:00'),(29,14,'request',9,20,'2025-12-13 19:40:00'),(30,15,'request',10,8,'2025-12-14 23:55:00'),(31,15,'request',1,10,'2025-12-14 23:55:00'),(32,16,'request',4,20,'2025-12-16 02:10:00'),(33,16,'request',5,15,'2025-12-16 02:10:00'),(34,17,'request',2,12,'2025-12-16 18:25:00'),(35,17,'request',3,18,'2025-12-16 18:25:00'),(36,18,'request',6,8,'2025-12-17 22:30:00'),(37,18,'request',7,6,'2025-12-17 22:30:00'),(38,19,'request',8,15,'2025-12-19 00:45:00'),(39,19,'request',9,12,'2025-12-19 00:45:00'),(40,20,'request',10,10,'2025-12-19 20:00:00'),(41,1,'actual',1,20,'2025-12-01 02:00:00'),(42,1,'actual',4,35,'2025-12-01 02:00:00'),(43,1,'actual',5,16,'2025-12-01 02:00:00'),(44,2,'actual',2,10,'2025-12-02 03:30:00'),(45,2,'actual',3,15,'2025-12-02 03:30:00'),(46,3,'actual',6,25,'2025-12-03 04:15:00'),(47,3,'actual',7,20,'2025-12-03 04:15:00'),(48,4,'actual',2,8,'2025-12-03 21:30:00'),(49,4,'actual',3,12,'2025-12-03 21:30:00'),(50,5,'actual',1,20,'2025-12-05 01:45:00'),(51,5,'actual',10,15,'2025-12-05 01:45:00'),(52,6,'actual',4,10,'2025-12-05 21:40:00'),(53,6,'actual',5,5,'2025-12-05 21:40:00'),(54,7,'actual',2,8,'2025-12-06 22:45:00'),(55,7,'actual',3,12,'2025-12-06 22:45:00'),(56,8,'actual',8,30,'2025-12-08 04:20:00'),(57,8,'actual',9,25,'2025-12-08 04:20:00'),(58,9,'actual',6,18,'2025-12-08 23:55:00'),(59,9,'actual',7,10,'2025-12-08 23:55:00'),(60,10,'actual',1,5,'2025-12-10 00:15:00');
+INSERT INTO `product_transfer_item` VALUES (1,1,'request',1,20,'2025-11-30 19:00:00'),(2,1,'request',4,35,'2025-11-30 19:00:00'),(3,1,'request',5,16,'2025-11-30 19:00:00'),(4,2,'request',2,10,'2025-12-01 20:15:00'),(5,2,'request',3,15,'2025-12-01 20:15:00'),(6,3,'request',6,25,'2025-12-02 21:30:00'),(7,3,'request',7,20,'2025-12-02 21:30:00'),(8,4,'request',2,8,'2025-12-04 00:45:00'),(9,4,'request',3,12,'2025-12-04 00:45:00'),(10,5,'request',1,20,'2025-12-04 18:20:00'),(11,5,'request',10,15,'2025-12-04 18:20:00'),(12,6,'request',4,10,'2025-12-05 23:10:00'),(13,6,'request',5,5,'2025-12-05 23:10:00'),(14,7,'request',2,8,'2025-12-06 20:30:00'),(15,7,'request',3,12,'2025-12-06 20:30:00'),(16,8,'request',8,30,'2025-12-08 02:45:00'),(17,8,'request',9,25,'2025-12-08 02:45:00'),(18,9,'request',6,18,'2025-12-08 19:15:00'),(19,9,'request',7,10,'2025-12-08 19:15:00'),(20,10,'request',1,5,'2025-12-09 21:20:00'),(21,10,'request',10,10,'2025-12-09 21:20:00'),(22,11,'request',4,12,'2025-12-11 00:35:00'),(23,11,'request',5,8,'2025-12-11 00:35:00'),(24,12,'request',2,6,'2025-12-11 20:50:00'),(25,12,'request',3,8,'2025-12-11 20:50:00'),(26,13,'request',6,15,'2025-12-13 01:25:00'),(27,13,'request',7,10,'2025-12-13 01:25:00'),(28,14,'request',8,25,'2025-12-13 19:40:00'),(29,14,'request',9,20,'2025-12-13 19:40:00'),(30,15,'request',10,8,'2025-12-14 23:55:00'),(31,15,'request',1,10,'2025-12-14 23:55:00'),(32,16,'request',4,20,'2025-12-16 02:10:00'),(33,16,'request',5,15,'2025-12-16 02:10:00'),(34,17,'request',2,12,'2025-12-16 18:25:00'),(35,17,'request',3,18,'2025-12-16 18:25:00'),(36,18,'request',6,8,'2025-12-17 22:30:00'),(37,18,'request',7,6,'2025-12-17 22:30:00'),(38,19,'request',8,15,'2025-12-19 00:45:00'),(39,19,'request',9,12,'2025-12-19 00:45:00'),(40,20,'request',10,10,'2025-12-19 20:00:00'),(41,1,'actual',1,20,'2025-12-01 02:00:00'),(42,1,'actual',4,35,'2025-12-01 02:00:00'),(43,1,'actual',5,16,'2025-12-01 02:00:00'),(44,2,'actual',2,10,'2025-12-02 03:30:00'),(45,2,'actual',3,15,'2025-12-02 03:30:00'),(46,3,'actual',6,25,'2025-12-03 04:15:00'),(47,3,'actual',7,20,'2025-12-03 04:15:00'),(48,4,'actual',2,8,'2025-12-03 21:30:00'),(49,4,'actual',3,12,'2025-12-03 21:30:00'),(50,5,'actual',1,20,'2025-12-05 01:45:00'),(51,5,'actual',10,15,'2025-12-05 01:45:00'),(52,6,'actual',4,10,'2025-12-05 21:40:00'),(53,6,'actual',5,5,'2025-12-05 21:40:00'),(54,7,'actual',2,8,'2025-12-06 22:45:00'),(55,7,'actual',3,12,'2025-12-06 22:45:00'),(56,8,'actual',8,30,'2025-12-08 04:20:00'),(57,8,'actual',9,25,'2025-12-08 04:20:00'),(58,9,'actual',6,18,'2025-12-08 23:55:00'),(59,9,'actual',7,10,'2025-12-08 23:55:00'),(60,10,'actual',1,5,'2025-12-10 00:15:00'),(61,21,'request',7,16,'2025-12-16 06:53:54'),(62,22,'request',6,16,'2025-12-16 07:40:09');
 /*!40000 ALTER TABLE `product_transfer_item` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -257,7 +286,7 @@ CREATE TABLE `request_transfer_ticket` (
   KEY `fk_request_employee` (`employeeId`),
   CONSTRAINT `fk_request_created_by` FOREIGN KEY (`createdBy`) REFERENCES `user` (`userId`),
   CONSTRAINT `fk_request_employee` FOREIGN KEY (`employeeId`) REFERENCES `user` (`userId`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -266,7 +295,7 @@ CREATE TABLE `request_transfer_ticket` (
 
 LOCK TABLES `request_transfer_ticket` WRITE;
 /*!40000 ALTER TABLE `request_transfer_ticket` DISABLE KEYS */;
-INSERT INTO `request_transfer_ticket` VALUES (1,'REQ-2025-001','Import','2025-12-01','Completed',3,'Monthly inventory restock from main warehouse',6,'2025-11-30 19:00:00'),(2,'REQ-2025-002','Export','2025-12-02','Completed',4,'Transfer to branch store for holiday sale',7,'2025-12-01 20:15:00'),(3,'REQ-2025-003','Import','2025-12-03','Completed',5,'New product shipment from supplier TechParts',8,'2025-12-02 21:30:00'),(4,'REQ-2025-004','Export','2025-12-04','Completed',3,'Customer bulk order fulfillment',6,'2025-12-04 00:45:00'),(5,'REQ-2025-005','Import','2025-12-05','Completed',4,'Restock after Black Friday sale',7,'2025-12-04 18:20:00'),(6,'REQ-2025-006','Export','2025-12-06','Completed',5,'Return defective items to supplier',8,'2025-12-05 23:10:00'),(7,'REQ-2025-007','Import','2025-12-07','Completed',3,'Emergency stock for upcoming event',6,'2025-12-06 20:30:00'),(8,'REQ-2025-008','Export','2025-12-08','Completed',4,'Inter-department transfer for project',7,'2025-12-08 02:45:00'),(9,'REQ-2025-009','Import','2025-12-09','Completed',5,'New product line from Gaming Gear Co.',8,'2025-12-08 19:15:00'),(10,'REQ-2025-010','Export','2025-12-10','Completed',3,'Year-end inventory adjustment',6,'2025-12-09 21:20:00'),(11,'REQ-2025-011','Import','2025-12-11','Completed',4,'Restock popular items',7,'2025-12-11 00:35:00'),(12,'REQ-2025-012','Export','2025-12-12','Completed',5,'Transfer to new store location',8,'2025-12-11 20:50:00'),(13,'REQ-2025-013','Import','2025-12-13','Completed',3,'Supplier exchange program',6,'2025-12-13 01:25:00'),(14,'REQ-2025-014','Export','2025-12-14','Completed',4,'Corporate client order',7,'2025-12-13 19:40:00'),(15,'REQ-2025-015','Import','2025-12-15','Completed',5,'Backorder fulfillment',8,'2025-12-14 23:55:00'),(16,'REQ-2025-016','Export','2025-12-16','Pending',3,'Clearance sale stock',6,'2025-12-16 02:10:00'),(17,'REQ-2025-017','Import','2025-12-17','Approved',4,'Seasonal product preparation',7,'2025-12-16 18:25:00'),(18,'REQ-2025-018','Export','2025-12-18','Approved',5,'Warranty replacement items',8,'2025-12-17 22:30:00'),(19,'REQ-2025-019','Import','2025-12-19','Pending',3,'New year inventory preparation',6,'2025-12-19 00:45:00'),(20,'REQ-2025-020','Export','2025-12-20','Approved',4,'Promotional event materials',7,'2025-12-19 20:00:00');
+INSERT INTO `request_transfer_ticket` VALUES (1,'REQ-2025-001','Import','2025-12-01','Completed',3,'Monthly inventory restock from main warehouse',6,'2025-11-30 19:00:00'),(2,'REQ-2025-002','Export','2025-12-02','Completed',4,'Transfer to branch store for holiday sale',7,'2025-12-01 20:15:00'),(3,'REQ-2025-003','Import','2025-12-03','Completed',5,'New product shipment from supplier TechParts',8,'2025-12-02 21:30:00'),(4,'REQ-2025-004','Export','2025-12-04','Completed',3,'Customer bulk order fulfillment',6,'2025-12-04 00:45:00'),(5,'REQ-2025-005','Import','2025-12-05','Completed',4,'Restock after Black Friday sale',7,'2025-12-04 18:20:00'),(6,'REQ-2025-006','Export','2025-12-06','Completed',5,'Return defective items to supplier',8,'2025-12-05 23:10:00'),(7,'REQ-2025-007','Import','2025-12-07','Completed',3,'Emergency stock for upcoming event',6,'2025-12-06 20:30:00'),(8,'REQ-2025-008','Export','2025-12-08','Completed',4,'Inter-department transfer for project',7,'2025-12-08 02:45:00'),(9,'REQ-2025-009','Import','2025-12-09','Completed',5,'New product line from Gaming Gear Co.',8,'2025-12-08 19:15:00'),(10,'REQ-2025-010','Export','2025-12-10','Completed',3,'Year-end inventory adjustment',6,'2025-12-09 21:20:00'),(11,'REQ-2025-011','Import','2025-12-11','Completed',4,'Restock popular items',7,'2025-12-11 00:35:00'),(12,'REQ-2025-012','Export','2025-12-12','Completed',5,'Transfer to new store location',8,'2025-12-11 20:50:00'),(13,'REQ-2025-013','Import','2025-12-13','Completed',3,'Supplier exchange program',6,'2025-12-13 01:25:00'),(14,'REQ-2025-014','Export','2025-12-14','Completed',4,'Corporate client order',7,'2025-12-13 19:40:00'),(15,'REQ-2025-015','Import','2025-12-15','Completed',5,'Backorder fulfillment',8,'2025-12-14 23:55:00'),(16,'REQ-2025-016','Export','2025-12-16','Pending',3,'Clearance sale stock',6,'2025-12-16 02:10:00'),(17,'REQ-2025-017','Import','2025-12-17','Approved',4,'Seasonal product preparation',7,'2025-12-16 18:25:00'),(18,'REQ-2025-018','Export','2025-12-18','Approved',5,'Warranty replacement items',8,'2025-12-17 22:30:00'),(19,'REQ-2025-019','Import','2025-12-19','Pending',3,'New year inventory preparation',6,'2025-12-19 00:45:00'),(20,'REQ-2025-020','Export','2025-12-20','Approved',4,'Promotional event materials',7,'2025-12-19 20:00:00'),(21,'REQ001','Export','2025-12-11','Pending',17,'sagsg',17,'2025-12-16 06:53:54'),(22,'REQ002','Import','2025-12-16','Pending',6,'sgsgb',9,'2025-12-16 07:40:09');
 /*!40000 ALTER TABLE `request_transfer_ticket` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -396,6 +425,10 @@ LOCK TABLES `user` WRITE;
 INSERT INTO `user` VALUES (1,'admin','System Administratorrrttttqeqwew','0192023a7bbd73250516f069df18b500','tuanhdhe173314@fpt.edu.vn','0912345678',1,'active',NULL,'5b07e1ae-c2ed-4158-9d98-8395a4da3f8e',NULL,'2025-12-03 17:10:25','2025-12-11 16:08:19'),(2,'superadmin','Super Admin','0192023a7bbd73250516f069df18b500','superadmin@company.com','0923456789',1,'active',NULL,NULL,'token_superadmin_002','2025-12-03 17:10:25','2025-12-13 12:03:35'),(3,'manager1','John Manager','0192023a7bbd73250516f069df18b500','john.manager@company.com','0934567890',2,'active',NULL,NULL,'token_manager1_003','2025-12-03 17:10:25','2025-12-13 12:03:35'),(4,'manager2','Jane Manager','0192023a7bbd73250516f069df18b500','jane.manager@company.com','0945678901',2,'active',NULL,NULL,'token_manager2_004','2025-12-03 17:10:25','2025-12-13 12:03:35'),(5,'employee1','Bob Employee','0192023a7bbd73250516f069df18b500','bob.employee@company.com','0956789012',3,'inactive',NULL,NULL,'token_emp1_005','2025-12-03 17:10:25','2025-12-13 12:03:35'),(6,'employee2','Alice Employee','0192023a7bbd73250516f069df18b500','alice.employee@company.com','0967890123',3,'active',1,NULL,'token_emp2_006','2025-12-03 17:10:25','2025-12-13 12:03:35'),(7,'employee3','Charlie Employee','0192023a7bbd73250516f069df18b500','charlie.employee@company.com','0978901234',3,'active',0,NULL,'token_emp3_007','2025-12-03 17:10:25','2025-12-13 12:03:35'),(8,'employee4','Diana Employee','0192023a7bbd73250516f069df18b500','diana.employee@company.com','0989012345',3,'inactive',NULL,NULL,'token_emp4_008','2025-12-03 17:10:25','2025-12-13 12:03:35'),(9,'storekeeper1','Sam Storekeeper','0192023a7bbd73250516f069df18b500','sam.store@company.com','0990123456',4,'active',1,NULL,'token_store1_009','2025-12-03 17:10:25','2025-12-13 12:03:35'),(10,'storekeeper2','Linda Storekeeper','0192023a7bbd73250516f069df18b500','linda.store@company.com','0901234567',4,'active',2,NULL,'token_store2_010','2025-12-03 17:10:25','2025-12-13 12:03:35'),(11,'admin2','asdasdasd','0192023a7bbd73250516f069df18b500','hoangdinhtuanaladin@gmail.com','0862199478',3,'active',2,'fad3bef7-d862-4e29-a15a-aa3c2dc1c765','08e91dd9-5f7e-4025-afdd-9e460019a7f6','2025-12-04 04:54:41','2025-12-13 12:03:35'),(14,'storekeeper3','Alex Storekeeper','0192023a7bbd73250516f069df18b500','alex.store@company.com','0912345670',4,'active',1,NULL,NULL,'2025-12-14 10:43:16','2025-12-14 10:43:16'),(15,'storekeeper4','Maria Storekeeper','0192023a7bbd73250516f069df18b500','maria.store@company.com','0912345671',4,'active',2,NULL,NULL,'2025-12-14 10:43:16','2025-12-14 10:43:16'),(16,'storekeeper5','David Storekeeper','0192023a7bbd73250516f069df18b500','david.store@company.com','0912345672',4,'active',1,NULL,NULL,'2025-12-14 10:43:16','2025-12-14 10:43:16'),(17,'employee5','Emma Employee','0192023a7bbd73250516f069df18b500','emma.employee@company.com','0912345673',3,'active',1,NULL,NULL,'2025-12-14 10:43:16','2025-12-14 10:43:16'),(18,'employee6','Michael Employee','0192023a7bbd73250516f069df18b500','michael.employee@company.com','0912345674',3,'active',2,NULL,NULL,'2025-12-14 10:43:16','2025-12-14 10:43:16'),(19,'employee7','Sophia Employee','0192023a7bbd73250516f069df18b500','sophia.employee@company.com','0912345675',3,'active',1,NULL,NULL,'2025-12-14 10:43:16','2025-12-14 10:43:16'),(20,'employee8','Daniel Employee','0192023a7bbd73250516f069df18b500','daniel.employee@company.com','0912345676',3,'active',2,NULL,NULL,'2025-12-14 10:43:16','2025-12-14 10:43:16'),(21,'employee9','Olivia Employee','0192023a7bbd73250516f069df18b500','olivia.employee@company.com','0912345677',3,'active',1,NULL,NULL,'2025-12-14 10:43:16','2025-12-14 10:43:16'),(22,'employee10','James Employee','0192023a7bbd73250516f069df18b500','james.employee@company.com','0912345678',3,'active',2,NULL,NULL,'2025-12-14 10:43:16','2025-12-14 10:43:16'),(23,'employee11','Sarah Employee','0192023a7bbd73250516f069df18b500','sarah.employee@company.com','0912345679',3,'active',1,NULL,NULL,'2025-12-14 10:43:16','2025-12-14 10:43:16');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Dumping routines for database 'swp'
+--
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -406,4 +439,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-12-14 19:43:36
+-- Dump completed on 2025-12-16 14:53:58
