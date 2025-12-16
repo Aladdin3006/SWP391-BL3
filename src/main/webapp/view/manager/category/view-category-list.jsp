@@ -107,49 +107,9 @@
                                     data-bs-target="#viewModal${c.categoryId}">
                                 View
                             </button>
-                            <a href="edit-category?id=${c.categoryId}"
-                               class="btn btn-sm btn-warning">
-                                Edit
-                            </a>
                         </td>
                     </tr>
 
-                    <!-- ===== VIEW DETAIL MODAL ===== -->
-                    <div class="modal fade" id="viewModal${c.categoryId}" tabindex="-1">
-                        <div class="modal-dialog modal-lg modal-dialog-centered">
-                            <div class="modal-content">
-
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Category Detail</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                </div>
-
-                                <div class="modal-body">
-                                    <p><strong>ID:</strong> ${c.categoryId}</p>
-                                    <p><strong>Name:</strong> ${c.categoryName}</p>
-                                    <p>
-                                        <strong>Status:</strong>
-                                        <span class="badge ${c.status == 1 ? 'bg-success' : 'bg-danger'}">
-                                                ${c.status == 1 ? 'Active' : 'Inactive'}
-                                        </span>
-                                    </p>
-                                    <p><strong>Description:</strong></p>
-                                    <div class="border rounded p-2 bg-light">
-                                            ${c.description}
-                                    </div>
-                                </div>
-
-                                <div class="modal-footer">
-                                    <button type="button"
-                                            class="btn btn-secondary"
-                                            data-bs-dismiss="modal">
-                                        Close
-                                    </button>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
                 </c:forEach>
 
                 </tbody>
@@ -157,7 +117,78 @@
         </div>
     </div>
 </div>
+<!-- ===== VIEW / EDIT MODAL ===== -->
+<c:forEach items="${categoryList}" var="c">
+    <div class="modal fade" id="viewModal${c.categoryId}" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
 
+                <form id="editForm${c.categoryId}" action="edit-category" method="post">
+
+                    <div class="modal-header">
+                        <h5 class="modal-title">Category Detail</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <input type="hidden" name="categoryId" value="${c.categoryId}">
+
+                        <div class="mb-3">
+                            <label class="form-label">Category Name</label>
+                            <input type="text" name="categoryName"
+                                   id="categoryName${c.categoryId}"
+                                   class="form-control"
+                                   value="${c.categoryName}" disabled>
+                            <small class="text-danger error-text" id="nameError${c.categoryId}">
+                                <c:if test="${nameErrorId == c.categoryId}">
+                                    ${nameErrorMsg}
+                                </c:if>
+                            </small>
+
+
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Status</label>
+                            <select id="categoryStatus${c.categoryId}" name="status" class="form-select" disabled>
+                                <option value="1" ${c.status == 1 ? 'selected' : ''}>Active</option>
+                                <option value="0" ${c.status == 0 ? 'selected' : ''}>Inactive</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea name="description"
+                                      id="categoryDes${c.categoryId}"
+                                      class="form-control"
+                                      rows="4" disabled>${c.description}</textarea>
+                            <small class="text-danger error-text" id="desError${c.categoryId}"></small>
+
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+                        <button type="button"
+                                class="btn btn-primary editBtn"
+                                data-category-id="${c.categoryId}">
+                            Edit
+                        </button>
+
+                        <button type="submit"
+                                class="btn btn-success saveBtn"
+                                style="display:none;">
+                            Save
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+</c:forEach>
 <!-- ================= ADD CATEGORY MODAL ================= -->
 <div class="modal fade" id="addCategoryModal" tabindex="-1">
     <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -263,6 +294,80 @@
             e.preventDefault(); // chặn submit
         }
     });
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+        document.body.addEventListener('click', function (e) {
+
+            const editBtn = e.target.closest('.editBtn');
+            if (!editBtn) return;
+
+            const categoryId = editBtn.dataset.categoryId;
+            const form = document.getElementById('editForm' + categoryId);
+            if (!form) return;
+
+            // enable fields
+            form.querySelectorAll('input, textarea, select')
+                .forEach(el => el.disabled = false);
+
+            // toggle buttons
+            editBtn.style.display = 'none';
+            const saveBtn = form.querySelector('.saveBtn');
+            if (saveBtn) saveBtn.style.display = 'inline-block';
+        });
+
+        document.body.addEventListener('submit', function (e) {
+
+            // Dùng e.target.closest() để kiểm tra xem sự kiện có nguồn gốc từ form Edit không
+            const form = e.target.closest("form[id^='editForm']");
+
+            if (form) {
+                e.preventDefault(); // Ngăn chặn submit tạm thời
+
+                const categoryId = form.id.replace('editForm', '');
+
+                // Lấy các phần tử dựa trên ID của form
+                const nameInput = document.getElementById(`categoryName`+ categoryId);
+                const desInput  = document.getElementById(`categoryDes` + categoryId);
+                const nameError = document.getElementById(`nameError` + categoryId);
+                const desError  = document.getElementById(`desError` + categoryId);
+
+                // clear error
+                nameError.textContent = '';
+                desError.textContent  = '';
+
+                let hasError = false;
+                const name = nameInput.value.trim();
+                const desc = desInput.value.trim();
+
+                // ---- validate name ----
+                if (isEmpty(name)) { // Dùng hàm isEmpty(v) đã định nghĩa
+                    nameError.textContent = "Category name is required.";
+                    hasError = true;
+                } else if (name.length > 100) {
+                    nameError.textContent = "Category name must not exceed 100 characters.";
+                    hasError = true;
+                }
+
+                // ---- validate description ----
+                if (isEmpty(desc)) { // Dùng hàm isEmpty(v) đã định nghĩa
+                    desError.textContent = "Description is required.";
+                    hasError = true;
+                } else if (desc.length > 255) {
+                    desError.textContent = "Description must not exceed 255 characters.";
+                    hasError = true;
+                }
+
+                if (!hasError) {
+                    // Nếu không có lỗi, tiến hành submit form
+                    form.submit();
+                }
+            }
+        });
+
+
+    });
 </script>
 
 <!-- ===== AUTO OPEN MODAL WHEN ERROR ===== -->
@@ -273,11 +378,35 @@
         }
     </script>
 </c:if>
+<c:if test="${openEditModal}">
+    <script>
+        window.onload = function () {
+            const modalId = "viewModal${editCategoryId}";
+            const modalEl = document.getElementById(modalId);
+
+            if (!modalEl) return;
+
+            const modal = new bootstrap.Modal(modalEl);
+            modal.show();
+
+            // enable field
+            modalEl.querySelectorAll('input, textarea, select')
+                .forEach(el => el.disabled = false);
+
+            // toggle buttons
+            const editBtn = modalEl.querySelector('.editBtn');
+            const saveBtn = modalEl.querySelector('.saveBtn');
+            if (editBtn) editBtn.style.display = 'none';
+            if (saveBtn) saveBtn.style.display = 'inline-block';
+        }
+    </script>
+</c:if>
+
+
 <c:if test="${success}">
     <script>
         window.onload = function () {
-            alert("Add category successfully!");
-
+            alert("Successfully!");
             const modalId = "viewModal${newCategoryId}";
             const modalEl = document.getElementById(modalId);
 

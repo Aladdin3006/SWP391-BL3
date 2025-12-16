@@ -31,7 +31,7 @@ public class AddCategoryController extends HttpServlet {
 
         boolean hasError = false;
 
-        if (categoryDAO.isCategoryNameExist(name.trim())) {
+        if (categoryDAO.isCategoryNameExist(name.trim(), 0)) {
 
             request.setAttribute("nameError", "Category name already exists.");
             hasError = true;

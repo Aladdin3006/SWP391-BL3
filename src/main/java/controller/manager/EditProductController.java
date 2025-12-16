@@ -49,7 +49,7 @@ public class EditProductController extends HttpServlet {
             return;
         }
 
-        List<Category> categories = categoryDAO.getAllCategories();
+        List<Category> categories = categoryDAO.getCategoriesForUpdate();
         List<Supplier> suppliers = supplierDAO.getAllSuppliers();
         request.setAttribute("categories", categories);
         request.setAttribute("suppliers", suppliers);
@@ -146,7 +146,7 @@ public class EditProductController extends HttpServlet {
         if (hasError) {
             request.setAttribute("error", "Please fill all required fields correctly.");
             request.setAttribute("product", existingProduct);
-            request.setAttribute("categories", categoryDAO.getAllCategories());
+            request.setAttribute("categories", categoryDAO.getCategoriesForUpdate());
             request.setAttribute("suppliers", supplierDAO.getAllSuppliers());
             request.getRequestDispatcher("/view/manager/product/edit-product.jsp").forward(request, response);
             return;
@@ -189,7 +189,7 @@ public class EditProductController extends HttpServlet {
         } else {
             request.setAttribute("error", "Update failed.");
             request.setAttribute("product", p);
-            request.setAttribute("categories", categoryDAO.getAllCategories());
+            request.setAttribute("categories", categoryDAO.getCategoriesForUpdate());
             request.setAttribute("suppliers", supplierDAO.getAllSuppliers());
             request.getRequestDispatcher("/view/manager/product/edit-product.jsp").forward(request, response);
         }

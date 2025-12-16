@@ -32,7 +32,7 @@ public class AddProductController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        List<Category> categories = categoryDAO.getAllCategories();
+        List<Category> categories = categoryDAO.getCategoriesForUpdate();
         List<Supplier> suppliers = supplierDAO.getAllSuppliers();
         request.setAttribute("categories", categories);
         request.setAttribute("suppliers", suppliers);
@@ -121,7 +121,7 @@ public class AddProductController extends HttpServlet {
     }
 
     private void loadDropdownData(HttpServletRequest request) {
-        List<Category> categories = categoryDAO.getAllCategories();
+        List<Category> categories = categoryDAO.getCategoriesForUpdate();
         List<Supplier> suppliers = supplierDAO.getAllSuppliers();
         request.setAttribute("categories", categories);
         request.setAttribute("suppliers", suppliers);
