@@ -1,7 +1,7 @@
 package controller.report;
 
-import dal.RequestTransferDAO;
-import entity.RequestTransferTicket;
+import dal.ActualTransferDAO;
+import entity.ActualTransferTicket;
 import entity.User;
 import java.io.IOException;
 import java.util.List;
@@ -27,7 +27,7 @@ public class ExportWarehouseReportController extends HttpServlet {
             return;
         }
         
-        RequestTransferDAO dao = new RequestTransferDAO();
+        ActualTransferDAO dao = new ActualTransferDAO();
 
         String search = request.getParameter("search");
         String dateFrom = request.getParameter("dateFrom");
@@ -38,8 +38,8 @@ public class ExportWarehouseReportController extends HttpServlet {
         int pageSize = 10;
         
         // Filter by Export type, date range and assigned storekeeper
-        Integer storekeeperId = user.getUserId(); // Only show requests assigned to this storekeeper
-        List<RequestTransferTicket> list = dao.getAllByTypeAndDateAndStorekeeper("Export", dateFrom, dateTo, search, storekeeperId, page, pageSize);
+        Integer storekeeperId = user.getUserId(); // Only show actual transfers assigned to this storekeeper
+        List<ActualTransferTicket> list = dao.getAllByTypeAndDateAndStorekeeper("Export", dateFrom, dateTo, search, storekeeperId, page, pageSize);
         int totalRecords = dao.countByTypeAndDateAndStorekeeper("Export", dateFrom, dateTo, search, storekeeperId);
         int totalPages = (int) Math.ceil((double) totalRecords / pageSize);
 

@@ -163,8 +163,8 @@
                                             </td>
                                             <td>
                                                 <c:choose>
-                                                    <c:when test="${t.employeeId > 0}">
-                                                        <i class="fas fa-user text-muted me-1"></i> Storekeeper #${t.employeeId}
+                                                    <c:when test="${not empty t.employeeName}">
+                                                        <i class="fas fa-user text-muted me-1"></i> ${t.employeeName}
                                                     </c:when>
                                                     <c:otherwise>
                                                         <span class="text-muted">Not Assigned</span>

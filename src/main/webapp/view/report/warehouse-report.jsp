@@ -113,9 +113,10 @@
                                 <thead class="table-light text-uppercase small">
                                     <tr>
                                         <th class="ps-4 py-3 text-secondary">Ticket Code</th>
-                                        <th class="py-3 text-secondary">Request Date</th>
+                                        <th class="py-3 text-secondary">Request Ref</th>
+                                        <th class="py-3 text-secondary">Transfer Date</th>
                                         <th class="py-3 text-secondary">Status</th>
-                                        <th class="py-3 text-secondary">Assigned Storekeeper</th>
+                                        <th class="py-3 text-secondary">Confirmed By</th>
                                         <th class="py-3 text-secondary">Note</th>
                                         <th class="py-3 text-center text-secondary">Action</th>
                                     </tr>
@@ -123,7 +124,7 @@
                                 <tbody>
                                     <c:if test="${empty transfers}">
                                         <tr>
-                                            <td colspan="6" class="text-center py-5 text-muted">
+                                            <td colspan="7" class="text-center py-5 text-muted">
                                                 <i class="fas fa-folder-open fa-2x mb-3 text-secondary"></i><br>
                                                 No ${reportType} records found for the selected date range.
                                             </td>
@@ -132,7 +133,19 @@
                                     <c:forEach items="${transfers}" var="t">
                                         <tr>
                                             <td class="ps-4 fw-bold text-primary">${t.ticketCode}</td>
-                                            <td>${t.requestDate}</td>
+                                            <td>
+                                                <c:if test="${t.requestTransferId > 0}">
+                                                    <a href="${pageContext.request.contextPath}/request-transfer/detail?id=${t.requestTransferId}" 
+                                                       class="text-decoration-none" title="View Request Detail">
+                                                        <i class="fas fa-eye text-primary me-1"></i>
+                                                        <span class="text-muted">${t.requestTicketCode}</span>
+                                                    </a>
+                                                </c:if>
+                                                <c:if test="${t.requestTransferId == 0}">
+                                                    <span class="text-muted">-</span>
+                                                </c:if>
+                                            </td>
+                                            <td><fmt:formatDate value="${t.transferDate}" pattern="yyyy-MM-dd"/></td>
                                             <td>
                                                 <c:choose>
                                                     <c:when test="${t.status == 'Completed'}">
@@ -141,8 +154,8 @@
                                                     <c:when test="${t.status == 'Pending'}">
                                                         <span class="badge bg-warning text-dark">Pending</span>
                                                     </c:when>
-                                                    <c:when test="${t.status == 'Approved'}">
-                                                        <span class="badge bg-info text-dark">Approved</span>
+                                                    <c:when test="${t.status == 'In Progress'}">
+                                                        <span class="badge bg-info text-dark">In Progress</span>
                                                     </c:when>
                                                     <c:when test="${t.status == 'Rejected'}">
                                                         <span class="badge bg-danger">Rejected</span>
@@ -154,11 +167,11 @@
                                             </td>
                                             <td>
                                                 <c:choose>
-                                                    <c:when test="${t.employeeId > 0}">
-                                                        <i class="fas fa-user text-muted me-1"></i> Storekeeper #${t.employeeId}
+                                                    <c:when test="${not empty t.confirmedByName}">
+                                                        <i class="fas fa-user text-muted me-1"></i> ${t.confirmedByName}
                                                     </c:when>
                                                     <c:otherwise>
-                                                        <span class="text-muted">Not Assigned</span>
+                                                        <span class="text-muted">Not Confirmed</span>
                                                     </c:otherwise>
                                                 </c:choose>
                                             </td>
@@ -176,8 +189,8 @@
                                                 </c:choose>
                                             </td>
                                             <td class="text-center">
-                                                <a href="${pageContext.request.contextPath}/request-transfer/detail?id=${t.id}" 
-                                                   class="btn btn-sm btn-outline-secondary" title="View Detail">
+                                                <a href="${pageContext.request.contextPath}/actual-transfer/detail?id=${t.id}" 
+                                                   class="btn btn-sm btn-outline-secondary" title="View Actual Transfer Detail">
                                                     <i class="fas fa-eye"></i> View
                                                 </a>
                                             </td>

@@ -257,4 +257,107 @@ public class ActualTransferDAO extends DBContext {
             }
         }
     }
+    
+    public List<ActualTransferTicket> getAllByTypeAndDateAndStorekeeper(String type, String dateFrom, String dateTo, String search, Integer storekeeperId, int page, int pageSize) {
+        List<ActualTransferTicket> list = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT a.*, ")
+                .append("cb.displayName as confirmedByName, ")
+                .append("r.ticketCode as requestTicketCode, ")
+                .append("r.type as requestType ")
+                .append("FROM actual_transfer_ticket a ")
+                .append("LEFT JOIN user cb ON a.confirmedBy = cb.userId ")
+                .append("LEFT JOIN request_transfer_ticket r ON a.requestTransferId = r.id ")
+                .append("WHERE r.type = ? AND r.employeeId = ? ");
+        
+        List<Object> params = new ArrayList<>();
+        params.add(type);
+        params.add(storekeeperId);
+        
+        if (dateFrom != null && !dateFrom.trim().isEmpty()) {
+            sql.append("AND a.transferDate >= ? ");
+            params.add(dateFrom);
+        }
+        
+        if (dateTo != null && !dateTo.trim().isEmpty()) {
+            sql.append("AND a.transferDate <= ? ");
+            params.add(dateTo);
+        }
+        
+        if (search != null && !search.trim().isEmpty()) {
+            sql.append("AND (a.ticketCode LIKE ? OR a.note LIKE ?) ");
+            params.add("%" + search + "%");
+            params.add("%" + search + "%");
+        }
+        
+        sql.append("ORDER BY a.transferDate DESC, a.createdAt DESC LIMIT ? OFFSET ?");
+        params.add(pageSize);
+        params.add((page - 1) * pageSize);
+        
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+            
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+            
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                ActualTransferTicket a = new ActualTransferTicket();
+                a.setId(rs.getInt("id"));
+                a.setTicketCode(rs.getString("ticketCode"));
+                a.setRequestTransferId(rs.getInt("requestTransferId"));
+                a.setTransferDate(rs.getDate("transferDate"));
+                a.setStatus(rs.getString("status"));
+                a.setConfirmedBy(rs.getInt("confirmedBy"));
+                a.setConfirmedByName(rs.getString("confirmedByName"));
+                a.setRequestTicketCode(rs.getString("requestTicketCode"));
+                a.setNote(rs.getString("note"));
+                list.add(a);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    public int countByTypeAndDateAndStorekeeper(String type, String dateFrom, String dateTo, String search, Integer storekeeperId) {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM actual_transfer_ticket a ")
+                .append("LEFT JOIN request_transfer_ticket r ON a.requestTransferId = r.id ")
+                .append("WHERE r.type = ? AND r.employeeId = ? ");
+        List<Object> params = new ArrayList<>();
+        params.add(type);
+        params.add(storekeeperId);
+        
+        if (dateFrom != null && !dateFrom.trim().isEmpty()) {
+            sql.append("AND a.transferDate >= ? ");
+            params.add(dateFrom);
+        }
+        
+        if (dateTo != null && !dateTo.trim().isEmpty()) {
+            sql.append("AND a.transferDate <= ? ");
+            params.add(dateTo);
+        }
+        
+        if (search != null && !search.trim().isEmpty()) {
+            sql.append("AND (a.ticketCode LIKE ? OR a.note LIKE ?) ");
+            params.add("%" + search + "%");
+            params.add("%" + search + "%");
+        }
+        
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+            
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+            
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
 }

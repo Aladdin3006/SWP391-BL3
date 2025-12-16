@@ -13,6 +13,9 @@ public class RequestTransferTicket {
     private String note;
     private int employeeId;
     private List<ProductTransferItem> productTransfers;
+    
+    // Additional fields for display
+    private String employeeName;
 
     public RequestTransferTicket() {}
 
@@ -47,4 +50,6 @@ public class RequestTransferTicket {
     public void setEmployeeId(int employeeId) { this.employeeId = employeeId; }
     public List<ProductTransferItem> getProductTransfers() { return productTransfers; }
     public void setProductTransfers(List<ProductTransferItem> productTransfers) { this.productTransfers = productTransfers; }
+    public String getEmployeeName() { return employeeName; }
+    public void setEmployeeName(String employeeName) { this.employeeName = employeeName; }
 }

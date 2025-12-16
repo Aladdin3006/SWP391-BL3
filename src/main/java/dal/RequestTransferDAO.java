@@ -100,6 +100,7 @@ public class RequestTransferDAO extends DBContext {
                 r.setCreatedBy(rs.getInt("createdBy"));
                 r.setNote(rs.getString("note"));
                 r.setEmployeeId(rs.getInt("employeeId"));
+                r.setEmployeeName(rs.getString("employeeName"));
                 list.add(r);
             }
         } catch (Exception e) {
