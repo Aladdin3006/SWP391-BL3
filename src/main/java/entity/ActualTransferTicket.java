@@ -12,10 +12,6 @@ public class ActualTransferTicket {
     private int confirmedBy;
     private String note;
     private List<ProductTransferItem> productTransfers;
-    
-    // Additional fields for display
-    private String confirmedByName;
-    private String requestTicketCode;
 
     public ActualTransferTicket() {}
 
@@ -47,8 +43,4 @@ public class ActualTransferTicket {
     public void setNote(String note) { this.note = note; }
     public List<ProductTransferItem> getProductTransfers() { return productTransfers; }
     public void setProductTransfers(List<ProductTransferItem> productTransfers) { this.productTransfers = productTransfers; }
-    public String getConfirmedByName() { return confirmedByName; }
-    public void setConfirmedByName(String confirmedByName) { this.confirmedByName = confirmedByName; }
-    public String getRequestTicketCode() { return requestTicketCode; }
-    public void setRequestTicketCode(String requestTicketCode) { this.requestTicketCode = requestTicketCode; }
 }

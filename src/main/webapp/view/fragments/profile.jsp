@@ -88,7 +88,7 @@
     </style>
 </head>
 <body>
-<jsp:include page="../fragments/navbar.jsp"/>
+<jsp:include page="navbar.jsp"/>
 
 <div class="container mt-4 mb-5">
     <div class="profile-container">
@@ -175,8 +175,8 @@
                     </div>
                     <div class="col-md-6">
                         <div class="info-item">
-                            <div class="info-label">Workspace ID</div>
-                            <div class="info-value">${profileUser.workspaceId}</div>
+                            <div class="info-label">Department ID</div>
+                            <div class="info-value">${profileUser.departmentId}</div>
                         </div>
                     </div>
                 </div>

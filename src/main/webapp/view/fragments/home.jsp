@@ -143,7 +143,7 @@
     </style>
 </head>
 <body>
-<jsp:include page="../fragments/navbar.jsp"/>
+<jsp:include page="navbar.jsp"/>
 
 <section id="home" class="main-section">
     <div class="container">

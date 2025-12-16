@@ -34,7 +34,7 @@ public class ProfileController extends HttpServlet {
         if (sessionUser != null) {
             User user = db.getUserById(sessionUser.getUserId());
             request.setAttribute("profileUser", user);
-            request.getRequestDispatcher("/view/profile/profile.jsp").forward(request, response);
+            request.getRequestDispatcher("/view/fragments/profile.jsp").forward(request, response);
         } else {
             response.sendRedirect("login");
         }
@@ -70,7 +70,7 @@ public class ProfileController extends HttpServlet {
                     if (existingUserWithEmail != null && existingUserWithEmail.getUserId() != userId) {
                         request.setAttribute("error", "Email already exists.");
                         request.setAttribute("profileUser", currentUser);
-                        request.getRequestDispatcher("/view/profile/profile.jsp").forward(request, response);
+                        request.getRequestDispatcher("/view/fragments/profile.jsp").forward(request, response);
                         return;
                     }
 
@@ -113,7 +113,7 @@ public class ProfileController extends HttpServlet {
                 }
 
                 request.setAttribute("profileUser", db.getUserById(userId));
-                request.getRequestDispatcher("/view/profile/profile.jsp").forward(request, response);
+                request.getRequestDispatcher("/view/fragments/profile.jsp").forward(request, response);
             }
         } else {
             response.sendRedirect("profile");
