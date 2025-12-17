@@ -6,6 +6,12 @@
             <c:choose>
                 <c:when test="${sessionScope.user.roleName == 'admin'}">
                     <li class="nav-item">
+                        <a class="nav-link ${activePage == 'dashboard-admin' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/dashboard-admin">
+                            <i class="fas fa-chart-line me-2"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link ${activePage == 'user-list' ? 'active' : ''}"
                            href="${pageContext.request.contextPath}/user-list">
                             <i class="fas fa-users me-2"></i>Manage Users
@@ -27,6 +33,13 @@
                 </c:when>
 
                 <c:when test="${sessionScope.user.roleName == 'manager'}">
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'dashboard-manager' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/dashboard-manager">
+                            <i class="fas fa-chart-line me-2"></i>Dashboard
+                        </a>
+                    </li>
+
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'inventory' ? 'active' : ''}"
                            href="${pageContext.request.contextPath}/view-inventory">
