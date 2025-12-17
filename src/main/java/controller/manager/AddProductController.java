@@ -32,8 +32,8 @@ public class AddProductController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        List<Category> categories = categoryDAO.getAllCategories();
-        List<Supplier> suppliers = supplierDAO.getAllSuppliers();
+        List<Category> categories = categoryDAO.getCategoriesForUpdate();
+        List<Supplier> suppliers = supplierDAO.getActiveSuppliers();
         request.setAttribute("categories", categories);
         request.setAttribute("suppliers", suppliers);
         request.getRequestDispatcher("/view/manager/product/add-product.jsp").forward(request, response);
@@ -121,8 +121,8 @@ public class AddProductController extends HttpServlet {
     }
 
     private void loadDropdownData(HttpServletRequest request) {
-        List<Category> categories = categoryDAO.getAllCategories();
-        List<Supplier> suppliers = supplierDAO.getAllSuppliers();
+        List<Category> categories = categoryDAO.getCategoriesForUpdate();
+        List<Supplier> suppliers = supplierDAO.getActiveSuppliers();
         request.setAttribute("categories", categories);
         request.setAttribute("suppliers", suppliers);
     }

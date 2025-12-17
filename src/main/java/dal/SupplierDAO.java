@@ -36,4 +36,33 @@ public class SupplierDAO extends DBContext {
 
         return suppliers;
     }
+    public List<Supplier> getActiveSuppliers() {
+        List<Supplier> suppliers = new ArrayList<>();
+        String sql = "SELECT id, supplierCode, name, contactPerson, phone, email, address, status "
+                + "FROM supplier WHERE status = 'active'";
+
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                Supplier s = new Supplier();
+                s.setId(rs.getInt("id"));
+                s.setSupplierCode(rs.getString("supplierCode"));
+                s.setName(rs.getString("name"));
+                s.setContactPerson(rs.getString("contactPerson"));
+                s.setPhone(rs.getString("phone"));
+                s.setEmail(rs.getString("email"));
+                s.setAddress(rs.getString("address"));
+                s.setStatus(rs.getString("status"));
+
+                suppliers.add(s);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return suppliers;
+    }
+
 }
