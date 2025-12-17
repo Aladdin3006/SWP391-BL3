@@ -89,7 +89,15 @@ public class ActualTransferDAO extends DBContext {
     }
 
     public ActualTransferTicket getById(int id) {
-        String sql = "SELECT * FROM actual_transfer_ticket WHERE id = ?";
+        String sql = "SELECT a.*, " +
+                     "       u_conf.displayName AS confirmedByName, " +
+                     "       r.ticketCode AS requestTicketCode, " +
+                     "       u_req.displayName AS requestCreatedByName " +
+                     "FROM actual_transfer_ticket a " +
+                     "LEFT JOIN user u_conf ON a.confirmedBy = u_conf.userId " +
+                     "LEFT JOIN request_transfer_ticket r ON a.requestTransferId = r.id " +
+                     "LEFT JOIN user u_req ON r.createdBy = u_req.userId " +
+                     "WHERE a.id = ?";
         ActualTransferTicket ticket = null;
         try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
@@ -103,6 +111,9 @@ public class ActualTransferDAO extends DBContext {
                 ticket.setStatus(rs.getString("status"));
                 ticket.setConfirmedBy(rs.getInt("confirmedBy"));
                 ticket.setNote(rs.getString("note"));
+                ticket.setConfirmedByName(rs.getString("confirmedByName"));
+                ticket.setRequestCreatedByName(rs.getString("requestCreatedByName"));
+                ticket.setRequestTicketCode(rs.getString("requestTicketCode"));
 
                 ticket.setProductTransfers(getProductsByTicketId(id));
             }

@@ -13,6 +13,10 @@ public class ActualTransferTicket {
     private String note;
     private List<ProductTransferItem> productTransfers;
 
+    private String confirmedByName;
+    private String requestCreatedByName;
+    private String requestTicketCode;
+
     public ActualTransferTicket() {}
 
     public ActualTransferTicket(int id, String ticketCode, int requestTransferId, Date transferDate,
@@ -43,4 +47,11 @@ public class ActualTransferTicket {
     public void setNote(String note) { this.note = note; }
     public List<ProductTransferItem> getProductTransfers() { return productTransfers; }
     public void setProductTransfers(List<ProductTransferItem> productTransfers) { this.productTransfers = productTransfers; }
+
+    public String getConfirmedByName() { return confirmedByName; }
+    public void setConfirmedByName(String confirmedByName) { this.confirmedByName = confirmedByName; }
+    public String getRequestCreatedByName() { return requestCreatedByName; }
+    public void setRequestCreatedByName(String requestCreatedByName) { this.requestCreatedByName = requestCreatedByName; }
+    public String getRequestTicketCode() { return requestTicketCode; }
+    public void setRequestTicketCode(String requestTicketCode) { this.requestTicketCode = requestTicketCode; }
 }
