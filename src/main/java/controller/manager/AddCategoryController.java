@@ -49,7 +49,6 @@ public class AddCategoryController extends HttpServlet {
             return;
         }
 
-        // insert
         Category c = new Category();
         c.setCategoryName(name.trim());
         c.setDescription(desc.trim());
@@ -58,7 +57,6 @@ public class AddCategoryController extends HttpServlet {
         int newId = categoryDAO.insertCategory(c);
 
         if (newId > 0) {
-            // Forward về view-category-list.jsp để hiện alert
             request.setAttribute("success", true);
             request.setAttribute("newCategoryId", newId);
 

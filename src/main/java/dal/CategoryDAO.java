@@ -65,7 +65,6 @@ public class CategoryDAO extends DBContext {
 
         List<Category> list = new ArrayList<>();
 
-        // ======== Whitelist sort field & order ========
         if (sortField == null || !(sortField.equals("categoryId") || sortField.equals("categoryName"))) {
             sortField = "categoryId";
         }
@@ -74,7 +73,6 @@ public class CategoryDAO extends DBContext {
             sortOrder = "asc";
         }
 
-        // ======== Build SQL ========
         String sql = "SELECT categoryId, categoryName, description, status FROM category WHERE 1=1";
 
         if (categoryName != null && !categoryName.trim().isEmpty()) {
@@ -85,17 +83,15 @@ public class CategoryDAO extends DBContext {
         int statusValue = -1;
         if (statusFilter != null && !statusFilter.equalsIgnoreCase("all")) {
             try {
-                statusValue = Integer.parseInt(statusFilter); // "1" -> 1, "0" -> 0
+                statusValue = Integer.parseInt(statusFilter);
                 filterStatus = true;
                 sql += " AND status = ?";
             } catch (NumberFormatException e) {
-                // Nếu value không hợp lệ thì bỏ qua filter status
             }
         }
 
         sql += " ORDER BY " + sortField + " " + sortOrder;
 
-        // ======== Execute ========
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -168,7 +164,7 @@ public class CategoryDAO extends DBContext {
             }
 
             try (ResultSet rs = ps.executeQuery()) {
-                return rs.next(); // tồn tại → true
+                return rs.next();
             }
 
         } catch (Exception e) {
@@ -190,14 +186,14 @@ public class CategoryDAO extends DBContext {
 
             int affectedRows = ps.executeUpdate();
             if (affectedRows > 0) {
-                return category.getCategoryId(); // cập nhật thành công, trả về id
+                return category.getCategoryId();
             } else {
-                return -1; // không tìm thấy bản ghi
+                return -1;
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            return -1; // lỗi
+            return -1;
         }
     }
 

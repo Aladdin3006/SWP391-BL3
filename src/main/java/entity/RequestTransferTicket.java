@@ -13,8 +13,7 @@ public class RequestTransferTicket {
     private String note;
     private int employeeId;
     private List<ProductTransferItem> productTransfers;
-    
-    // Additional fields for display
+
     private String employeeName;
 
     public RequestTransferTicket() {}

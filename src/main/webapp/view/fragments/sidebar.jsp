@@ -55,6 +55,13 @@
                     </li>
 
                     <li class="nav-item">
+                        <a class="nav-link ${activePage == 'view-category-list' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/view-category-list">
+                            <i class="fas fa-tags me-2"></i>Manage Categories
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
                         <a class="nav-link ${activePage == 'supplier-list' ? 'active' : ''}"
                            href="${pageContext.request.contextPath}/supplier-list">
                             <i class="fas fa-truck me-2"></i>Manager Supplier
@@ -86,15 +93,15 @@
 
                 <c:when test="${sessionScope.user.roleName == 'storekeeper'}">
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'view-product-list' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/view-product-list">
-                            <i class="fas fa-boxes-stacked me-2"></i>View Products
-                        </a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link ${activePage == 'actual-transfer' ? 'active' : ''}"
                            href="${pageContext.request.contextPath}/actual-transfer">
                             <i class="fas fa-dolly-flatbed me-2"></i>Actual Transfers
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'view-product-list' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/view-product-list">
+                            <i class="fas fa-boxes-stacked me-2"></i>View Products
                         </a>
                     </li>
                     <li class="nav-item">
@@ -107,15 +114,15 @@
 
                 <c:when test="${sessionScope.user.roleName == 'employee'}">
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'view-product-list' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/view-product-list">
-                            <i class="fas fa-boxes-stacked me-2"></i>View Products
-                        </a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link ${activePage == 'request-transfer' ? 'active' : ''}"
                            href="${pageContext.request.contextPath}/request-transfer">
                             <i class="fas fa-clipboard-list me-2"></i>Your Warehouse Request
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'view-product-list' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/view-product-list">
+                            <i class="fas fa-boxes-stacked me-2"></i>View Products
                         </a>
                     </li>
                 </c:when>
