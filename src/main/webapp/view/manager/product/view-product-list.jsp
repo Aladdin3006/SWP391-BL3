@@ -219,7 +219,7 @@
                 <ul class="pagination justify-content-center">
                     <li class="page-item ${pageIndex == 1 ? 'disabled' : ''}">
                         <a class="page-link"
-                           href="?pageIndex=${pageIndex - 1}&productCode=${productCode}&productName=${productName}&brand=${brand}&company=${company}&categoryId=${categoryId}&status=${status}">
+                           href="?pageIndex=${pageIndex - 1}&productCode=${productCode}&productName=${productName}&brand=${brand}&company=${company}&categoryId=${categoryId}&status=${status}&sortField=${sortField}&sortOrder=${sortOrder}">
                             Previous
                         </a>
                     </li>
@@ -227,7 +227,7 @@
                     <c:forEach begin="1" end="${totalPages}" var="i">
                         <li class="page-item ${pageIndex == i ? 'active' : ''}">
                             <a class="page-link"
-                               href="?pageIndex=${i}&productCode=${productCode}&productName=${productName}&brand=${brand}&company=${company}&categoryId=${categoryId}&status=${status}">
+                               href="?pageIndex=${i}&productCode=${productCode}&productName=${productName}&brand=${brand}&company=${company}&categoryId=${categoryId}&status=${status}&sortField=${sortField}&sortOrder=${sortOrder}">
                                     ${i}
                             </a>
                         </li>
@@ -235,7 +235,7 @@
 
                     <li class="page-item ${pageIndex == totalPages ? 'disabled' : ''}">
                         <a class="page-link"
-                           href="?pageIndex=${pageIndex + 1}&productCode=${productCode}&productName=${productName}&brand=${brand}&company=${company}&categoryId=${categoryId}&status=${status}">
+                           href="?pageIndex=${pageIndex + 1}&productCode=${productCode}&productName=${productName}&brand=${brand}&company=${company}&categoryId=${categoryId}&status=${status}&sortField=${sortField}&sortOrder=${sortOrder}">
                             Next
                         </a>
                     </li>

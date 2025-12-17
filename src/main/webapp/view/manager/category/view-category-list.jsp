@@ -378,6 +378,7 @@
         }
     </script>
 </c:if>
+
 <c:if test="${openEditModal}">
     <script>
         window.onload = function () {
