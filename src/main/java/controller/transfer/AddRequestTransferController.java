@@ -20,14 +20,14 @@ import jakarta.servlet.http.HttpSession;
 
 @WebServlet(name="AddRequestTransferController", urlPatterns={"/request-transfer/add"})
 public class AddRequestTransferController extends HttpServlet {
-   
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
-        
+
         if (user == null) {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
@@ -35,12 +35,10 @@ public class AddRequestTransferController extends HttpServlet {
 
         ProductDAO productDao = new ProductDAO();
         RequestTransferDAO requestDao = new RequestTransferDAO();
-        UserDAO userDao = new UserDAO();
-        
+
         List<Product> products = productDao.getAllProducts();
         String ticketCode = requestDao.generateTicketCode();
-        
-        // Get storekeepers in same department
+
         List<User> storekeepers = new ArrayList<>();
         if (user.getDepartmentId() > 0) {
             storekeepers = requestDao.getStorekeepersByDepartment(user.getDepartmentId());
@@ -56,10 +54,10 @@ public class AddRequestTransferController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
-        
+
         if (user == null) {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
@@ -70,14 +68,13 @@ public class AddRequestTransferController extends HttpServlet {
             String type = request.getParameter("type");
             String requestDateStr = request.getParameter("requestDate");
             String note = request.getParameter("note");
-            String employeeIdStr = request.getParameter("employeeId");
-            
+            String storekeeperIdStr = request.getParameter("storekeeperId");
+
             String[] productIds = request.getParameterValues("productId");
             String[] quantities = request.getParameterValues("quantity");
 
-            // Validate
-            if (ticketCode == null || type == null || requestDateStr == null || 
-                productIds == null || quantities == null || productIds.length == 0) {
+            if (ticketCode == null || type == null || requestDateStr == null ||
+                    productIds == null || quantities == null || productIds.length == 0) {
                 request.setAttribute("error", "Please fill all required fields");
                 doGet(request, response);
                 return;
@@ -90,23 +87,22 @@ public class AddRequestTransferController extends HttpServlet {
             ticket.setStatus("Pending");
             ticket.setCreatedBy(user.getUserId());
             ticket.setNote(note);
-            
-            if (employeeIdStr != null && !employeeIdStr.isEmpty()) {
-                ticket.setEmployeeId(Integer.parseInt(employeeIdStr));
+
+            if (storekeeperIdStr != null && !storekeeperIdStr.isEmpty()) {
+                ticket.setStorekeeperId(Integer.parseInt(storekeeperIdStr));
             }
 
-            // Add product items
             List<ProductTransferItem> items = new ArrayList<>();
             for (int i = 0; i < productIds.length; i++) {
-                if (productIds[i] != null && !productIds[i].isEmpty() && 
-                    quantities[i] != null && !quantities[i].isEmpty()) {
+                if (productIds[i] != null && !productIds[i].isEmpty() &&
+                        quantities[i] != null && !quantities[i].isEmpty()) {
                     ProductTransferItem item = new ProductTransferItem();
                     item.setProductId(Integer.parseInt(productIds[i]));
                     item.setQuantity(Integer.parseInt(quantities[i]));
                     items.add(item);
                 }
             }
-            
+
             if (items.isEmpty()) {
                 request.setAttribute("error", "Please add at least one product");
                 doGet(request, response);
@@ -132,4 +128,3 @@ public class AddRequestTransferController extends HttpServlet {
         }
     }
 }
-

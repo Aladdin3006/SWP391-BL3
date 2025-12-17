@@ -94,11 +94,11 @@
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label fw-bold">Assign Storekeeper <span class="text-danger">*</span></label>
-                                        <select name="employeeId" class="form-select" required>
+                                        <select name="storekeeperId" class="form-select" required>
                                             <option value="">-- Select Storekeeper --</option>
                                             <c:forEach items="${storekeepers}" var="sk">
-                                                <option value="${sk.userId}" ${ticket.employeeId == sk.userId ? 'selected' : ''}>
-                                                    ${sk.displayName} (${sk.accountName})
+                                                <option value="${sk.userId}" ${ticket.storekeeperId == sk.userId ? 'selected' : ''}>
+                                                        ${sk.displayName} (${sk.accountName})
                                                 </option>
                                             </c:forEach>
                                         </select>

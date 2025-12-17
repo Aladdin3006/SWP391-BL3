@@ -14,19 +14,19 @@ import jakarta.servlet.http.HttpSession;
 
 @WebServlet(name="RequestTransferListController", urlPatterns={"/request-transfer"})
 public class RequestTransferListController extends HttpServlet {
-   
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
-        
+
         if (user == null) {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
-        
+
         RequestTransferDAO dao = new RequestTransferDAO();
 
         String search = request.getParameter("search");
@@ -35,26 +35,22 @@ public class RequestTransferListController extends HttpServlet {
 
         int page = (pageStr == null || pageStr.isEmpty()) ? 1 : Integer.parseInt(pageStr);
         int pageSize = 10;
-        
-        // Filter by department if user is employee
-        Integer filterEmployeeId = null;
+
+        Integer filterStorekeeperId = null;
         Integer filterDepartmentId = null;
         String roleName = user.getRole() != null ? user.getRole().getRoleName() : "";
         if ("employee".equals(roleName)) {
-            // Employee sees tickets from their department
             if (user.getDepartmentId() > 0) {
                 filterDepartmentId = user.getDepartmentId();
             } else {
-                // If no department, only see their own tickets
-                filterEmployeeId = user.getUserId();
+                filterStorekeeperId = user.getUserId();
             }
         }
 
-        List<RequestTransferTicket> list = dao.getAll(search, status, page, pageSize, filterEmployeeId, filterDepartmentId);
-        int totalRecords = dao.count(search, status, filterEmployeeId, filterDepartmentId);
+        List<RequestTransferTicket> list = dao.getAll(search, status, page, pageSize, filterStorekeeperId, filterDepartmentId);
+        int totalRecords = dao.count(search, status, filterStorekeeperId, filterDepartmentId);
         int totalPages = (int) Math.ceil((double) totalRecords / pageSize);
 
-        // Calculate display range
         int fromRecord = totalRecords > 0 ? ((page - 1) * pageSize + 1) : 0;
         int toRecord = Math.min(page * pageSize, totalRecords);
 
@@ -70,4 +66,3 @@ public class RequestTransferListController extends HttpServlet {
         request.getRequestDispatcher("/view/transfer/request-list.jsp").forward(request, response);
     }
 }
-

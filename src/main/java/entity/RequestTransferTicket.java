@@ -11,15 +11,15 @@ public class RequestTransferTicket {
     private String status;
     private int createdBy;
     private String note;
-    private int employeeId;
+    private int storekeeperId;
     private List<ProductTransferItem> productTransfers;
 
-    private String employeeName;
+    private String storekeeperName;
 
     public RequestTransferTicket() {}
 
     public RequestTransferTicket(int id, String ticketCode, String type, Date requestDate, String status,
-                                 int createdBy, String note, int employeeId, List<ProductTransferItem> productTransfers) {
+                                 int createdBy, String note, int storekeeperId, List<ProductTransferItem> productTransfers) {
         this.id = id;
         this.ticketCode = ticketCode;
         this.type = type;
@@ -27,7 +27,7 @@ public class RequestTransferTicket {
         this.status = status;
         this.createdBy = createdBy;
         this.note = note;
-        this.employeeId = employeeId;
+        this.storekeeperId = storekeeperId;
         this.productTransfers = productTransfers;
     }
 
@@ -45,10 +45,10 @@ public class RequestTransferTicket {
     public void setCreatedBy(int createdBy) { this.createdBy = createdBy; }
     public String getNote() { return note; }
     public void setNote(String note) { this.note = note; }
-    public int getEmployeeId() { return employeeId; }
-    public void setEmployeeId(int employeeId) { this.employeeId = employeeId; }
+    public int getStorekeeperId() { return storekeeperId; }
+    public void setStorekeeperId(int storekeeperId) { this.storekeeperId = storekeeperId; }
     public List<ProductTransferItem> getProductTransfers() { return productTransfers; }
     public void setProductTransfers(List<ProductTransferItem> productTransfers) { this.productTransfers = productTransfers; }
-    public String getEmployeeName() { return employeeName; }
-    public void setEmployeeName(String employeeName) { this.employeeName = employeeName; }
+    public String getStorekeeperName() { return storekeeperName; }
+    public void setStorekeeperName(String storekeeperName) { this.storekeeperName = storekeeperName; }
 }
