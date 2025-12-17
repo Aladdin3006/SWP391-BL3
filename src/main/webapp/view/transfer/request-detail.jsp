@@ -127,11 +127,11 @@
                                             <label class="text-muted small">Assigned Storekeeper</label>
                                             <div class="fw-bold">
                                                 <c:choose>
-                                                    <c:when test="${employee != null}">
-                                                        <i class="fas fa-user-check text-success me-1"></i> ${employee.displayName}
+                                                    <c:when test="${storekeeper != null}">
+                                                        <i class="fas fa-user-check text-success me-1"></i> ${storekeeper.displayName}
                                                     </c:when>
-                                                    <c:when test="${ticket.employeeId > 0}">
-                                                        Storekeeper #${ticket.employeeId}
+                                                    <c:when test="${ticket.storekeeperId > 0}">
+                                                        Storekeeper #${ticket.storekeeperId}
                                                     </c:when>
                                                     <c:otherwise>
                                                         <span class="text-muted">Not Assigned</span>

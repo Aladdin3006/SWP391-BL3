@@ -13,11 +13,11 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet(name="RequestTransferDetailController", urlPatterns={"/request-transfer/detail"})
 public class RequestTransferDetailController extends HttpServlet {
-   
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         String idStr = request.getParameter("id");
         if (idStr == null || idStr.isEmpty()) {
             response.sendRedirect(request.getContextPath() + "/request-transfer");
@@ -27,25 +27,23 @@ public class RequestTransferDetailController extends HttpServlet {
         int id = Integer.parseInt(idStr);
         RequestTransferDAO dao = new RequestTransferDAO();
         UserDAO userDao = new UserDAO();
-        
+
         RequestTransferTicket ticket = dao.getById(id);
         if (ticket == null) {
             response.sendRedirect(request.getContextPath() + "/request-transfer");
             return;
         }
 
-        // Get creator and employee info
         User creator = userDao.getUserById(ticket.getCreatedBy());
-        User employee = null;
-        if (ticket.getEmployeeId() > 0) {
-            employee = userDao.getUserById(ticket.getEmployeeId());
+        User storekeeper = null;
+        if (ticket.getStorekeeperId() > 0) {
+            storekeeper = userDao.getUserById(ticket.getStorekeeperId());
         }
 
         request.setAttribute("ticket", ticket);
         request.setAttribute("creator", creator);
-        request.setAttribute("employee", employee);
+        request.setAttribute("storekeeper", storekeeper);
 
         request.getRequestDispatcher("/view/transfer/request-detail.jsp").forward(request, response);
     }
 }
-

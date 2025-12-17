@@ -7,116 +7,176 @@
     <meta charset="UTF-8">
     <title>Category List</title>
 
-    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        .main-content {
+            padding-top: 20px;
+            padding-bottom: 40px;
+            margin-left: 0;
+        }
+        .sidebar {
+            background-color: #343a40;
+            color: white;
+            min-height: calc(100vh - 56px);
+            padding-top: 20px;
+        }
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 10px 15px;
+        }
+        .sidebar .nav-link:hover {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .sidebar .nav-link.active {
+            color: white;
+            background-color: #0d6efd;
+        }
+        .table thead th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+        }
+        .badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+        .btn-action {
+            padding: 6px 15px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin: 2px;
+        }
+    </style>
 </head>
-<body class="bg-light">
+<body>
+<!-- Include Navbar -->
+<jsp:include page="/view/fragments/navbar.jsp"/>
 
-<div class="container mt-4">
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <c:set var="activePage" value="category-list" scope="request"/>
+        <jsp:include page="/view/fragments/sidebar.jsp"/>
 
-    <!-- ================= HEADER ================= -->
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>Category List</h2>
-        <button type="button"
-                class="btn btn-success"
-                data-bs-toggle="modal"
-                data-bs-target="#addCategoryModal">
-            + Add Category
-        </button>
-    </div>
-
-
-
-    <!-- ================= SEARCH ================= -->
-    <form action="${pageContext.request.contextPath}/view-category-list"
-          method="get"
-          class="card p-3 mb-3">
-
-        <div class="row g-3 align-items-end">
-            <div class="col-md-4">
-                <label class="form-label">Category Name</label>
-                <input type="text"
-                       name="categoryName"
-                       class="form-control"
-                       value="${categoryName}"
-                       placeholder="Enter category name">
+        <!-- Main Content -->
+        <main class="col-md-10 ms-sm-auto px-md-4 main-content">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h2 class="fw-bold mb-1" style="color: #2c3e50;">Category Management</h2>
+                    <p class="text-muted">Manage your product categories efficiently</p>
+                </div>
+                <button type="button"
+                        class="btn btn-success"
+                        data-bs-toggle="modal"
+                        data-bs-target="#addCategoryModal"
+                        style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none;">
+                    <i class="fas fa-plus me-2"></i>Add Category
+                </button>
             </div>
 
-            <div class="col-md-3">
-                <label class="form-label">Status</label>
-                <select name="status" class="form-select">
-                    <option value="all" ${status == null || status == 'all' ? 'selected' : ''}>
-                        --- Status ---
-                    </option>
-                    <option value="1" ${status == '1' ? 'selected' : ''}>Active</option>
-                    <option value="0" ${status == '0' ? 'selected' : ''}>Inactive</option>
-                </select>
+            <!-- ================= SEARCH ================= -->
+            <form action="${pageContext.request.contextPath}/view-category-list"
+                  method="get"
+                  class="card p-3 mb-3">
+
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-4">
+                        <label class="form-label">Category Name</label>
+                        <input type="text"
+                               name="categoryName"
+                               class="form-control"
+                               value="${categoryName}"
+                               placeholder="Enter category name">
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label">Status</label>
+                        <select name="status" class="form-select">
+                            <option value="all" ${status == null || status == 'all' ? 'selected' : ''}>
+                                --- Status ---
+                            </option>
+                            <option value="1" ${status == '1' ? 'selected' : ''}>Active</option>
+                            <option value="0" ${status == '0' ? 'selected' : ''}>Inactive</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-5 text-end">
+                        <button type="submit" class="btn btn-primary">Search</button>
+                        <a href="${pageContext.request.contextPath}/view-category-list"
+                           class="btn btn-secondary">
+                            Reset
+                        </a>
+                    </div>
+                </div>
+            </form>
+
+            <!-- ================= TABLE ================= -->
+            <div class="card">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-striped mb-0">
+                            <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Category Name</th>
+                                <th>Description</th>
+                                <th>Status</th>
+                                <th style="width:140px;">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            <c:if test="${empty categoryList}">
+                                <tr>
+                                    <td colspan="5" class="text-center p-5">
+                                        <i class="fas fa-folder-open fa-3x text-muted mb-3"></i>
+                                        <h5 class="text-muted">No categories found</h5>
+                                    </td>
+                                </tr>
+                            </c:if>
+
+                            <c:forEach items="${categoryList}" var="c">
+                                <tr>
+                                    <td>${c.categoryId}</td>
+                                    <td>${c.categoryName}</td>
+                                    <td class="text-truncate"
+                                        style="max-width:300px"
+                                        title="${c.description}">
+                                            ${c.description}
+                                    </td>
+                                    <td>
+                                        <span class="badge ${c.status == 1 ? 'bg-success' : 'bg-danger'}">
+                                                ${c.status == 1 ? 'Active' : 'Inactive'}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <button type="button"
+                                                class="btn btn-action btn-info text-white"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#viewModal${c.categoryId}">
+                                            <i class="fas fa-eye me-1"></i>View
+                                        </button>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-
-            <div class="col-md-5 text-end">
-                <button type="submit" class="btn btn-primary">Search</button>
-                <a href="${pageContext.request.contextPath}/view-category-list"
-                   class="btn btn-secondary">
-                    Reset
-                </a>
-            </div>
-        </div>
-    </form>
-
-    <!-- ================= TABLE ================= -->
-    <div class="card">
-        <div class="card-body p-0">
-            <table class="table table-striped mb-0">
-                <thead class="table-dark">
-                <tr>
-                    <th>ID</th>
-                    <th>Category Name</th>
-                    <th>Description</th>
-                    <th>Status</th>
-                    <th style="width:140px;">Action</th>
-                </tr>
-                </thead>
-                <tbody>
-
-                <c:if test="${empty categoryList}">
-                    <tr>
-                        <td colspan="5" class="text-center p-3">
-                            No category found
-                        </td>
-                    </tr>
-                </c:if>
-
-                <c:forEach items="${categoryList}" var="c">
-                    <tr>
-                        <td>${c.categoryId}</td>
-                        <td>${c.categoryName}</td>
-                        <td class="text-truncate"
-                            style="max-width:300px"
-                            title="${c.description}">
-                                ${c.description}
-                        </td>
-                        <td>
-                            <span class="badge ${c.status == 1 ? 'bg-success' : 'bg-danger'}">
-                                    ${c.status == 1 ? 'Active' : 'Inactive'}
-                            </span>
-                        </td>
-                        <td>
-                            <button type="button"
-                                    class="btn btn-sm btn-info text-white"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#viewModal${c.categoryId}">
-                                View
-                            </button>
-                        </td>
-                    </tr>
-
-                </c:forEach>
-
-                </tbody>
-            </table>
-        </div>
+        </main>
     </div>
 </div>
+
 <!-- ===== VIEW / EDIT MODAL ===== -->
 <c:forEach items="${categoryList}" var="c">
     <div class="modal fade" id="viewModal${c.categoryId}" tabindex="-1">
@@ -144,8 +204,6 @@
                                     ${nameErrorMsg}
                                 </c:if>
                             </small>
-
-
                         </div>
 
                         <div class="mb-3">
@@ -163,47 +221,39 @@
                                       class="form-control"
                                       rows="4" disabled>${c.description}</textarea>
                             <small class="text-danger error-text" id="desError${c.categoryId}"></small>
-
                         </div>
                     </div>
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-
                         <button type="button"
                                 class="btn btn-primary editBtn"
                                 data-category-id="${c.categoryId}">
-                            Edit
+                            <i class="fas fa-edit me-1"></i>Edit
                         </button>
-
                         <button type="submit"
                                 class="btn btn-success saveBtn"
                                 style="display:none;">
-                            Save
+                            <i class="fas fa-save me-1"></i>Save
                         </button>
                     </div>
-
                 </form>
-
             </div>
         </div>
     </div>
 </c:forEach>
+
 <!-- ================= ADD CATEGORY MODAL ================= -->
 <div class="modal fade" id="addCategoryModal" tabindex="-1">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
-
             <form action="add-category" method="post" id="addCategoryForm">
-
                 <div class="modal-header">
                     <h5 class="modal-title">Add New Category</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
 
                 <div class="modal-body">
-
-
                     <div class="mb-3">
                         <label class="form-label">Category Name</label>
                         <input type="text"
@@ -217,7 +267,6 @@
                                 ${nameError}
                             </c:if>
                         </small>
-
                     </div>
 
                     <div class="mb-3">
@@ -229,7 +278,6 @@
                                   maxlength="255">${description}</textarea>
                         <small class="text-danger error-text" id="descError"></small>
                     </div>
-
                 </div>
 
                 <div class="modal-footer">
@@ -239,19 +287,14 @@
                         Cancel
                     </button>
                     <button type="submit" class="btn btn-success">
-                        Save
+                        <i class="fas fa-save me-1"></i>Save
                     </button>
                 </div>
-
             </form>
-
         </div>
     </div>
 </div>
 
-
-
-<!-- ================= JS ================= -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
@@ -262,8 +305,8 @@
     function isEmpty(v) {
         return !v || v.trim().length === 0;
     }
-    document.getElementById("addCategoryForm").addEventListener("submit", function (e) {
 
+    document.getElementById("addCategoryForm").addEventListener("submit", function (e) {
         document.querySelectorAll(".error-text")
             .forEach(el => el.textContent = "");
 
@@ -272,7 +315,6 @@
         let name = document.getElementById("categoryName").value.trim();
         let desc = document.getElementById("description").value.trim();
 
-        // ---- validate category name ----
         if (isEmpty(name)) {
             showError("nameError", "Category name is required.");
             hasError = true;
@@ -281,7 +323,6 @@
             hasError = true;
         }
 
-        // ---- validate description ----
         if (isEmpty(desc)) {
             showError("descError", "Description is required.");
             hasError = true;
@@ -291,15 +332,12 @@
         }
 
         if (hasError) {
-            e.preventDefault(); // chặn submit
+            e.preventDefault();
         }
     });
 
-
     document.addEventListener('DOMContentLoaded', function () {
-
         document.body.addEventListener('click', function (e) {
-
             const editBtn = e.target.closest('.editBtn');
             if (!editBtn) return;
 
@@ -307,33 +345,27 @@
             const form = document.getElementById('editForm' + categoryId);
             if (!form) return;
 
-            // enable fields
             form.querySelectorAll('input, textarea, select')
                 .forEach(el => el.disabled = false);
 
-            // toggle buttons
             editBtn.style.display = 'none';
             const saveBtn = form.querySelector('.saveBtn');
             if (saveBtn) saveBtn.style.display = 'inline-block';
         });
 
         document.body.addEventListener('submit', function (e) {
-
-            // Dùng e.target.closest() để kiểm tra xem sự kiện có nguồn gốc từ form Edit không
             const form = e.target.closest("form[id^='editForm']");
 
             if (form) {
-                e.preventDefault(); // Ngăn chặn submit tạm thời
+                e.preventDefault();
 
                 const categoryId = form.id.replace('editForm', '');
 
-                // Lấy các phần tử dựa trên ID của form
                 const nameInput = document.getElementById(`categoryName`+ categoryId);
                 const desInput  = document.getElementById(`categoryDes` + categoryId);
                 const nameError = document.getElementById(`nameError` + categoryId);
                 const desError  = document.getElementById(`desError` + categoryId);
 
-                // clear error
                 nameError.textContent = '';
                 desError.textContent  = '';
 
@@ -341,8 +373,7 @@
                 const name = nameInput.value.trim();
                 const desc = desInput.value.trim();
 
-                // ---- validate name ----
-                if (isEmpty(name)) { // Dùng hàm isEmpty(v) đã định nghĩa
+                if (isEmpty(name)) {
                     nameError.textContent = "Category name is required.";
                     hasError = true;
                 } else if (name.length > 100) {
@@ -350,8 +381,7 @@
                     hasError = true;
                 }
 
-                // ---- validate description ----
-                if (isEmpty(desc)) { // Dùng hàm isEmpty(v) đã định nghĩa
+                if (isEmpty(desc)) {
                     desError.textContent = "Description is required.";
                     hasError = true;
                 } else if (desc.length > 255) {
@@ -360,17 +390,13 @@
                 }
 
                 if (!hasError) {
-                    // Nếu không có lỗi, tiến hành submit form
                     form.submit();
                 }
             }
         });
-
-
     });
 </script>
 
-<!-- ===== AUTO OPEN MODAL WHEN ERROR ===== -->
 <c:if test="${openAddModal}">
     <script>
         window.onload = function () {
@@ -390,11 +416,9 @@
             const modal = new bootstrap.Modal(modalEl);
             modal.show();
 
-            // enable field
             modalEl.querySelectorAll('input, textarea, select')
                 .forEach(el => el.disabled = false);
 
-            // toggle buttons
             const editBtn = modalEl.querySelector('.editBtn');
             const saveBtn = modalEl.querySelector('.saveBtn');
             if (editBtn) editBtn.style.display = 'none';
@@ -402,7 +426,6 @@
         }
     </script>
 </c:if>
-
 
 <c:if test="${success}">
     <script>
@@ -417,7 +440,6 @@
         };
     </script>
 </c:if>
-
 
 </body>
 </html>
