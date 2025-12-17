@@ -202,10 +202,9 @@
                     </div>
 
                     <div class="mt-4">
-                        <a href="${pageContext.request.contextPath}/view-product-list"
-                           class="btn-back">
-                            <i class="fas fa-arrow-left me-2"></i>Back to List
-                        </a>
+                        <button type="button" onclick="window.history.back()" class="btn-back">
+                            <i class="fas fa-arrow-left me-2"></i>Back To List
+                        </button>
                         <a href="${pageContext.request.contextPath}/edit-product?id=${product.id}"
                            class="btn-edit">
                             <i class="fas fa-edit me-2"></i>Edit Product

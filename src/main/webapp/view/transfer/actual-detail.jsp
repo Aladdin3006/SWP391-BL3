@@ -50,9 +50,9 @@
                 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
 
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        <a href="${pageContext.request.contextPath}/actual-transfer" class="btn btn-outline-secondary btn-sm">
+                        <button type="button" onclick="window.history.back()" class="btn btn-outline-secondary btn-sm">
                             <i class="fas fa-arrow-left me-1"></i> Back
-                        </a>
+                        </button>
                         <span class="badge bg-secondary fs-6">Actual Transfer Ticket</span>
                     </div>
 
