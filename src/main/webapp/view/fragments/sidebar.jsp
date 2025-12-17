@@ -105,12 +105,6 @@
                             <i class="fas fa-clipboard-list me-2"></i>Your Warehouse Request
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link ${activePage == 'actual-transfer' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/actual-transfer">
-                            <i class="fas fa-dolly-flatbed me-2"></i>Actual Transfers
-                        </a>
-                    </li>
                 </c:when>
 
                 <c:otherwise>

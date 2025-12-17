@@ -93,3 +93,7 @@
             </div>
     </div>
 </nav>
+
+<c:if test="${sessionScope.user.roleName == 'employee' or sessionScope.user.roleName == 'storekeeper'}">
+    <jsp:include page="/view/fragments/chat-widget.jsp"/>
+</c:if>
