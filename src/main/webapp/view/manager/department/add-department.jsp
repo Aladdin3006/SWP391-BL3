@@ -179,7 +179,6 @@
                             </div>
                         </div>
 
-                        <!-- Assign Employees Section -->
                         <div class="mb-5">
                             <h4 class="section-title">
                                 <i class="fas fa-users me-2"></i>Assign Employees
@@ -189,8 +188,17 @@
                                 <label class="form-label">Select Employees</label>
                                 <select name="employeeIds" class="form-control select2-multiple" multiple="multiple">
                                     <c:forEach items="${employees}" var="emp">
+                                        <c:set var="empRating" value="${employeeRatings[emp.userId]}" />
                                         <option value="${emp.userId}">
-                                                ${emp.displayName} (ID: ${emp.userId})
+                                                ${emp.displayName} (ID: ${emp.userId}) -
+                                            <c:choose>
+                                                <c:when test="${empRating > 0}">
+                                                    <i class="fas fa-star text-warning"></i> ${String.format("%.1f", empRating)} star rating
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <i class="far fa-star text-muted"></i> No rating
+                                                </c:otherwise>
+                                            </c:choose>
                                         </option>
                                     </c:forEach>
                                 </select>

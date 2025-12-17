@@ -124,17 +124,18 @@ public class EvaluateDAO extends DBContext {
     public List<User> getEmployeesInSameDepartment(int evaluatorId) {
         List<User> list = new ArrayList<>();
         String sql = """
-            SELECT u.userId, u.displayName, d.departmentName
-            FROM user u
-            JOIN user evaluator ON evaluator.departmentId = u.departmentId
-            JOIN Department d ON u.departmentId = d.id
-            JOIN role r ON u.roleId = r.roleId
-            WHERE evaluator.userId = ?
-              AND u.userId != ?
-              AND r.roleName = 'employee'
-              AND u.status = 'active'
-            ORDER BY u.displayName
-            """;
+        SELECT u.userId, u.displayName, d.departmentName
+        FROM user u
+        JOIN user evaluator ON evaluator.departmentId = u.departmentId
+        JOIN Department d ON u.departmentId = d.id
+        JOIN role r ON u.roleId = r.roleId
+        WHERE evaluator.userId = ?
+          AND u.userId != ?
+          AND r.roleName = 'employee'
+          AND u.status = 'active'
+          AND d.status = 'active'
+        ORDER BY u.displayName
+        """;
 
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -172,7 +173,6 @@ public class EvaluateDAO extends DBContext {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                // Create Evaluate object
                 Evaluate eval = new Evaluate();
                 eval.setId(rs.getInt("id"));
                 eval.setEmployeeId(rs.getInt("employeeId"));
@@ -185,18 +185,15 @@ public class EvaluateDAO extends DBContext {
                 eval.setAvgStar(rs.getDouble("avgStar"));
                 eval.setCreatedAt(rs.getTimestamp("createdAt"));
 
-                // Set employee
                 User employee = new User();
                 employee.setUserId(rs.getInt("employeeId"));
                 employee.setDisplayName(rs.getString("empName"));
                 eval.setEmployee(employee);
 
-                // Set department
                 Department dept = new Department();
                 dept.setDepartmentName(rs.getString("departmentName"));
                 eval.setDepartment(dept);
 
-                // Create a Map to return both Evaluate and additional data
                 Map<String, Object> result = new HashMap<>();
                 result.put("evaluate", eval);
                 result.put("evaluatorName", rs.getString("evaluatorName"));
@@ -334,5 +331,20 @@ public class EvaluateDAO extends DBContext {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public double getAverageRatingForEmployee(int employeeId) {
+        String sql = "SELECT AVG(avgStar) as avgRating FROM Evaluate WHERE employeeId = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, employeeId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getDouble("avgRating");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0.0;
     }
 }

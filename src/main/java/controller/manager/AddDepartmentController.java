@@ -1,6 +1,7 @@
 package controller.manager;
 
 import dal.DepartmentDAO;
+import dal.EvaluateDAO;
 import entity.Department;
 import entity.User;
 import jakarta.servlet.ServletException;
@@ -10,7 +11,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @WebServlet("/department-add")
 public class AddDepartmentController extends HttpServlet {
@@ -20,11 +23,19 @@ public class AddDepartmentController extends HttpServlet {
             throws ServletException, IOException {
 
         DepartmentDAO db = new DepartmentDAO();
+        EvaluateDAO evaluateDAO = new EvaluateDAO();
         List<User> storekeepers = db.getStorekeepersNotInAnyDepartment();
         List<User> employees = db.getAvailableEmployees();
 
+        Map<Integer, Double> employeeRatings = new HashMap<>();
+        for (User emp : employees) {
+            double avgStar = evaluateDAO.getAverageRatingForEmployee(emp.getUserId());
+            employeeRatings.put(emp.getUserId(), avgStar);
+        }
+
         request.setAttribute("storekeepers", storekeepers);
         request.setAttribute("employees", employees);
+        request.setAttribute("employeeRatings", employeeRatings);
         request.setAttribute("activePage", "department-list");
         request.getRequestDispatcher("/view/manager/department/add-department.jsp").forward(request, response);
     }

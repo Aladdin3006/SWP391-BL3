@@ -379,14 +379,20 @@ public class RequestTransferDAO extends DBContext {
         }
         return list;
     }
-    
+
     public List<User> getStorekeepersByDepartment(int departmentId) {
         List<User> list = new ArrayList<>();
-        String sql = "SELECT u.userId, u.accountName, u.displayName "
-                + "FROM user u "
-                + "JOIN role r ON u.roleId = r.roleId "
-                + "WHERE u.departmentId = ? AND u.status = 'active' AND r.roleName = 'storekeeper'";
-        
+        String sql = """
+        SELECT u.userId, u.accountName, u.displayName 
+        FROM user u 
+        JOIN role r ON u.roleId = r.roleId 
+        JOIN Department d ON u.departmentId = d.id
+        WHERE u.departmentId = ? 
+          AND u.status = 'active' 
+          AND r.roleName = 'storekeeper'
+          AND d.status = 'active'
+        """;
+
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, departmentId);
