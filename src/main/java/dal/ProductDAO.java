@@ -179,7 +179,9 @@ public class ProductDAO extends DBContext {
     }
 
     public Product getProductByPId(int id) {
-        String sql = "SELECT p.id, p.productCode, p.name, p.brand, p.company, p.categoryId, p.unit, p.supplierId, p.status, p.url, s.name AS supplierName, c.categoryName AS categoryName FROM Product p LEFT JOIN Supplier s ON p.supplierId = s.id LEFT JOIN Category c ON p.categoryId = c.categoryId WHERE p.id = ?";
+        String sql = "SELECT p.id, p.productCode, p.name, p.brand, p.company, p.categoryId, p.unit, p.supplierId," +
+                " p.status, p.url, s.name AS supplierName, c.categoryName AS categoryName FROM Product p " +
+                "LEFT JOIN Supplier s ON p.supplierId = s.id LEFT JOIN Category c ON p.categoryId = c.categoryId WHERE p.id = ?";
 
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -292,4 +294,41 @@ public class ProductDAO extends DBContext {
         }
         return null;
     }
+    public int insertProducts(List<Product> products) {
+        String sql = "INSERT INTO product " +
+                "(productCode, name, brand, company, categoryId, unit, supplierId, status, url) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        int[] result;
+
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            conn.setAutoCommit(false); // 🚨 transaction
+
+            for (Product p : products) {
+                ps.setString(1, p.getProductCode());
+                ps.setString(2, p.getName());
+                ps.setString(3, p.getBrand());
+                ps.setString(4, p.getCompany());
+                ps.setInt(5, p.getCategoryId());
+                ps.setInt(6, p.getUnit());
+                ps.setInt(7, p.getSupplierId());
+                ps.setString(8, p.getStatus());
+                ps.setString(9, p.getUrl());
+
+                ps.addBatch();
+            }
+
+            result = ps.executeBatch();
+            conn.commit(); // ✅ tất cả OK
+
+            return result.length; // số product insert thành công
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
 }

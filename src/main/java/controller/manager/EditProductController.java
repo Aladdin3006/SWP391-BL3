@@ -49,8 +49,8 @@ public class EditProductController extends HttpServlet {
             return;
         }
 
-        List<Category> categories = categoryDAO.getAllCategories();
-        List<Supplier> suppliers = supplierDAO.getAllSuppliers();
+        List<Category> categories = categoryDAO.getCategoriesForAddAndEditP(product.getCategoryId());
+        List<Supplier> suppliers = supplierDAO.getSuppliersForAddAndEditP(product.getSupplierId());
         request.setAttribute("categories", categories);
         request.setAttribute("suppliers", suppliers);
         request.setAttribute("product", product);
@@ -146,8 +146,8 @@ public class EditProductController extends HttpServlet {
         if (hasError) {
             request.setAttribute("error", "Please fill all required fields correctly.");
             request.setAttribute("product", existingProduct);
-            request.setAttribute("categories", categoryDAO.getAllCategories());
-            request.setAttribute("suppliers", supplierDAO.getAllSuppliers());
+            request.setAttribute("categories", categoryDAO.getCategoriesForAddAndEditP(existingProduct.getCategoryId()));
+            request.setAttribute("suppliers", supplierDAO.getSuppliersForAddAndEditP(existingProduct.getSupplierId()));
             request.getRequestDispatcher("/view/manager/product/edit-product.jsp").forward(request, response);
             return;
         }
@@ -189,8 +189,8 @@ public class EditProductController extends HttpServlet {
         } else {
             request.setAttribute("error", "Update failed.");
             request.setAttribute("product", p);
-            request.setAttribute("categories", categoryDAO.getAllCategories());
-            request.setAttribute("suppliers", supplierDAO.getAllSuppliers());
+            request.setAttribute("categories", categoryDAO.getCategoriesForAddAndEditP(existingProduct.getCategoryId()));
+            request.setAttribute("suppliers", supplierDAO.getSuppliersForAddAndEditP(existingProduct.getSupplierId()));
             request.getRequestDispatcher("/view/manager/product/edit-product.jsp").forward(request, response);
         }
     }
