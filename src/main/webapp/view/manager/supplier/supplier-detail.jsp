@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         body {
-            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
         }
         .main-content {
@@ -20,174 +20,146 @@
         .card {
             border-radius: 15px;
             border: none;
-            box-shadow: 0 5px 25px rgba(33, 150, 243, 0.15);
-            background: linear-gradient(135deg, #ffffff 0%, #f5fbff 100%);
-            border: 2px solid #90caf9;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
         }
         .card-header {
-            background: linear-gradient(135deg, #2196f3 0%, #0d47a1 100%);
-            color: white;
-            border-bottom: 3px solid #1565c0;
+            background: white;
+            border-bottom: 2px solid #f0f0f0;
             padding: 20px 25px;
             border-radius: 15px 15px 0 0 !important;
         }
         .btn-back {
-            padding: 12px 25px;
+            padding: 10px 20px;
             border-radius: 10px;
             font-weight: 500;
-            background: linear-gradient(135deg, #546e7a 0%, #37474f 100%);
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
             border: none;
             color: white;
-            transition: all 0.3s ease;
-        }
-        .btn-back:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(84, 110, 122, 0.2);
         }
         .btn-edit {
-            background: linear-gradient(135deg, #2196f3 0%, #0d47a1 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border: none;
-            padding: 12px 30px;
+            padding: 10px 25px;
             border-radius: 10px;
             font-weight: 600;
             color: white;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.2);
+            transition: transform 0.3s ease;
         }
         .btn-edit:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.3);
+            transform: translateY(-2px);
         }
         .badge-status {
-            padding: 10px 20px;
-            border-radius: 25px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            border: 2px solid transparent;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.85rem;
         }
         .badge-active {
-            background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%);
-            color: #1b5e20;
-            border-color: #4caf50;
-            box-shadow: 0 2px 10px rgba(76, 175, 80, 0.2);
+            background: linear-gradient(135deg, #d1ffd1 0%, #a8ff78 100%);
+            color: #0a5c0a;
         }
         .badge-inactive {
-            background: linear-gradient(135deg, #ffcdd2 0%, #ef9a9a 100%);
-            color: #b71c1c;
-            border-color: #f44336;
-            box-shadow: 0 2px 10px rgba(244, 67, 54, 0.2);
+            background: linear-gradient(135deg, #ffd1d1 0%, #ff7878 100%);
+            color: #8b0000;
         }
         .info-card {
-            background: linear-gradient(135deg, #ffffff 0%, #e3f2fd 100%);
-            padding: 25px;
+            background: white;
+            padding: 20px;
             border-radius: 12px;
-            border: 2px solid #bbdefb;
+            border: 2px solid #f0f0f0;
             text-align: center;
             transition: all 0.3s ease;
             height: 100%;
-            box-shadow: 0 4px 15px rgba(187, 222, 251, 0.3);
         }
         .info-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 8px 25px rgba(33, 150, 243, 0.2);
-            border-color: #2196f3;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-color: #667eea;
         }
         .info-icon {
-            width: 70px;
-            height: 70px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 20px;
-            font-size: 1.8rem;
+            margin: 0 auto 15px;
+            font-size: 1.5rem;
             color: white;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
         .info-icon.code {
-            background: linear-gradient(135deg, #2196f3 0%, #0d47a1 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
         .info-icon.name {
-            background: linear-gradient(135deg, #42a5f5 0%, #1976d2 100%);
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
         }
         .info-icon.contact {
-            background: linear-gradient(135deg, #64b5f6 0%, #1565c0 100%);
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
         }
         .info-icon.status {
-            background: linear-gradient(135deg, #90caf9 0%, #0d47a1 100%);
+            background: linear-gradient(135deg, #42e695 0%, #3bb2b8 100%);
         }
         .info-title {
-            color: #546e7a;
-            font-size: 0.95rem;
-            margin-bottom: 8px;
-            font-weight: 500;
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
         }
         .info-value {
-            color: #1565c0;
-            font-size: 1.6rem;
+            color: #2c3e50;
+            font-size: 1.5rem;
             font-weight: 700;
             margin-bottom: 5px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
         .detail-section {
-            background: linear-gradient(135deg, #f5fbff 0%, #e3f2fd 100%);
+            background: white;
             padding: 25px;
             border-radius: 12px;
-            border: 2px solid #bbdefb;
+            border: 2px solid #f0f0f0;
             margin-bottom: 25px;
         }
         .detail-label {
-            color: #0d47a1;
+            color: #2c3e50;
             font-weight: 600;
             font-size: 0.9rem;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
         .detail-value {
-            color: #1565c0;
+            color: #495057;
             font-size: 1.1rem;
             font-weight: 500;
-            padding: 10px 15px;
-            background: white;
+            padding: 12px 15px;
+            background: #f8f9fa;
             border-radius: 8px;
-            border: 1px solid #e3f2fd;
-            min-height: 45px;
+            border: 1px solid #e9ecef;
+            min-height: 50px;
             display: flex;
             align-items: center;
-        }
-        .contact-info {
-            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
-            border: 2px solid #81c784;
-            border-radius: 12px;
-            padding: 20px;
-            margin-top: 20px;
-        }
-        .empty-value {
-            color: #90a4ae;
-            font-style: italic;
         }
         .action-buttons {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding-top: 25px;
-            border-top: 3px solid #e3f2fd;
+            border-top: 2px solid #f0f0f0;
             margin-top: 25px;
         }
         .sidebar { background-color: #343a40; color: white; min-height: calc(100vh - 56px); padding-top: 20px; }
         .sidebar .nav-link { color: rgba(255, 255, 255, 0.8); padding: 10px 15px; }
         .sidebar .nav-link:hover { color: white; background-color: rgba(255, 255, 255, 0.1); }
         .sidebar .nav-link.active { color: white; background-color: #0d6efd; }
+        .empty-value {
+            color: #6c757d;
+            font-style: italic;
+        }
         .supplier-code-badge {
-            background: linear-gradient(135deg, #2196f3 0%, #0d47a1 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             padding: 8px 20px;
             border-radius: 20px;
             font-weight: 600;
-            font-size: 1.1rem;
             display: inline-block;
-            box-shadow: 0 2px 10px rgba(33, 150, 243, 0.3);
         }
     </style>
 </head>
@@ -201,10 +173,8 @@
         <main class="col-md-10 ms-sm-auto px-md-4 main-content">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div>
-                    <h2 class="fw-bold mb-1" style="color: #0d47a1; text-shadow: 1px 1px 3px rgba(0,0,0,0.1);">
-                        <i class="fas fa-truck me-2"></i>Supplier Details
-                    </h2>
-                    <p class="text-muted" style="color: #2196f3 !important;">View complete information about the supplier</p>
+                    <h2 class="fw-bold mb-1" style="color: #2c3e50;">Supplier Details</h2>
+                    <p class="text-muted">View complete information about the supplier</p>
                 </div>
                 <a href="${pageContext.request.contextPath}/supplier-list" class="btn btn-back">
                     <i class="fas fa-arrow-left me-2"></i>Back to List
@@ -213,7 +183,7 @@
 
             <div class="card">
                 <div class="card-header">
-                    <h5 class="mb-0 fw-bold">
+                    <h5 class="mb-0 fw-bold" style="color: #2c3e50;">
                         <i class="fas fa-info-circle me-2"></i>Supplier Information
                     </h5>
                 </div>
@@ -267,7 +237,7 @@
                                 <div>
                                     <span class="badge-status ${supplier.status == 'active' ? 'badge-active' : 'badge-inactive'}">
                                         <i class="fas ${supplier.status == 'active' ? 'fa-check-circle' : 'fa-times-circle'} me-1"></i>
-                                        ${supplier.status}
+                                        ${supplier.status == 'active' ? 'Active' : 'Inactive'}
                                     </span>
                                 </div>
                                 <small class="text-muted">Supplier ID: ${supplier.id}</small>
@@ -279,7 +249,7 @@
                     <div class="row">
                         <div class="col-md-6 mb-4">
                             <div class="detail-section">
-                                <h5 class="fw-bold mb-4" style="color: #0d47a1; border-bottom: 2px solid #bbdefb; padding-bottom: 10px;">
+                                <h5 class="fw-bold mb-4" style="color: #2c3e50; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px;">
                                     <i class="fas fa-info-circle me-2"></i>Basic Details
                                 </h5>
 
@@ -326,7 +296,7 @@
 
                         <div class="col-md-6 mb-4">
                             <div class="detail-section">
-                                <h5 class="fw-bold mb-4" style="color: #0d47a1; border-bottom: 2px solid #bbdefb; padding-bottom: 10px;">
+                                <h5 class="fw-bold mb-4" style="color: #2c3e50; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px;">
                                     <i class="fas fa-address-book me-2"></i>Contact Information
                                 </h5>
 
@@ -400,7 +370,7 @@
                                 <a href="${pageContext.request.contextPath}/supplier-list?action=deactivate&id=${supplier.id}"
                                    class="btn btn-danger me-2"
                                    onclick="return confirm('Are you sure you want to deactivate ${supplier.name}? This may affect inventory operations.')"
-                                   style="border-radius: 10px; padding: 12px 25px; font-weight: 600; background: linear-gradient(135deg, #f44336 0%, #c62828 100%); border: none;">
+                                   style="border-radius: 10px; padding: 10px 20px; font-weight: 600;">
                                     <i class="fas fa-ban me-2"></i>Deactivate Supplier
                                 </a>
                             </c:if>
@@ -408,7 +378,7 @@
                                 <a href="${pageContext.request.contextPath}/supplier-list?action=activate&id=${supplier.id}"
                                    class="btn btn-success me-2"
                                    onclick="return confirm('Activate ${supplier.name}?')"
-                                   style="border-radius: 10px; padding: 12px 25px; font-weight: 600; background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%); border: none;">
+                                   style="border-radius: 10px; padding: 10px 20px; font-weight: 600;">
                                     <i class="fas fa-check me-2"></i>Activate Supplier
                                 </a>
                             </c:if>
@@ -426,33 +396,5 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function() {
-        // Animate info cards on load
-        $('.info-card').each(function(index) {
-            $(this).css('opacity', '0').css('transform', 'translateY(20px)');
-            setTimeout(() => {
-                $(this).animate({
-                    opacity: 1,
-                    marginTop: '0px'
-                }, 500 + (index * 100));
-            }, 100);
-        });
-
-        // Hover effects for buttons
-        $('.btn').hover(function() {
-            $(this).css('transform', 'translateY(-3px)');
-        }, function() {
-            $(this).css('transform', 'translateY(0)');
-        });
-
-        // Confirmation for deactivation/activation
-        $('a[href*="action=deactivate"], a[href*="action=activate"]').click(function(e) {
-            if (!confirm($(this).attr('onclick') ? '' : $(this).attr('data-confirm'))) {
-                e.preventDefault();
-            }
-        });
-    });
-</script>
 </body>
 </html>

@@ -61,7 +61,6 @@ public class UpdateSupplierController extends HttpServlet {
 
         SupplierDBContext db = new SupplierDBContext();
 
-        // Check if supplier code already exists (excluding current supplier)
         if (db.isSupplierCodeExists(code, supplier.getId())) {
             request.setAttribute("error", "Supplier code already exists");
             request.setAttribute("supplier", supplier);
@@ -71,7 +70,7 @@ public class UpdateSupplierController extends HttpServlet {
 
         try {
             db.updateSupplier(supplier);
-            response.sendRedirect("supplier-list?success=updated");
+            response.sendRedirect("supplier-list?success=Supplier updated successfully");
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("error", "Failed to update supplier: " + e.getMessage());
