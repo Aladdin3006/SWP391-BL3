@@ -222,7 +222,9 @@
                             </td>
                             <td style="text-align: center; vertical-align: middle;">
                                 <a href="${pageContext.request.contextPath}/user/detail?id=${u.userId}"
-                                   class="btn btn-sm btn-info btn-action">
+                                   class="btn btn-sm btn-info btn-action"
+                                   title="View">
+                                    <i class="fas fa-eye"></i>
                                 </a>
                                 <a href="${pageContext.request.contextPath}/user/update?id=${u.userId}"
                                    class="btn-action btn-edit"

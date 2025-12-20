@@ -185,7 +185,7 @@ public class EditProductController extends HttpServlet {
                 productChangeDAO.insert(productChange);
             }
 
-            response.sendRedirect(request.getContextPath() + "/view-product-detail?id=" + id + "&updated=1");
+            response.sendRedirect(request.getContextPath() + "/edit-product?id=" + id + "&updated=1");
         } else {
             request.setAttribute("error", "Update failed.");
             request.setAttribute("product", p);

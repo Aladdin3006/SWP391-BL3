@@ -22,9 +22,11 @@ public class DepartmentDAO extends DBContext {
             params.add(statusFilter);
         }
 
-        sql += " ORDER BY id LIMIT ?, ?";
-        params.add((page - 1) * pageSize);
+        int offset = (page - 1) * pageSize;
+
+        sql += " ORDER BY id LIMIT ? OFFSET ?";
         params.add(pageSize);
+        params.add(offset);
 
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {

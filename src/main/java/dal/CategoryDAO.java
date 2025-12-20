@@ -12,7 +12,7 @@ public class CategoryDAO extends DBContext {
 
     public List<Category> getAllCategories() {
         List<Category> list = new ArrayList<>();
-        String sql = "SELECT categoryId, categoryName, description, status FROM category ORDER BY categoryName ASC";
+        String sql = "SELECT categoryId, categoryName, description, status FROM category WHERE status = 1 ORDER BY categoryName ASC";
 
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
