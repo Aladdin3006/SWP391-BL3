@@ -36,21 +36,24 @@ public class RequestTransferListController extends HttpServlet {
         int page = (pageStr == null || pageStr.isEmpty()) ? 1 : Integer.parseInt(pageStr);
         int pageSize = 10;
 
-        Integer filterStorekeeperId = null;
-        Integer filterDepartmentId = null;
+        int userId = user.getUserId();
         String roleName = user.getRole() != null ? user.getRole().getRoleName() : "";
-        if ("employee".equals(roleName)) {
-            if (user.getDepartmentId() > 0) {
-                filterDepartmentId = user.getDepartmentId();
-            } else {
-                filterStorekeeperId = user.getUserId();
-            }
+
+        List<RequestTransferTicket> list;
+        int totalRecords;
+
+        if ("admin".equals(roleName) || "manager".equals(roleName)) {
+            list = dao.getAll(search, status, page, pageSize);
+            totalRecords = dao.count(search, status);
+        } else if ("storekeeper".equals(roleName)) {
+            list = dao.getAll(search, status, page, pageSize, userId, null);
+            totalRecords = dao.count(search, status, userId, null);
+        } else {
+            list = dao.getAllByCreatedBy(userId, search, status, page, pageSize);
+            totalRecords = dao.countByCreatedBy(userId, search, status);
         }
 
-        List<RequestTransferTicket> list = dao.getAll(search, status, page, pageSize, filterStorekeeperId, filterDepartmentId);
-        int totalRecords = dao.count(search, status, filterStorekeeperId, filterDepartmentId);
         int totalPages = (int) Math.ceil((double) totalRecords / pageSize);
-
         int fromRecord = totalRecords > 0 ? ((page - 1) * pageSize + 1) : 0;
         int toRecord = Math.min(page * pageSize, totalRecords);
 

@@ -71,7 +71,7 @@
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'department-list' ? 'active' : ''}"
                            href="${pageContext.request.contextPath}/department-list">
-                            <i class="fas fa-building me-2"></i>Departments
+                            <i class="fas fa-building me-2"></i>Manager Departments
                         </a>
                     </li>
 

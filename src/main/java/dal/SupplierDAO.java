@@ -11,7 +11,7 @@ public class SupplierDAO extends DBContext {
 
     public List<Supplier> getAllSuppliers() {
         List<Supplier> suppliers = new ArrayList<>();
-        String sql = "SELECT id, supplierCode, name, contactPerson, phone, email, address, status FROM supplier";
+        String sql = "SELECT id, supplierCode, name, contactPerson, phone, email, address, status FROM supplier WHERE status = 'active'";
 
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);

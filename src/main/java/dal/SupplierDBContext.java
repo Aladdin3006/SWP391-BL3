@@ -1,4 +1,4 @@
-package dal;
+ package dal;
 
 import entity.Supplier;
 import java.sql.*;
@@ -9,26 +9,29 @@ public class SupplierDBContext extends DBContext {
 
     public List<Supplier> getSupplierListWithPaging(String search, String statusFilter, int page, int pageSize) {
         List<Supplier> list = new ArrayList<>();
-        String sql = "SELECT id, supplierCode, name, contactPerson, phone, email, address, status FROM Supplier WHERE 1=1";
+        StringBuilder sql = new StringBuilder("SELECT id, supplierCode, name, contactPerson, phone, email, address, status FROM Supplier WHERE 1=1");
         List<Object> params = new ArrayList<>();
 
         if (search != null && !search.trim().isEmpty()) {
-            sql += " AND (name LIKE ? OR supplierCode LIKE ? OR contactPerson LIKE ?)";
+            sql.append(" AND (name LIKE ? OR supplierCode LIKE ? OR contactPerson LIKE ?)");
             params.add("%" + search.trim() + "%");
             params.add("%" + search.trim() + "%");
             params.add("%" + search.trim() + "%");
         }
         if (statusFilter != null && !statusFilter.equals("all")) {
-            sql += " AND status = ?";
+            sql.append(" AND status = ?");
             params.add(statusFilter);
         }
 
-        sql += " ORDER BY id LIMIT ?, ?";
-        params.add((page - 1) * pageSize);
+        sql.append(" ORDER BY id LIMIT ? OFFSET ?");
+
+        // Calculate offset
+        int offset = (page - 1) * pageSize;
         params.add(pageSize);
+        params.add(offset);
 
         try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
             for (int i = 0; i < params.size(); i++) {
                 ps.setObject(i + 1, params.get(i));
             }
@@ -52,22 +55,22 @@ public class SupplierDBContext extends DBContext {
     }
 
     public int countSuppliers(String search, String statusFilter) {
-        String sql = "SELECT COUNT(*) FROM Supplier WHERE 1=1";
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM Supplier WHERE 1=1");
         List<Object> params = new ArrayList<>();
 
         if (search != null && !search.trim().isEmpty()) {
-            sql += " AND (name LIKE ? OR supplierCode LIKE ? OR contactPerson LIKE ?)";
+            sql.append(" AND (name LIKE ? OR supplierCode LIKE ? OR contactPerson LIKE ?)");
             params.add("%" + search.trim() + "%");
             params.add("%" + search.trim() + "%");
             params.add("%" + search.trim() + "%");
         }
         if (statusFilter != null && !statusFilter.equals("all")) {
-            sql += " AND status = ?";
+            sql.append(" AND status = ?");
             params.add(statusFilter);
         }
 
         try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
             for (int i = 0; i < params.size(); i++) {
                 ps.setObject(i + 1, params.get(i));
             }
@@ -139,6 +142,12 @@ public class SupplierDBContext extends DBContext {
             ps.setString(6, supplier.getAddress());
             ps.setString(7, supplier.getStatus());
             ps.executeUpdate();
+
+            // Get the generated ID
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                supplier.setId(rs.getInt(1));
+            }
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Add supplier failed", e);

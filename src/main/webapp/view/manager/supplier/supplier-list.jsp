@@ -1,3 +1,4 @@
+[file content begin]
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
@@ -8,7 +9,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        /* Copy the same styles from department-list.jsp and adjust as needed */
         body {
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
@@ -24,12 +24,27 @@
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
             transition: transform 0.3s ease;
         }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .table {
+            border-collapse: separate;
+            border-spacing: 0;
+        }
         .table thead th {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
             padding: 15px 12px;
             font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        .table tbody tr {
+            transition: all 0.2s ease;
+        }
+        .table tbody tr:hover {
+            background-color: rgba(102, 126, 234, 0.08);
+            transform: scale(1.002);
         }
         .badge-status {
             padding: 8px 15px;
@@ -45,14 +60,68 @@
             background: linear-gradient(135deg, #ffd1d1 0%, #ff7878 100%);
             color: #8b0000;
         }
+        .btn-action {
+            padding: 6px 15px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin: 2px;
+        }
+        .pagination .page-item.active .page-link {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: #667eea;
+        }
+        .pagination .page-link {
+            color: #667eea;
+            border-radius: 8px;
+            margin: 0 3px;
+            border: 1px solid #dee2e6;
+        }
+        .search-box {
+            position: relative;
+        }
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+        .search-box input {
+            padding-left: 45px;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+        }
+        .action-buttons {
+            white-space: nowrap;
+        }
+        .empty-state {
+            padding: 60px 20px;
+            text-align: center;
+            color: #6c757d;
+        }
+        .empty-state i {
+            font-size: 4rem;
+            color: #dee2e6;
+            margin-bottom: 20px;
+        }
         .sidebar { background-color: #343a40; color: white; min-height: calc(100vh - 56px); padding-top: 20px; }
         .sidebar .nav-link { color: rgba(255, 255, 255, 0.8); padding: 10px 15px; }
         .sidebar .nav-link:hover { color: white; background-color: rgba(255, 255, 255, 0.1); }
         .sidebar .nav-link.active { color: white; background-color: #0d6efd; }
+        .badge-code {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
     </style>
 </head>
 <body>
 <jsp:include page="/view/fragments/navbar.jsp"/>
+
 <div class="container-fluid">
     <div class="row">
         <c:set var="activePage" value="supplier-list" scope="request"/>
@@ -85,28 +154,38 @@
                         </div>
                         <div class="col-md-3">
                             <label class="form-label fw-bold mb-2" style="color: #2c3e50;">Status</label>
-                            <select name="status" class="form-select">
+                            <select name="status" class="form-select" style="border-radius: 10px; border: 2px solid #e0e0e0;">
                                 <option value="all" ${status == 'all' || status == null ? 'selected' : ''}>All Status</option>
                                 <option value="active" ${status == 'active' ? 'selected' : ''}>Active</option>
                                 <option value="inactive" ${status == 'inactive' ? 'selected' : ''}>Inactive</option>
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <button type="submit" class="btn btn-primary w-100">
+                            <button type="submit" class="btn btn-primary w-100"
+                                    style="border: none; padding: 10px; border-radius: 10px; font-weight: 600;">
                                 <i class="fas fa-filter me-2"></i>Filter
                             </button>
                         </div>
                         <div class="col-md-2">
-                            <a href="${pageContext.request.contextPath}/supplier-list" class="btn btn-outline-secondary w-100">
+                            <a href="${pageContext.request.contextPath}/supplier-list" class="btn btn-outline-secondary w-100"
+                               style="padding: 10px; border-radius: 10px; font-weight: 500;">
                                 <i class="fas fa-redo me-2"></i>Reset
                             </a>
                         </div>
                     </form>
 
-                    <c:if test="${not empty success}">
+                    <c:if test="${not empty param.success}">
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
                             <i class="fas fa-check-circle me-2"></i>
-                            Supplier ${success} successfully!
+                                ${param.success}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    </c:if>
+
+                    <c:if test="${not empty param.error}">
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                                ${param.error}
                             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                         </div>
                     </c:if>
@@ -117,53 +196,101 @@
                                 <table class="table table-hover align-middle">
                                     <thead>
                                     <tr>
-                                        <th>#</th>
+                                        <th style="border-top-left-radius: 10px;">#</th>
                                         <th>Code</th>
                                         <th>Supplier Name</th>
                                         <th>Contact Person</th>
                                         <th>Phone</th>
-                                        <th>Email</th>
                                         <th>Status</th>
-                                        <th>Actions</th>
+                                        <th style="border-top-right-radius: 10px;">Actions</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <c:forEach items="${suppliers}" var="s" varStatus="st">
                                         <tr>
-                                            <td class="fw-bold">${(currentPage-1)*10 + st.index + 1}</td>
-                                            <td>
-                                                <span class="badge bg-primary">${s.supplierCode}</span>
+                                            <td class="fw-bold" style="color: #6c757d;">
+                                                    ${(currentPage-1)*5 + st.index + 1}
                                             </td>
-                                            <td>${s.name}</td>
-                                            <td>${s.contactPerson}</td>
-                                            <td>${s.phone}</td>
-                                            <td>${s.email}</td>
                                             <td>
-                                                <span class="badge-status ${s.status == 'active' ? 'badge-active' : 'badge-inactive'}">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center me-3"
+                                                         style="width: 40px; height: 40px; color: white;">
+                                                        <i class="fas fa-barcode"></i>
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-0 fw-bold" style="color: #2c3e50;">${s.supplierCode}</h6>
+                                                        <small class="text-muted">ID: ${s.id}</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="bg-info rounded-circle d-flex align-items-center justify-content-center me-2"
+                                                         style="width: 32px; height: 32px; color: white; font-size: 0.8rem;">
+                                                        <i class="fas fa-building"></i>
+                                                    </div>
+                                                    <span class="fw-medium">${s.name}</span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <c:choose>
+                                                    <c:when test="${not empty s.contactPerson}">
+                                                        <div class="d-flex align-items-center">
+                                                            <div class="bg-success rounded-circle d-flex align-items-center justify-content-center me-2"
+                                                                 style="width: 32px; height: 32px; color: white; font-size: 0.8rem;">
+                                                                <i class="fas fa-user-tie"></i>
+                                                            </div>
+                                                            <span class="fw-medium">${s.contactPerson}</span>
+                                                        </div>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <span class="text-muted">Not specified</span>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </td>
+                                            <td>
+                                                <c:choose>
+                                                    <c:when test="${not empty s.phone}">
+                                                        <div class="d-flex align-items-center">
+                                                            <i class="fas fa-phone text-success me-2"></i>
+                                                            <span>${s.phone}</span>
+                                                        </div>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <span class="text-muted">No phone</span>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </td>
+                                            <td>
+                                                <span class="badge badge-status ${s.status == 'active' ? 'badge-active' : 'badge-inactive'}">
                                                     <i class="fas ${s.status == 'active' ? 'fa-check-circle' : 'fa-times-circle'} me-1"></i>
-                                                    ${s.status}
+                                                    ${s.status == 'active' ? 'Active' : 'Inactive'}
                                                 </span>
                                             </td>
-                                            <td>
+                                            <td class="action-buttons">
                                                 <a href="${pageContext.request.contextPath}/supplier-detail?id=${s.id}"
-                                                   class="btn btn-info btn-sm">
-                                                    <i class="fas fa-eye"></i>
+                                                   class="btn btn-action btn-info"
+                                                   style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white;">
+                                                    <i class="fas fa-eye me-1"></i>View
                                                 </a>
                                                 <a href="${pageContext.request.contextPath}/supplier-update?id=${s.id}"
-                                                   class="btn btn-warning btn-sm">
-                                                    <i class="fas fa-edit"></i>
+                                                   class="btn btn-action btn-warning"
+                                                   style="background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); color: white;">
+                                                    <i class="fas fa-edit me-1"></i>Edit
                                                 </a>
                                                 <c:if test="${s.status == 'active'}">
-                                                    <a href="${pageContext.request.contextPath}/supplier-list?action=deactivate&id=${s.id}"
-                                                       class="btn btn-danger btn-sm"
-                                                       onclick="return confirm('Deactivate ${s.name}?')">
-                                                        <i class="fas fa-ban"></i>
+                                                    <a href="${pageContext.request.contextPath}/supplier-list?action=deactivate&id=${s.id}&search=${search}&status=${status}&page=${currentPage}"
+                                                       class="btn btn-action btn-danger"
+                                                       style="background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%); color: white;"
+                                                       onclick="return confirm('Are you sure you want to deactivate ${s.name}?')">
+                                                        <i class="fas fa-ban me-1"></i>Deactivate
                                                     </a>
                                                 </c:if>
                                                 <c:if test="${s.status == 'inactive'}">
-                                                    <a href="${pageContext.request.contextPath}/supplier-list?action=activate&id=${s.id}"
-                                                       class="btn btn-success btn-sm">
-                                                        <i class="fas fa-check"></i>
+                                                    <a href="${pageContext.request.contextPath}/supplier-list?action=activate&id=${s.id}&search=${search}&status=${status}&page=${currentPage}"
+                                                       class="btn btn-action btn-success"
+                                                       style="background: linear-gradient(135deg, #4cd964 0%, #5ac8fa 100%); color: white;">
+                                                        <i class="fas fa-check me-1"></i>Activate
                                                     </a>
                                                 </c:if>
                                             </td>
@@ -172,21 +299,26 @@
                                     </tbody>
                                 </table>
 
-                                <c:if test="${totalPages > 1}">
+                                <c:if test="${totalPages > 0}">
                                     <nav class="mt-4">
                                         <ul class="pagination justify-content-center">
                                             <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
-                                                <a class="page-link" href="${pageContext.request.contextPath}/supplier-list?page=${currentPage-1}&search=${search}&status=${status}">
+                                                <a class="page-link"
+                                                   href="${pageContext.request.contextPath}/supplier-list?page=${currentPage-1}&search=${search}&status=${status}">
                                                     <i class="fas fa-chevron-left"></i>
                                                 </a>
                                             </li>
                                             <c:forEach begin="1" end="${totalPages}" var="p">
                                                 <li class="page-item ${p == currentPage ? 'active' : ''}">
-                                                    <a class="page-link" href="${pageContext.request.contextPath}/supplier-list?page=${p}&search=${search}&status=${status}">${p}</a>
+                                                    <a class="page-link"
+                                                       href="${pageContext.request.contextPath}/supplier-list?page=${p}&search=${search}&status=${status}">
+                                                            ${p}
+                                                    </a>
                                                 </li>
                                             </c:forEach>
                                             <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
-                                                <a class="page-link" href="${pageContext.request.contextPath}/supplier-list?page=${currentPage+1}&search=${search}&status=${status}">
+                                                <a class="page-link"
+                                                   href="${pageContext.request.contextPath}/supplier-list?page=${currentPage+1}&search=${search}&status=${status}">
                                                     <i class="fas fa-chevron-right"></i>
                                                 </a>
                                             </li>
@@ -198,6 +330,7 @@
                                 <div class="empty-state">
                                     <i class="fas fa-truck"></i>
                                     <h4 class="mt-3 mb-2">No Suppliers Found</h4>
+                                    <p class="text-muted mb-0">Try adjusting your search or filter criteria</p>
                                 </div>
                             </c:otherwise>
                         </c:choose>
@@ -208,5 +341,15 @@
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    setTimeout(() => {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            const bsAlert = new bootstrap.Alert(alert);
+            bsAlert.close();
+        });
+    }, 5000);
+</script>
 </body>
 </html>
+[file content end]

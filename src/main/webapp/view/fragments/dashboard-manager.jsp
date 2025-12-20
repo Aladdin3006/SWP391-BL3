@@ -412,92 +412,67 @@
 </div>
 
 <script>
-    const inventoryChartCtx = document.getElementById('inventoryChart').getContext('2d');
+    document.addEventListener('DOMContentLoaded', function() {
+        const inventoryChartCtx = document.getElementById('inventoryChart').getContext('2d');
+        const monthlyImports = ${monthlyImports};
+        const monthlyExports = ${monthlyExports};
+        const currentMonth = '${currentMonth}';
+        const currentYear = ${currentYear};
 
-    const weeklyData = {
-        labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
-        imports: [
-            ${monthlyImports * 0.3},
-            ${monthlyImports * 0.25},
-            ${monthlyImports * 0.25},
-            ${monthlyImports * 0.2}
-        ],
-        exports: [
-            ${monthlyExports * 0.2},
-            ${monthlyExports * 0.3},
-            ${monthlyExports * 0.35},
-            ${monthlyExports * 0.15}
-        ]
-    };
-
-    new Chart(inventoryChartCtx, {
-        type: 'line',
-        data: {
-            labels: weeklyData.labels,
-            datasets: [
-                {
-                    label: 'Imports',
-                    data: weeklyData.imports,
-                    borderColor: '#3498db',
-                    backgroundColor: 'rgba(52, 152, 219, 0.1)',
-                    borderWidth: 2,
-                    fill: true,
-                    tension: 0.4
+        if(monthlyImports === 0 && monthlyExports === 0) {
+            document.getElementById('inventoryChart').style.display = 'none';
+            document.querySelector('#inventoryChart').parentElement.innerHTML = `
+                <div class="text-center py-5">
+                    <i class="fas fa-chart-bar fa-3x text-muted mb-3"></i>
+                    <p class="text-muted mb-0">No inventory movement data available for ${currentMonth} ${currentYear}.</p>
+                    <small class="text-muted">Data will appear once imports or exports are recorded.</small>
+                </div>
+            `;
+        } else {
+            new Chart(inventoryChartCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Imports', 'Exports'],
+                    datasets: [{
+                        label: 'Units',
+                        data: [monthlyImports, monthlyExports],
+                        backgroundColor: [
+                            'rgba(52, 152, 219, 0.7)',
+                            'rgba(46, 204, 113, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgb(52, 152, 219)',
+                            'rgb(46, 204, 113)'
+                        ],
+                        borderWidth: 1
+                    }]
                 },
-                {
-                    label: 'Exports',
-                    data: weeklyData.exports,
-                    borderColor: '#2ecc71',
-                    backgroundColor: 'rgba(46, 204, 113, 0.1)',
-                    borderWidth: 2,
-                    fill: true,
-                    tension: 0.4
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: 'Units'
-                    }
-                },
-                x: {
-                    title: {
-                        display: true,
-                        text: 'Weeks of ${currentMonth}'
-                    }
-                }
-            },
-            plugins: {
-                legend: {
-                    position: 'top',
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            return `${context.dataset.label}: ${context.parsed.y} units`;
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Units'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.label}: ${context.parsed.y} units`;
+                                }
+                            }
                         }
                     }
                 }
-            }
-        }
-    });
-
-    document.addEventListener('DOMContentLoaded', function() {
-        if(${monthlyImports} === 0 && ${monthlyExports} === 0) {
-            document.getElementById('inventoryChart').style.display = 'none';
-            document.querySelector('#inventoryChart').parentElement.innerHTML = `
-                    <div class="text-center py-5">
-                        <i class="fas fa-chart-bar fa-3x text-muted mb-3"></i>
-                        <p class="text-muted mb-0">No inventory movement data available for ${currentMonth} ${currentYear}.</p>
-                        <small class="text-muted">Data will appear once imports or exports are recorded.</small>
-                    </div>
-                `;
+            });
         }
     });
 </script>

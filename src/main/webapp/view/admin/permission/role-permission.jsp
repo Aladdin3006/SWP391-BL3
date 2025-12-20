@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Role Permission Mapping</title>
+    <title>Role Permission Matrix</title>
 
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"/>
@@ -17,9 +17,82 @@
         .sidebar .nav-link { color: rgba(255, 255, 255, 0.8); padding: 10px 15px; }
         .sidebar .nav-link:hover { color: white; background-color: rgba(255, 255, 255, 0.1); }
         .sidebar .nav-link.active { color: white; background-color: #0d6efd; }
-        th, td { text-align: center; vertical-align: middle; }
-        td.desc { text-align: left !important; }
-        .assigned { background: #d1ffd1 !important; }
+
+        .permission-matrix {
+            width: 100%;
+            overflow-x: auto;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        .matrix-table {
+            min-width: 800px;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        .permission-name-col {
+            position: sticky;
+            left: 0;
+            background: white;
+            z-index: 3;
+            min-width: 200px;
+            border-right: 2px solid #dee2e6;
+        }
+        .permission-url-col {
+            position: sticky;
+            left: 200px;
+            background: white;
+            z-index: 3;
+            min-width: 200px;
+            border-right: 2px solid #dee2e6;
+        }
+        .role-header {
+            background-color: #f8f9fa;
+            min-width: 120px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+        .permission-cell {
+            text-align: center;
+            vertical-align: middle;
+            cursor: pointer;
+            min-width: 120px;
+            height: 70px;
+        }
+        .assigned-true {
+            background-color: #d4edda !important;
+        }
+        .assigned-false {
+            background-color: #f8d7da !important;
+        }
+        .permission-url {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+        .table-header {
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 4;
+        }
+        .table-header th {
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 4;
+        }
+        .permission-row:hover {
+            background-color: #f5f5f5;
+        }
+        .toggle-btn {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: none;
+            cursor: pointer;
+            padding: 10px;
+        }
     </style>
 </head>
 
@@ -33,117 +106,124 @@
 
         <main class="col-md-10 ms-sm-auto px-4">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2">Role Permission Management – <span class="text-primary">${role.roleName}</span></h1>
+                <h1 class="h2">Role Permission Matrix</h1>
+                <a href="${pageContext.request.contextPath}/view-role-list" class="btn btn-secondary">
+                    <i class="fa fa-arrow-left"></i> Back to Roles
+                </a>
             </div>
 
-            <form class="row g-3 mb-3">
-                <input type="hidden" name="roleId" value="${roleId}"/>
+            <div class="card p-3 mb-4">
+                <div class="permission-matrix">
+                    <table class="table table-bordered matrix-table">
+                        <thead class="table-header">
+                        <tr>
+                            <th class="permission-name-col">Permission</th>
+                            <th class="permission-url-col">URL</th>
+                            <c:forEach var="role" items="${allRoles}">
+                                <th class="role-header">
+                                    <div class="fw-bold">${role.roleName}</div>
+                                    <div class="permission-url">
+                                        <c:choose>
+                                            <c:when test="${role.status == 'active'}">
+                                                <span class="badge bg-success">Active</span>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <span class="badge bg-danger">Inactive</span>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </div>
+                                </th>
+                            </c:forEach>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <c:forEach var="permission" items="${allPermissions}">
+                            <tr class="permission-row">
+                                <td class="permission-name-col fw-bold">${permission.permissionName}</td>
+                                <td class="permission-url-col permission-url">${permission.url}</td>
 
-                <div class="col-md-4">
-                    <input name="search" value="${search}" class="form-control"
-                           placeholder="Search permission..."/>
+                                <c:forEach var="role" items="${allRoles}">
+                                    <c:set var="isAssigned"
+                                           value="${rolePermissionsMap[role.roleId].contains(permission.permissionId)}"/>
+                                    <td class="permission-cell ${isAssigned ? 'assigned-true' : 'assigned-false'}">
+                                        <form method="post" action="role-permission" class="toggle-form"
+                                              id="form-${role.roleId}-${permission.permissionId}">
+                                            <input type="hidden" name="roleId" value="${role.roleId}"/>
+                                            <input type="hidden" name="permissionId" value="${permission.permissionId}"/>
+                                            <input type="hidden" name="action" value="${isAssigned ? 'remove' : 'assign'}"/>
+
+                                            <button type="submit" class="toggle-btn">
+                                                <c:choose>
+                                                    <c:when test="${isAssigned}">
+                                                        <i class="fas fa-check-circle text-success fa-lg"></i>
+                                                        <div class="text-muted small">Assigned</div>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <i class="fas fa-times-circle text-danger fa-lg"></i>
+                                                        <div class="text-muted small">Not Assigned</div>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </c:forEach>
+                            </tr>
+                        </c:forEach>
+                        </tbody>
+                    </table>
                 </div>
+            </div>
 
-                <div class="col-md-3">
-                    <select name="sort" class="form-select">
-                        <option value="permissionId" ${sort=="permissionId"?"selected":""}>Sort by ID</option>
-                        <option value="permissionName" ${sort=="permissionName"?"selected":""}>Sort by Name</option>
-                    </select>
+            <div class="card p-3">
+                <h5 class="card-title">Legend:</h5>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="assigned-true p-2 me-2" style="width: 30px; height: 30px; text-align: center;">
+                                <i class="fas fa-check-circle text-success"></i>
+                            </div>
+                            <span>Permission Assigned</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="assigned-false p-2 me-2" style="width: 30px; height: 30px; text-align: center;">
+                                <i class="fas fa-times-circle text-danger"></i>
+                            </div>
+                            <span>Permission Not Assigned</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="text-muted mb-0">
+                            <i class="fas fa-info-circle"></i>
+                            Click on any cell to toggle permission assignment. Green = Assigned, Red = Not Assigned.
+                        </p>
+                    </div>
                 </div>
-
-                <div class="col-md-2">
-                    <select name="dir" class="form-select">
-                        <option value="ASC" ${dir=="ASC"?"selected":""}>ASC</option>
-                        <option value="DESC" ${dir=="DESC"?"selected":""}>DESC</option>
-                    </select>
-                </div>
-
-                <div class="col-md-2">
-                    <button class="btn btn-primary w-100">
-                        <i class="fa fa-search"></i> Search
-                    </button>
-                </div>
-
-                <div class="col-md-1">
-                    <a href="${pageContext.request.contextPath}/view-role-list" class="btn btn-secondary w-100">
-                        <i class="fa fa-arrow-left"></i>
-                    </a>
-                </div>
-            </form>
-
-            <table class="table table-bordered table-striped">
-                <thead class="table-info">
-                <tr>
-                    <th>#</th>
-                    <th>Name</th>
-                    <th>URL</th>
-                    <th>Description</th>
-                    <th>Assigned?</th>
-                    <th>Action</th>
-                </tr>
-                </thead>
-
-                <tbody>
-                <c:forEach var="p" items="${permissions}" varStatus="i">
-                    <tr class="${assigned.contains(p.permissionId) ? 'assigned' : ''}">
-                        <td>${(page-1)*6 + i.index + 1}</td>
-                        <td>${p.permissionName}</td>
-                        <td>${p.url}</td>
-                        <td class="desc">${p.description}</td>
-
-                        <td>
-                            <c:choose>
-                                <c:when test="${assigned.contains(p.permissionId)}">
-                                    <span class="badge bg-success">YES</span>
-                                </c:when>
-                                <c:otherwise>
-                                    <span class="badge bg-danger">NO</span>
-                                </c:otherwise>
-                            </c:choose>
-                        </td>
-
-                        <td>
-                            <c:if test="${!assigned.contains(p.permissionId)}">
-                                <form method="post" style="display:inline;">
-                                    <input type="hidden" name="action" value="assign"/>
-                                    <input type="hidden" name="roleId" value="${roleId}"/>
-                                    <input type="hidden" name="permissionId" value="${p.permissionId}"/>
-                                    <button class="btn btn-success btn-sm">
-                                        <i class="fa fa-plus"></i> Assign
-                                    </button>
-                                </form>
-                            </c:if>
-
-                            <c:if test="${assigned.contains(p.permissionId)}">
-                                <form method="post" style="display:inline;">
-                                    <input type="hidden" name="action" value="remove"/>
-                                    <input type="hidden" name="roleId" value="${roleId}"/>
-                                    <input type="hidden" name="permissionId" value="${p.permissionId}"/>
-                                    <button class="btn btn-danger btn-sm">
-                                        <i class="fa fa-trash"></i> Remove
-                                    </button>
-                                </form>
-                            </c:if>
-                        </td>
-                    </tr>
-                </c:forEach>
-                </tbody>
-            </table>
-
-            <nav>
-                <ul class="pagination justify-content-center">
-                    <c:forEach begin="1" end="${totalPage}" var="p">
-                        <li class="page-item ${p==page?'active':''}">
-                            <a class="page-link"
-                               href="?roleId=${roleId}&page=${p}&search=${search}&sort=${sort}&dir=${dir}">
-                                    ${p}
-                            </a>
-                        </li>
-                    </c:forEach>
-                </ul>
-            </nav>
+            </div>
         </main>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggleForms = document.querySelectorAll('.toggle-form');
+
+        toggleForms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                const action = this.querySelector('input[name="action"]').value;
+                const roleId = this.querySelector('input[name="roleId"]').value;
+                const permissionId = this.querySelector('input[name="permissionId"]').value;
+
+                if (action === 'remove') {
+                    if (!confirm('Are you sure you want to remove this permission?')) {
+                        e.preventDefault();
+                    }
+                }
+            });
+        });
+    });
+</script>
 </body>
 </html>

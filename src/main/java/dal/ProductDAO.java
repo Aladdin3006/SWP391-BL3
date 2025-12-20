@@ -292,4 +292,57 @@ public class ProductDAO extends DBContext {
         }
         return null;
     }
+
+    public boolean insertMultipleProducts(List<Product> products) {
+        String sql = "INSERT INTO product (productCode, name, brand, company, categoryId, unit, supplierId, status, url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            conn.setAutoCommit(false);
+
+            for (Product p : products) {
+                ps.setString(1, p.getProductCode());
+                ps.setString(2, p.getName());
+                ps.setString(3, p.getBrand());
+                ps.setString(4, p.getCompany());
+                ps.setInt(5, p.getCategoryId());
+                ps.setInt(6, p.getUnit());
+                ps.setInt(7, p.getSupplierId());
+                ps.setString(8, p.getStatus());
+                ps.setString(9, p.getUrl());
+                ps.addBatch();
+            }
+
+            int[] results = ps.executeBatch();
+
+            // Get generated keys for all inserted products
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                int index = 0;
+                while (rs.next()) {
+                    if (index < products.size()) {
+                        // Update the product object with the generated ID
+                        products.get(index).setId(rs.getInt(1));
+                    }
+                    index++;
+                }
+            }
+
+            conn.commit();
+
+            // Check if all inserts were successful
+            for (int result : results) {
+                if (result <= 0) {
+                    return false;
+                }
+            }
+
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
 }
