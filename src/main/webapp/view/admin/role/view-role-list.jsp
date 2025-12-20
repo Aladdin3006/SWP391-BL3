@@ -88,9 +88,9 @@
                                         </c:choose>
                                     </td>
                                     <td class="text-center">
-                                        <a href="${pageContext.request.contextPath}/role-permission?roleId=${r.roleId}"
-                                           class="btn btn-sm btn-warning text-white" title="Edit Permissions">
-                                            <i class="fas fa-key"></i>
+                                        <a href="${pageContext.request.contextPath}/role-permission"
+                                        class="btn btn-sm btn-warning text-white" title="Edit Permissions">
+                                        <i class="fas fa-key"></i>
                                         </a>
                                     </td>
                                     <td class="text-center">
