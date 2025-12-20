@@ -13,6 +13,87 @@ import java.util.Map;
 
 public class ActualTransferDAO extends DBContext {
 
+    public List<ActualTransferTicket> getAllByConfirmedBy(int confirmedBy, String search, String status, int page, int pageSize) {
+        List<ActualTransferTicket> list = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT a.*, u.displayName ")
+                .append("FROM actual_transfer_ticket a ")
+                .append("LEFT JOIN user u ON a.confirmedBy = u.userId ")
+                .append("WHERE a.confirmedBy = ? ");
+
+        List<Object> params = new ArrayList<>();
+        params.add(confirmedBy);
+
+        if (search != null && !search.isEmpty()) {
+            sql.append("AND a.ticketCode LIKE ? ");
+            params.add("%" + search + "%");
+        }
+        if (status != null && !status.equals("all") && !status.isEmpty()) {
+            sql.append("AND a.status = ? ");
+            params.add(status);
+        }
+
+        sql.append("ORDER BY a.createdAt DESC LIMIT ? OFFSET ?");
+        params.add(pageSize);
+        params.add((page - 1) * pageSize);
+
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                ActualTransferTicket ticket = new ActualTransferTicket();
+                ticket.setId(rs.getInt("id"));
+                ticket.setTicketCode(rs.getString("ticketCode"));
+                ticket.setRequestTransferId(rs.getInt("requestTransferId"));
+                ticket.setTransferDate(rs.getDate("transferDate"));
+                ticket.setStatus(rs.getString("status"));
+                ticket.setConfirmedBy(rs.getInt("confirmedBy"));
+                ticket.setNote(rs.getString("note"));
+                list.add(ticket);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public int countByConfirmedBy(int confirmedBy, String search, String status) {
+        int count = 0;
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM actual_transfer_ticket a WHERE confirmedBy = ? ");
+
+        List<Object> params = new ArrayList<>();
+        params.add(confirmedBy);
+
+        if (search != null && !search.isEmpty()) {
+            sql.append("AND a.ticketCode LIKE ? ");
+            params.add("%" + search + "%");
+        }
+        if (status != null && !status.equals("all") && !status.isEmpty()) {
+            sql.append("AND a.status = ? ");
+            params.add(status);
+        }
+
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
+
     public List<ActualTransferTicket> getAll(String search, String status, int page, int pageSize) {
         List<ActualTransferTicket> list = new ArrayList<>();
         String sql = "SELECT a.*, u.displayName "

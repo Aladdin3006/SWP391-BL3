@@ -12,11 +12,99 @@ import java.util.List;
 
 public class RequestTransferDAO extends DBContext {
 
+    public List<RequestTransferTicket> getAllByCreatedBy(int createdBy, String search, String status, int page, int pageSize) {
+        List<RequestTransferTicket> list = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT r.*, ")
+                .append("cb.displayName as creatorName, ")
+                .append("sk.displayName as storekeeperName ")
+                .append("FROM request_transfer_ticket r ")
+                .append("LEFT JOIN user cb ON r.createdBy = cb.userId ")
+                .append("LEFT JOIN user sk ON r.storekeeperId = sk.userId ")
+                .append("WHERE r.createdBy = ? ");
+
+        List<Object> params = new ArrayList<>();
+        params.add(createdBy);
+
+        if (search != null && !search.trim().isEmpty()) {
+            sql.append("AND (r.ticketCode LIKE ? OR r.note LIKE ?) ");
+            params.add("%" + search + "%");
+            params.add("%" + search + "%");
+        }
+
+        if (status != null && !status.trim().isEmpty()) {
+            sql.append("AND r.status = ? ");
+            params.add(status);
+        }
+
+        sql.append("ORDER BY r.createdAt DESC LIMIT ? OFFSET ?");
+        params.add(pageSize);
+        params.add((page - 1) * pageSize);
+
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                RequestTransferTicket r = new RequestTransferTicket();
+                r.setId(rs.getInt("id"));
+                r.setTicketCode(rs.getString("ticketCode"));
+                r.setType(rs.getString("type"));
+                r.setRequestDate(rs.getDate("requestDate"));
+                r.setStatus(rs.getString("status"));
+                r.setCreatedBy(rs.getInt("createdBy"));
+                r.setNote(rs.getString("note"));
+                r.setStorekeeperId(rs.getInt("storekeeperId"));
+                r.setStorekeeperName(rs.getString("storekeeperName"));
+                list.add(r);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public int countByCreatedBy(int createdBy, String search, String status) {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM request_transfer_ticket WHERE createdBy = ? ");
+        List<Object> params = new ArrayList<>();
+        params.add(createdBy);
+
+        if (search != null && !search.trim().isEmpty()) {
+            sql.append("AND (ticketCode LIKE ? OR note LIKE ?) ");
+            params.add("%" + search + "%");
+            params.add("%" + search + "%");
+        }
+
+        if (status != null && !status.trim().isEmpty()) {
+            sql.append("AND status = ? ");
+            params.add(status);
+        }
+
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
     public List<RequestTransferTicket> getAvailableForActual() {
         List<RequestTransferTicket> list = new ArrayList<>();
         String sql = "SELECT id, ticketCode, requestDate FROM request_transfer_ticket "
                 + "WHERE id NOT IN (SELECT requestTransferId FROM actual_transfer_ticket) "
-                + "AND status != 'Rejected' "
+                + "AND status = 'Completed' "
                 + "ORDER BY createdAt DESC";
 
         try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {

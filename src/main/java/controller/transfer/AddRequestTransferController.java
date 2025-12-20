@@ -67,13 +67,14 @@ public class AddRequestTransferController extends HttpServlet {
             String ticketCode = request.getParameter("ticketCode");
             String type = request.getParameter("type");
             String requestDateStr = request.getParameter("requestDate");
+            String status = request.getParameter("status");
             String note = request.getParameter("note");
             String storekeeperIdStr = request.getParameter("storekeeperId");
 
             String[] productIds = request.getParameterValues("productId");
             String[] quantities = request.getParameterValues("quantity");
 
-            if (ticketCode == null || type == null || requestDateStr == null ||
+            if (ticketCode == null || type == null || requestDateStr == null || status == null ||
                     productIds == null || quantities == null || productIds.length == 0) {
                 request.setAttribute("error", "Please fill all required fields");
                 doGet(request, response);
@@ -84,7 +85,7 @@ public class AddRequestTransferController extends HttpServlet {
             ticket.setTicketCode(ticketCode);
             ticket.setType(type);
             ticket.setRequestDate(Date.valueOf(requestDateStr));
-            ticket.setStatus("Pending");
+            ticket.setStatus(status);
             ticket.setCreatedBy(user.getUserId());
             ticket.setNote(note);
 
