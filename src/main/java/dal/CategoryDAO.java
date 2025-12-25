@@ -34,22 +34,39 @@ public class CategoryDAO extends DBContext {
 
         return list;
     }
-    public List<Category> getCategoriesForUpdate() {
+    public List<Category> getCategoriesForAddAndEditP(Integer currentCategoryId) {
         List<Category> list = new ArrayList<>();
-        String sql = "SELECT categoryId, categoryName, description, status FROM category WHERE status = 1 ORDER BY categoryName ASC";
+
+        String sql = """
+        SELECT categoryId, categoryName, description, status
+        FROM category
+        WHERE status = 1
+    """;
+
+        // Nếu đang EDIT → cho phép load thêm category hiện tại (kể cả inactive)
+        if (currentCategoryId != null) {
+            sql += " OR categoryId = ?";
+        }
+
+        sql += " ORDER BY categoryId ASC";
 
         try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            while (rs.next()) {
-                Category c = new Category(
-                        rs.getInt("categoryId"),
-                        rs.getString("categoryName"),
-                        rs.getString("description"),
-                        rs.getInt("status")
-                );
-                list.add(c);
+            if (currentCategoryId != null) {
+                ps.setInt(1, currentCategoryId);
+            }
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Category c = new Category(
+                            rs.getInt("categoryId"),
+                            rs.getString("categoryName"),
+                            rs.getString("description"),
+                            rs.getInt("status")
+                    );
+                    list.add(c);
+                }
             }
 
         } catch (Exception e) {
@@ -58,6 +75,9 @@ public class CategoryDAO extends DBContext {
 
         return list;
     }
+
+
+
     public List<Category> searchCategory(String categoryName,
                                          String statusFilter,
                                          String sortField,

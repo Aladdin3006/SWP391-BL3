@@ -195,9 +195,13 @@
                             <select name="categoryId">
                                 <option value="0">--- Select Category ---</option>
                                 <c:forEach items="${categories}" var="c">
-                                    <option value="${c.categoryId}" ${c.categoryId == product.categoryId ? "selected" : ""}>
+                                    <option value="${c.categoryId}"
+                                        ${c.categoryId == product.categoryId ? "selected" : ""}
+                                        ${c.status == 0 ? "" : ""}>
                                             ${c.categoryName}
+                                        <c:if test="${c.status == 0}">(Inactive)</c:if>
                                     </option>
+
                                 </c:forEach>
                             </select>
                             <div class="error-text" id="err-categoryId"></div>
@@ -205,12 +209,17 @@
                             <label>Supplier</label>
                             <select name="supplierId">
                                 <option value="">--- Select Supplier ---</option>
+
                                 <c:forEach items="${suppliers}" var="s">
-                                    <option value="${s.id}" ${s.id == product.supplierId ? "selected" : ""}>
+                                    <option value="${s.id}"
+                                            <c:if test="${s.id eq product.supplierId}">selected</c:if>
+                                            <c:if test="${s.status eq 'inactive'}">disabled</c:if>>
                                             ${s.name}
+                                        <c:if test="${s.status eq 'inactive'}">(Inactive)</c:if>
                                     </option>
                                 </c:forEach>
                             </select>
+
                             <div class="error-text" id="err-supplierId"></div>
 
                             <label>Unit</label>

@@ -80,11 +80,31 @@
                     <h2 class="fw-bold mb-1" style="color: #2c3e50;">Product Management</h2>
                     <p class="text-muted">Manage your products efficiently</p>
                 </div>
-                <a href="${pageContext.request.contextPath}/add-product"
-                   class="btn btn-success"
-                   style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none;">
-                    <i class="fas fa-plus me-2"></i>Add Product
-                </a>
+                <div class="dropdown">
+                    <button class="btn btn-success dropdown-toggle"
+                            type="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none;">
+                        <i class="fas fa-plus me-2"></i>Add Product
+                    </button>
+
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item"
+                               href="${pageContext.request.contextPath}/add-product">
+                                Add Single Product
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item"
+                               href="${pageContext.request.contextPath}/add-multi-product">
+                                Add Multiple Products
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
             </div>
 
             <!-- Filter Form -->
