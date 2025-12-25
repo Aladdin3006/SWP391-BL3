@@ -46,6 +46,39 @@
             margin-bottom: 25px;
             text-align: center;
         }
+        .product-form {
+            border: 2px solid #eee;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 12px;
+            background: #f9f9f9;
+            position: relative;
+        }
+        .product-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ddd;
+        }
+        .product-number {
+            font-size: 18px;
+            font-weight: bold;
+            color: #ff8b22;
+        }
+        .remove-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .remove-btn:hover {
+            background: #c82333;
+        }
         .flex-box {
             display: flex;
             gap: 30px;
@@ -97,11 +130,12 @@
             box-shadow: 0 0 5px rgba(37,117,252,0.4);
             outline: none;
         }
-        .button-row {
+        .buttons-container {
             display: flex;
-            gap: 15px;
+            justify-content: space-between;
             margin-top: 20px;
-            justify-content: flex-end;
+            padding-top: 20px;
+            border-top: 2px solid #eee;
         }
         .btn {
             padding: 12px 24px;
@@ -110,6 +144,13 @@
             border: none;
             cursor: pointer;
             font-size: 15px;
+        }
+        .btn-add {
+            background: #28a745;
+            color: white;
+        }
+        .btn-add:hover {
+            background: #218838;
         }
         .btn-save {
             background: #ff8b22;
@@ -131,6 +172,16 @@
             margin-top: -12px;
             margin-bottom: 12px;
         }
+        .global-error {
+            color: red;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        .global-success {
+            color: green;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -143,152 +194,319 @@
 
         <main class="col-md-10 ms-sm-auto main-content">
             <div class="container-box">
-                <h2>Add Product</h2>
+                <h2>Add Products</h2>
 
-                <form action="${pageContext.request.contextPath}/add-product" method="post" enctype="multipart/form-data">
-                    <div class="flex-box">
-                        <div class="upload-container">
-                            <div class="upload-box">
-                                <img id="previewImg" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHICWZcFeQ7UuaU7N30-E4Vt1GaTYIU1DIEA&s" alt="Preview">
-                            </div>
-                            <label>Upload Image File</label>
-                            <input type="file" name="imageFile" id="imageFile" accept="image/*" onchange="previewFile()">
-                            <div class="error-text" id="err-url">
-                                <c:if test="${not empty errImage}">${errImage}</c:if>
-                            </div>
-                        </div>
+                <c:if test="${not empty errorMessage}">
+                    <div class="global-error">${errorMessage}</div>
+                </c:if>
 
-                        <div class="form-section">
-                            <label>Product Code</label>
-                            <input type="text" name="productCode" value="${productCode}">
-                            <div class="error-text" id="err-productCode">
-                                <c:if test="${not empty errProductCode}">${errProductCode}</c:if>
-                            </div>
-
-                            <label>Product Name</label>
-                            <input type="text" name="name" value="${name}">
-                            <div class="error-text" id="err-name"></div>
-
-                            <label>Brand</label>
-                            <input type="text" name="brand" value="${brand}">
-                            <div class="error-text" id="err-brand"></div>
-
-                            <label>Company</label>
-                            <input type="text" name="company" value="${company}">
-                            <div class="error-text" id="err-company"></div>
-
-                            <label>Category</label>
-                            <select name="categoryId">
-                                <option value="0">--- Select Category ---</option>
-                                <c:forEach items="${categories}" var="c">
-                                    <option value="${c.categoryId}" ${c.categoryId == categoryId ? "selected" : ""}>
-                                            ${c.categoryName}
-                                    </option>
-                                </c:forEach>
-                            </select>
-                            <div class="error-text" id="err-categoryId"></div>
-
-                            <label>Supplier</label>
-                            <select name="supplierId">
-                                <option value="">--- Select Supplier ---</option>
-                                <c:forEach items="${suppliers}" var="s">
-                                    <option value="${s.id}" ${s.id == supplierId ? "selected" : ""}>
-                                            ${s.name}
-                                    </option>
-                                </c:forEach>
-                            </select>
-                            <div class="error-text" id="err-supplierId"></div>
-
-                            <label>Unit</label>
-                            <input type="number" name="unit" min="0" value="${unit}">
-                            <div class="error-text" id="err-unit"></div>
-                        </div>
+                <c:if test="${not empty errorMessages}">
+                    <div class="global-error">
+                        <c:forEach items="${errorMessages}" var="err">
+                            <div>${err}</div>
+                        </c:forEach>
                     </div>
-
-                    <div class="button-row">
-                        <button type="submit" class="btn btn-save">SAVE</button>
-                        <a href="${pageContext.request.contextPath}/view-product-list" class="btn btn-cancel">CANCEL</a>
-                    </div>
-                </form>
+                </c:if>
 
                 <c:if test="${success != null && success == true}">
-                    <script>
-                        const newId = ${newProductId};
-                        alert("Add product successful!");
-                        window.location.href = "${pageContext.request.contextPath}/view-product-detail?id=" + newId;
-                    </script>
+                    <div class="global-success">
+                        Successfully added ${savedCount} product(s)!
+                    </div>
                 </c:if>
+
+                <form id="addProductsForm" action="${pageContext.request.contextPath}/add-product" method="post" enctype="multipart/form-data">
+                    <div id="productsContainer">
+                        <div class="product-form" data-index="0">
+                            <div class="product-header">
+                                <span class="product-number">Product #1</span>
+                                <button type="button" class="remove-btn" onclick="removeProduct(this)" disabled>
+                                    <i class="fas fa-times"></i> Remove
+                                </button>
+                            </div>
+
+                            <div class="flex-box">
+                                <div class="upload-container">
+                                    <div class="upload-box">
+                                        <img class="previewImg" data-index="0" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHICWZcFeQ7UuaU7N30-E4Vt1GaTYIU1DIEA&s" alt="Preview">
+                                    </div>
+                                    <label>Upload Image File</label>
+                                    <input type="file" name="imageFile" class="imageFile" data-index="0" accept="image/*" onchange="previewFile(this)">
+                                    <div class="error-text error-url" data-index="0"></div>
+                                </div>
+
+                                <div class="form-section">
+                                    <label>Product Code</label>
+                                    <input type="text" name="productCode" value="${productCode}">
+                                    <div class="error-text error-productCode" data-index="0"></div>
+
+                                    <label>Product Name</label>
+                                    <input type="text" name="name" value="${name}">
+                                    <div class="error-text error-name" data-index="0"></div>
+
+                                    <label>Brand</label>
+                                    <input type="text" name="brand" value="${brand}">
+                                    <div class="error-text error-brand" data-index="0"></div>
+
+                                    <label>Company</label>
+                                    <input type="text" name="company" value="${company}">
+                                    <div class="error-text error-company" data-index="0"></div>
+
+                                    <label>Category</label>
+                                    <select name="categoryId">
+                                        <option value="0">--- Select Category ---</option>
+                                        <c:forEach items="${categories}" var="c">
+                                            <option value="${c.categoryId}">
+                                                    ${c.categoryName}
+                                            </option>
+                                        </c:forEach>
+                                    </select>
+                                    <div class="error-text error-categoryId" data-index="0"></div>
+
+                                    <label>Supplier</label>
+                                    <select name="supplierId">
+                                        <option value="">--- Select Supplier ---</option>
+                                        <c:forEach items="${suppliers}" var="s">
+                                            <option value="${s.id}">
+                                                    ${s.name}
+                                            </option>
+                                        </c:forEach>
+                                    </select>
+                                    <div class="error-text error-supplierId" data-index="0"></div>
+
+                                    <label>Unit</label>
+                                    <input type="number" name="unit" min="0" value="0">
+                                    <div class="error-text error-unit" data-index="0"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="buttons-container">
+                        <button type="button" class="btn btn-add" onclick="addProduct()">
+                            <i class="fas fa-plus"></i> ADD MORE PRODUCT
+                        </button>
+                        <div>
+                            <button type="submit" class="btn btn-save">SAVE ALL</button>
+                            <a href="${pageContext.request.contextPath}/view-product-list" class="btn btn-cancel">CANCEL</a>
+                        </div>
+                    </div>
+                </form>
             </div>
         </main>
     </div>
 </div>
 
 <script>
-    function previewFile() {
-        const fileInput = document.getElementById('imageFile');
-        const preview = document.getElementById('previewImg');
+    let productCount = 1;
 
-        if (fileInput.files && fileInput.files[0]) {
+    function previewFile(input) {
+        const index = input.getAttribute('data-index');
+        const preview = document.querySelector(`.previewImg[data-index="${index}"]`);
+
+        if (input.files && input.files[0]) {
             const reader = new FileReader();
             reader.onload = function(e) {
                 preview.src = e.target.result;
             }
-            reader.readAsDataURL(fileInput.files[0]);
+            reader.readAsDataURL(input.files[0]);
         }
     }
 
-    function showError(id, message) {
-        document.getElementById(id).textContent = message;
+    function addProduct() {
+        productCount++;
+        const container = document.getElementById('productsContainer');
+        const firstForm = container.querySelector('.product-form');
+        const newForm = firstForm.cloneNode(true);
+
+        newForm.setAttribute('data-index', productCount - 1);
+        newForm.querySelector('.product-number').textContent = `Product #${productCount}`;
+
+        const index = productCount - 1;
+        const inputs = newForm.querySelectorAll('input, select');
+        inputs.forEach(input => {
+            input.value = '';
+            if (input.name === 'unit') input.value = '0';
+            if (input.tagName === 'SELECT') input.selectedIndex = 0;
+
+            const originalName = input.getAttribute('data-original-name') || input.name;
+            input.setAttribute('data-original-name', originalName);
+
+            if (index > 0) {
+                input.name = originalName + '_' + index;
+            } else {
+                input.name = originalName;
+            }
+
+            if (input.classList.contains('imageFile')) {
+                input.setAttribute('name', 'imageFile' + (index > 0 ? '_' + index : ''));
+                input.setAttribute('data-index', index);
+                input.onchange = function() { previewFile(this); };
+            }
+        });
+
+        newForm.querySelector('.previewImg').setAttribute('data-index', index);
+        newForm.querySelector('.previewImg').src = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHICWZcFeQ7UuaU7N30-E4Vt1GaTYIU1DIEA&s';
+
+        const errorDivs = newForm.querySelectorAll('.error-text');
+        errorDivs.forEach(div => {
+            div.setAttribute('data-index', index);
+            div.textContent = '';
+        });
+
+        newForm.querySelector('.remove-btn').disabled = false;
+        newForm.querySelector('.remove-btn').onclick = function() { removeProduct(this); };
+
+        container.appendChild(newForm);
+
+        if (productCount > 1) {
+            container.querySelector('.product-form:first-child .remove-btn').disabled = false;
+        }
+    }
+
+    function removeProduct(button) {
+        const form = button.closest('.product-form');
+        if (productCount > 1) {
+            form.remove();
+            productCount--;
+
+            const forms = document.querySelectorAll('.product-form');
+            forms.forEach((form, index) => {
+                form.setAttribute('data-index', index);
+                form.querySelector('.product-number').textContent = `Product #${index + 1}`;
+
+                const inputs = form.querySelectorAll('input, select');
+                inputs.forEach(input => {
+                    const originalName = input.getAttribute('data-original-name') || input.name.split('_')[0];
+                    input.setAttribute('data-original-name', originalName);
+
+                    if (index > 0) {
+                        input.name = originalName + '_' + index;
+                    } else {
+                        input.name = originalName;
+                    }
+
+                    if (input.classList.contains('imageFile')) {
+                        input.setAttribute('name', 'imageFile' + (index > 0 ? '_' + index : ''));
+                        input.setAttribute('data-index', index);
+                    }
+                });
+
+                form.querySelector('.previewImg').setAttribute('data-index', index);
+
+                const errorDivs = form.querySelectorAll('.error-text');
+                errorDivs.forEach(div => {
+                    div.setAttribute('data-index', index);
+                });
+            });
+
+            if (productCount === 1) {
+                document.querySelector('.product-form .remove-btn').disabled = true;
+            }
+        }
+    }
+
+    function showError(index, field, message) {
+        const errorDiv = document.querySelector(`.error-${field}[data-index="${index}"]`);
+        if (errorDiv) {
+            errorDiv.textContent = message;
+        }
+    }
+
+    function clearErrors() {
+        document.querySelectorAll('.error-text').forEach(e => e.textContent = '');
     }
 
     function isEmpty(v) {
         return !v || v.trim().length === 0;
     }
 
-    document.querySelector("form").addEventListener("submit", function (e) {
-        document.querySelectorAll(".error-text").forEach(e => e.textContent = "");
+    document.getElementById("addProductsForm").addEventListener("submit", function (e) {
+        clearErrors();
+
+        const forms = document.querySelectorAll('.product-form');
         let hasError = false;
+        const productCodes = new Set();
 
-        const productCode = document.querySelector("input[name='productCode']");
-        const name = document.querySelector("input[name='name']");
-        const brand = document.querySelector("input[name='brand']");
-        const company = document.querySelector("input[name='company']");
-        const imageFile = document.querySelector("input[name='imageFile']");
-        const categoryId = document.querySelector("select[name='categoryId']");
-        const supplierId = document.querySelector("select[name='supplierId']");
-        const unit = document.querySelector("input[name='unit']");
+        forms.forEach((form, index) => {
+            const productCodeInput = form.querySelector('input[name^="productCode"]');
+            const nameInput = form.querySelector('input[name^="name"]');
+            const brandInput = form.querySelector('input[name^="brand"]');
+            const companyInput = form.querySelector('input[name^="company"]');
+            const imageFile = form.querySelector('.imageFile');
+            const categorySelect = form.querySelector('select[name^="categoryId"]');
+            const supplierSelect = form.querySelector('select[name^="supplierId"]');
+            const unitInput = form.querySelector('input[name^="unit"]');
 
-        if (isEmpty(productCode.value)) {
-            showError("err-productCode", "Product code is required.");
-            hasError = true;
-        }
-        if (isEmpty(name.value)) {
-            showError("err-name", "Product name is required.");
-            hasError = true;
-        }
-        if (isEmpty(brand.value)) {
-            showError("err-brand", "Brand is required.");
-            hasError = true;
-        }
-        if (isEmpty(company.value)) {
-            showError("err-company", "Company is required.");
-            hasError = true;
-        }
-        if (imageFile.files.length === 0) {
-            showError("err-url", "Please upload an image file.");
-            hasError = true;
-        }
-        if (supplierId.value === "") {
-            showError("err-supplierId", "Please select a supplier.");
-            hasError = true;
-        }
-        if (isEmpty(unit.value) || Number(unit.value) < 0) {
-            showError("err-unit", "Unit must be a number ≥ 0.");
-            hasError = true;
-        }
+            const productCode = productCodeInput ? productCodeInput.value.trim() : '';
+            const name = nameInput ? nameInput.value.trim() : '';
+            const brand = brandInput ? brandInput.value.trim() : '';
+            const company = companyInput ? companyInput.value.trim() : '';
+            const categoryId = categorySelect ? categorySelect.value : '';
+            const supplierId = supplierSelect ? supplierSelect.value : '';
+            const unit = unitInput ? unitInput.value : '';
+
+            if (productCodes.has(productCode.toLowerCase())) {
+                showError(index, 'productCode', 'Duplicate product code in this batch.');
+                hasError = true;
+            } else if (!isEmpty(productCode)) {
+                productCodes.add(productCode.toLowerCase());
+            }
+
+            if (isEmpty(productCode)) {
+                showError(index, 'productCode', 'Product code is required.');
+                hasError = true;
+            }
+
+            if (isEmpty(name)) {
+                showError(index, 'name', 'Product name is required.');
+                hasError = true;
+            }
+
+            if (isEmpty(brand)) {
+                showError(index, 'brand', 'Brand is required.');
+                hasError = true;
+            }
+
+            if (isEmpty(company)) {
+                showError(index, 'company', 'Company is required.');
+                hasError = true;
+            }
+
+            if (!imageFile.files || imageFile.files.length === 0) {
+                showError(index, 'url', 'Please upload an image file.');
+                hasError = true;
+            }
+
+            if (supplierId === "" || supplierId === "0") {
+                showError(index, 'supplierId', 'Please select a supplier.');
+                hasError = true;
+            }
+
+            if (categoryId === "0") {
+                showError(index, 'categoryId', 'Please select a category.');
+                hasError = true;
+            }
+
+            if (isEmpty(unit) || Number(unit) < 0) {
+                showError(index, 'unit', 'Unit must be a number ≥ 0.');
+                hasError = true;
+            }
+        });
 
         if (hasError) {
             e.preventDefault();
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const successElement = document.querySelector('.global-success');
+        if (successElement && successElement.textContent.trim() !== '') {
+            alert(successElement.textContent);
+        }
+
+        const errorElement = document.querySelector('.global-error');
+        if (errorElement && errorElement.textContent.trim() !== '') {
+            alert('Error: ' + errorElement.textContent);
         }
     });
 </script>

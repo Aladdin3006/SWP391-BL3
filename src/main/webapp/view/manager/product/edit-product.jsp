@@ -313,6 +313,26 @@
 
         if (hasError) e.preventDefault();
     });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        checkUnitChange();
+
+        // ADD THIS NEW CODE HERE
+        const urlParams = new URLSearchParams(window.location.search);
+        const updated = urlParams.get('updated');
+
+        if (updated === '1') {
+            alert('Product updated successfully!');
+            // Remove the parameter from URL to prevent showing again on refresh
+            const newUrl = window.location.pathname + '?id=' + urlParams.get('id');
+            window.history.replaceState({}, '', newUrl);
+        }
+
+        // Also check for any error message from the server
+        <c:if test="${not empty error}">
+        alert('Error: ${error}');
+        </c:if>
+    });
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

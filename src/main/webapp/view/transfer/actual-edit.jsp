@@ -95,7 +95,6 @@
                                 <label class="form-label fw-bold small text-muted">STATUS</label>
                                 <select name="status" id="statusSelect" class="form-select" onchange="checkStatusChange()">
                                     <option value="Pending" ${ticket.status == 'Pending' ? 'selected' : ''}>Pending</option>
-                                    <option value="In Progress" ${ticket.status == 'In Progress' ? 'selected' : ''}>In Progress</option>
                                     <option value="Completed" ${ticket.status == 'Completed' ? 'selected' : ''}>Completed</option>
                                     <option value="Canceled" ${ticket.status == 'Canceled' ? 'selected' : ''}>Canceled</option>
                                 </select>

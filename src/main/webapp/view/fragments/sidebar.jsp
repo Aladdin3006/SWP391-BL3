@@ -6,6 +6,12 @@
             <c:choose>
                 <c:when test="${sessionScope.user.roleName == 'admin'}">
                     <li class="nav-item">
+                        <a class="nav-link ${activePage == 'dashboard-admin' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/dashboard-admin">
+                            <i class="fas fa-chart-line me-2"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link ${activePage == 'user-list' ? 'active' : ''}"
                            href="${pageContext.request.contextPath}/user-list">
                             <i class="fas fa-users me-2"></i>Manage Users
@@ -28,6 +34,13 @@
 
                 <c:when test="${sessionScope.user.roleName == 'manager'}">
                     <li class="nav-item">
+                        <a class="nav-link ${activePage == 'dashboard-manager' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/dashboard-manager">
+                            <i class="fas fa-chart-line me-2"></i>Dashboard
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
                         <a class="nav-link ${activePage == 'inventory' ? 'active' : ''}"
                            href="${pageContext.request.contextPath}/view-inventory">
                             <i class="fas fa-boxes me-2"></i> Inventory Report
@@ -42,6 +55,13 @@
                     </li>
 
                     <li class="nav-item">
+                        <a class="nav-link ${activePage == 'view-category-list' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/view-category-list">
+                            <i class="fas fa-tags me-2"></i>Manage Categories
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
                         <a class="nav-link ${activePage == 'supplier-list' ? 'active' : ''}"
                            href="${pageContext.request.contextPath}/supplier-list">
                             <i class="fas fa-truck me-2"></i>Manager Supplier
@@ -51,7 +71,7 @@
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'department-list' ? 'active' : ''}"
                            href="${pageContext.request.contextPath}/department-list">
-                            <i class="fas fa-building me-2"></i>Departments
+                            <i class="fas fa-building me-2"></i>Manager Departments
                         </a>
                     </li>
 
@@ -73,26 +93,26 @@
 
                 <c:when test="${sessionScope.user.roleName == 'storekeeper'}">
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'view-product-list' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/view-product-list">
-                            <i class="fas fa-boxes-stacked me-2"></i>View Products
-                        </a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link ${activePage == 'actual-transfer' ? 'active' : ''}"
                            href="${pageContext.request.contextPath}/actual-transfer">
                             <i class="fas fa-dolly-flatbed me-2"></i>Actual Transfers
                         </a>
                     </li>
-                </c:when>
-
-                <c:when test="${sessionScope.user.roleName == 'employee'}">
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'view-product-list' ? 'active' : ''}"
                            href="${pageContext.request.contextPath}/view-product-list">
                             <i class="fas fa-boxes-stacked me-2"></i>View Products
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link ${activePage == 'evaluate-list' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/evaluate-list">
+                            <i class="fas fa-dolly-flatbed me-2"></i>Evaluate Employee
+                        </a>
+                    </li>
+                </c:when>
+
+                <c:when test="${sessionScope.user.roleName == 'employee'}">
                     <li class="nav-item">
                         <a class="nav-link ${activePage == 'request-transfer' ? 'active' : ''}"
                            href="${pageContext.request.contextPath}/request-transfer">
@@ -100,9 +120,9 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link ${activePage == 'actual-transfer' ? 'active' : ''}"
-                           href="${pageContext.request.contextPath}/actual-transfer">
-                            <i class="fas fa-dolly-flatbed me-2"></i>Actual Transfers
+                        <a class="nav-link ${activePage == 'view-product-list' ? 'active' : ''}"
+                           href="${pageContext.request.contextPath}/view-product-list">
+                            <i class="fas fa-boxes-stacked me-2"></i>View Products
                         </a>
                     </li>
                 </c:when>

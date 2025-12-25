@@ -262,7 +262,7 @@
                                     </tbody>
                                 </table>
 
-                                <c:if test="${totalPages > 1}">
+                                <c:if test="${totalPages > 0}">
                                     <nav class="mt-4">
                                         <ul class="pagination justify-content-center">
                                             <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">

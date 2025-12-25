@@ -127,11 +127,11 @@
                                             <label class="text-muted small">Assigned Storekeeper</label>
                                             <div class="fw-bold">
                                                 <c:choose>
-                                                    <c:when test="${employee != null}">
-                                                        <i class="fas fa-user-check text-success me-1"></i> ${employee.displayName}
+                                                    <c:when test="${storekeeper != null}">
+                                                        <i class="fas fa-user-check text-success me-1"></i> ${storekeeper.displayName}
                                                     </c:when>
-                                                    <c:when test="${ticket.employeeId > 0}">
-                                                        Storekeeper #${ticket.employeeId}
+                                                    <c:when test="${ticket.storekeeperId > 0}">
+                                                        Storekeeper #${ticket.storekeeperId}
                                                     </c:when>
                                                     <c:otherwise>
                                                         <span class="text-muted">Not Assigned</span>
@@ -199,9 +199,9 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="d-grid gap-2">
-                                        <a href="${pageContext.request.contextPath}/request-transfer" class="btn btn-outline-secondary">
-                                            <i class="fas fa-arrow-left me-2"></i> Back to List
-                                        </a>
+                                        <button type="button" onclick="window.history.back()" class="btn btn-outline-secondary btn-sm">
+                                            <i class="fas fa-arrow-left me-1"></i> Back To List
+                                        </button>
                                         <c:if test="${ticket.status == 'Pending'}">
                                             <a href="${pageContext.request.contextPath}/request-transfer/edit?id=${ticket.id}" class="btn btn-outline-primary">
                                                 <i class="fas fa-edit me-2"></i> Edit Request

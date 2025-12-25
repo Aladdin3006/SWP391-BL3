@@ -179,9 +179,7 @@ public class ProductDAO extends DBContext {
     }
 
     public Product getProductByPId(int id) {
-        String sql = "SELECT p.id, p.productCode, p.name, p.brand, p.company, p.categoryId, p.unit, p.supplierId," +
-                " p.status, p.url, s.name AS supplierName, c.categoryName AS categoryName FROM Product p " +
-                "LEFT JOIN Supplier s ON p.supplierId = s.id LEFT JOIN Category c ON p.categoryId = c.categoryId WHERE p.id = ?";
+        String sql = "SELECT p.id, p.productCode, p.name, p.brand, p.company, p.categoryId, p.unit, p.supplierId, p.status, p.url, s.name AS supplierName, c.categoryName AS categoryName FROM Product p LEFT JOIN Supplier s ON p.supplierId = s.id LEFT JOIN Category c ON p.categoryId = c.categoryId WHERE p.id = ?";
 
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -294,17 +292,14 @@ public class ProductDAO extends DBContext {
         }
         return null;
     }
-    public int insertProducts(List<Product> products) {
-        String sql = "INSERT INTO product " +
-                "(productCode, name, brand, company, categoryId, unit, supplierId, status, url) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        int[] result;
+    public boolean insertMultipleProducts(List<Product> products) {
+        String sql = "INSERT INTO product (productCode, name, brand, company, categoryId, unit, supplierId, status, url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            conn.setAutoCommit(false); // 🚨 transaction
+            conn.setAutoCommit(false);
 
             for (Product p : products) {
                 ps.setString(1, p.getProductCode());
@@ -316,19 +311,38 @@ public class ProductDAO extends DBContext {
                 ps.setInt(7, p.getSupplierId());
                 ps.setString(8, p.getStatus());
                 ps.setString(9, p.getUrl());
-
                 ps.addBatch();
             }
 
-            result = ps.executeBatch();
-            conn.commit(); // ✅ tất cả OK
+            int[] results = ps.executeBatch();
 
-            return result.length; // số product insert thành công
+            // Get generated keys for all inserted products
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                int index = 0;
+                while (rs.next()) {
+                    if (index < products.size()) {
+                        // Update the product object with the generated ID
+                        products.get(index).setId(rs.getInt(1));
+                    }
+                    index++;
+                }
+            }
+
+            conn.commit();
+
+            // Check if all inserts were successful
+            for (int result : results) {
+                if (result <= 0) {
+                    return false;
+                }
+            }
+
+            return true;
 
         } catch (Exception e) {
             e.printStackTrace();
-            return -1;
         }
-    }
 
+        return false;
+    }
 }

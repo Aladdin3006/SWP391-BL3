@@ -20,24 +20,20 @@ public class ViewCategoryListController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // ===== 1. Lấy parameter từ request =====
         String categoryName = request.getParameter("categoryName");
         String status = request.getParameter("status");
         String sortField = request.getParameter("sortField");
         String sortOrder = request.getParameter("sortOrder");
 
-        // ===== 2. Gọi DAO =====
         List<Category> categoryList =
                 categoryDAO.searchCategory(categoryName, status, sortField, sortOrder);
 
-        // ===== 3. Gửi dữ liệu sang JSP =====
         request.setAttribute("categoryList", categoryList);
         request.setAttribute("categoryName", categoryName);
         request.setAttribute("status", status);
         request.setAttribute("sortField", sortField);
         request.setAttribute("sortOrder", sortOrder);
 
-        // ===== 4. Forward sang view =====
         request.getRequestDispatcher("/view/manager/category/view-category-list.jsp")
                 .forward(request, response);
     }
@@ -45,7 +41,6 @@ public class ViewCategoryListController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Hiện tại không dùng POST
         doGet(request, response);
     }
 }

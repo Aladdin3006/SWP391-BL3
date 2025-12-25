@@ -3,8 +3,7 @@ package dal;
 import entity.RolePermission;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class RolePermissionDAO extends DBContext {
 
@@ -76,5 +75,27 @@ public class RolePermissionDAO extends DBContext {
             e.printStackTrace();
         }
         return urls;
+    }
+
+    public Map<Integer, Set<Integer>> getAllRolePermissionMappings() {
+        Map<Integer, Set<Integer>> map = new HashMap<>();
+        String sql = "SELECT roleId, permissionId FROM role_permission";
+
+        try (Connection c = getConnection();
+             PreparedStatement ps = c.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                int roleId = rs.getInt("roleId");
+                int permissionId = rs.getInt("permissionId");
+
+                map.putIfAbsent(roleId, new HashSet<>());
+                map.get(roleId).add(permissionId);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return map;
     }
 }

@@ -13,7 +13,7 @@ import java.util.List;
 @WebServlet(name = "DepartmentListController", urlPatterns = {"/department-list"})
 public class DepartmentListController extends HttpServlet {
 
-    private static final int PAGE_SIZE = 10;
+    private static final int PAGE_SIZE = 5;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -42,6 +42,15 @@ public class DepartmentListController extends HttpServlet {
         List<Department> departments = db.getDepartmentListWithPaging(search, status, page, PAGE_SIZE);
         int total = db.countDepartments(search, status);
         int totalPages = (int) Math.ceil(total * 1.0 / PAGE_SIZE);
+
+        if (totalPages == 0) {
+            totalPages = 1;
+        }
+
+        if (page > totalPages) {
+            page = totalPages;
+            departments = db.getDepartmentListWithPaging(search, status, page, PAGE_SIZE);
+        }
 
         for (Department d : departments) {
             String skName = db.getStorekeeperName(d.getStorekeeperId());

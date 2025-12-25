@@ -8,22 +8,10 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
         <style>
-            body {
-                background-color: #f8f9fa;
-            }
-            .sidebar {
-                background-color: #343a40;
-                color: white;
-                min-height: calc(100vh - 56px);
-                padding-top: 20px;
-            }
-            .sidebar .nav-link {
-                color: rgba(255, 255, 255, 0.8);
-            }
-            .sidebar .nav-link.active {
-                color: white;
-                background-color: #0d6efd;
-            }
+            body { background-color: #f8f9fa; }
+            .sidebar { background-color: #343a40; color: white; min-height: calc(100vh - 56px); padding-top: 20px; }
+            .sidebar .nav-link { color: rgba(255, 255, 255, 0.8); }
+            .sidebar .nav-link.active { color: white; background-color: #0d6efd; }
             .detail-label {
                 font-size: 0.85rem;
                 font-weight: bold;
@@ -50,9 +38,9 @@
                 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
 
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        <a href="${pageContext.request.contextPath}/actual-transfer" class="btn btn-outline-secondary btn-sm">
+                        <button type="button" onclick="window.history.back()" class="btn btn-outline-secondary btn-sm">
                             <i class="fas fa-arrow-left me-1"></i> Back
-                        </a>
+                        </button>
                         <span class="badge bg-secondary fs-6">Actual Transfer Ticket</span>
                     </div>
 
@@ -65,7 +53,9 @@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="detail-label">Request Ref</div>
-                                    <div class="detail-value">#${ticket.requestTransferId}</div>
+                                    <div class="detail-value">
+                                        ${not empty ticket.requestTicketCode ? ticket.requestTicketCode : '#'+ticket.requestTransferId}
+                                    </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="detail-label">Transfer Date</div>
@@ -78,8 +68,25 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <hr class="text-muted opacity-25">
+
                             <div class="row g-4 mt-1">
-                                <div class="col-md-12">
+                                <div class="col-md-3">
+                                    <div class="detail-label">Requested By</div>
+                                    <div class="detail-value">
+                                        <i class="fas fa-user-clock text-secondary me-1"></i>
+                                        ${not empty ticket.requestCreatedByName ? ticket.requestCreatedByName : 'Unknown'}
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="detail-label">Processed By</div>
+                                    <div class="detail-value">
+                                        <i class="fas fa-user-check text-success me-1"></i>
+                                        ${not empty ticket.confirmedByName ? ticket.confirmedByName : 'Pending'}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
                                     <div class="detail-label">Note</div>
                                     <div class="bg-light p-3 rounded border">
                                         ${not empty ticket.note ? ticket.note : 'No additional notes.'}

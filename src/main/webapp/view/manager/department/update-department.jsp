@@ -231,15 +231,21 @@
                                     <c:when test="${not empty currentEmployees}">
                                         <div class="employee-list">
                                             <c:forEach items="${currentEmployees}" var="emp">
+                                                <c:set var="empRating" value="${currentEmployeeRatings[emp.userId]}" />
                                                 <div class="employee-item">
                                                     <div>
                                                         <i class="fas fa-user me-2 text-primary"></i>
                                                         <strong>${emp.displayName}</strong>
                                                         <small class="text-muted ms-2">ID: ${emp.userId}</small>
+                                                        <c:if test="${empRating > 0}">
+                <span class="ms-2 text-warning">
+                    <i class="fas fa-star"></i> ${String.format("%.1f", empRating)}
+                </span>
+                                                        </c:if>
                                                     </div>
                                                     <span class="text-success">
-                                                        <i class="fas fa-check-circle"></i>
-                                                    </span>
+            <i class="fas fa-check-circle"></i>
+        </span>
                                                 </div>
                                             </c:forEach>
                                         </div>
@@ -257,10 +263,32 @@
                                 <label class="form-label">Add/Remove Employees</label>
                                 <select name="employeeIds" class="form-control select2-multiple" multiple="multiple">
                                     <c:forEach items="${currentEmployees}" var="emp">
-                                        <option value="${emp.userId}" selected>${emp.displayName} (ID: ${emp.userId})</option>
+                                        <c:set var="empRating" value="${currentEmployeeRatings[emp.userId]}" />
+                                        <option value="${emp.userId}" selected>
+                                                ${emp.displayName} (ID: ${emp.userId}) -
+                                            <c:choose>
+                                                <c:when test="${empRating > 0}">
+                                                    <i class="fas fa-star text-warning"></i> ${String.format("%.1f", empRating)} star rating
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <i class="far fa-star text-muted"></i> No rating
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </option>
                                     </c:forEach>
                                     <c:forEach items="${availableEmployees}" var="emp">
-                                        <option value="${emp.userId}">${emp.displayName} (ID: ${emp.userId})</option>
+                                        <c:set var="empRating" value="${availableEmployeeRatings[emp.userId]}" />
+                                        <option value="${emp.userId}">
+                                                ${emp.displayName} (ID: ${emp.userId}) -
+                                            <c:choose>
+                                                <c:when test="${empRating > 0}">
+                                                    <i class="fas fa-star text-warning"></i> ${String.format("%.1f", empRating)} star rating
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <i class="far fa-star text-muted"></i> No rating
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </option>
                                     </c:forEach>
                                 </select>
                                 <small class="text-muted">Select or deselect employees to update assignments</small>

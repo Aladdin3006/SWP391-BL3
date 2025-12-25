@@ -31,32 +31,55 @@ public class AddSupplierController extends HttpServlet {
         String email = request.getParameter("email");
         String address = request.getParameter("address");
 
+        // Validate required fields
+        if (code == null || code.trim().isEmpty() || name == null || name.trim().isEmpty()) {
+            request.setAttribute("error", "Supplier code and name are required");
+            request.setAttribute("supplierCode", code);
+            request.setAttribute("name", name);
+            request.setAttribute("contactPerson", contactPerson);
+            request.setAttribute("phone", phone);
+            request.setAttribute("email", email);
+            request.setAttribute("address", address);
+            doGet(request, response);
+            return;
+        }
+
         Supplier supplier = new Supplier();
-        supplier.setSupplierCode(code);
-        supplier.setName(name);
-        supplier.setContactPerson(contactPerson);
-        supplier.setPhone(phone);
-        supplier.setEmail(email);
-        supplier.setAddress(address);
+        supplier.setSupplierCode(code.trim());
+        supplier.setName(name.trim());
+        supplier.setContactPerson(contactPerson != null ? contactPerson.trim() : null);
+        supplier.setPhone(phone != null ? phone.trim() : null);
+        supplier.setEmail(email != null ? email.trim() : null);
+        supplier.setAddress(address != null ? address.trim() : null);
         supplier.setStatus("active");
 
         SupplierDBContext db = new SupplierDBContext();
 
         // Check if supplier code already exists
-        if (db.getSupplierByCode(code) != null) {
-            request.setAttribute("error", "Supplier code already exists");
-            request.setAttribute("supplier", supplier);
+        if (db.getSupplierByCode(code.trim()) != null) {
+            request.setAttribute("error", "Supplier code '" + code + "' already exists");
+            request.setAttribute("supplierCode", code);
+            request.setAttribute("name", name);
+            request.setAttribute("contactPerson", contactPerson);
+            request.setAttribute("phone", phone);
+            request.setAttribute("email", email);
+            request.setAttribute("address", address);
             doGet(request, response);
             return;
         }
 
         try {
             db.addSupplier(supplier);
-            response.sendRedirect("supplier-list?success=added");
+            response.sendRedirect("supplier-list?success=Supplier added successfully");
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("error", "Failed to add supplier: " + e.getMessage());
-            request.setAttribute("supplier", supplier);
+            request.setAttribute("supplierCode", code);
+            request.setAttribute("name", name);
+            request.setAttribute("contactPerson", contactPerson);
+            request.setAttribute("phone", phone);
+            request.setAttribute("email", email);
+            request.setAttribute("address", address);
             doGet(request, response);
         }
     }
