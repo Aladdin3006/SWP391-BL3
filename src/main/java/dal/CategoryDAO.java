@@ -48,7 +48,7 @@ public class CategoryDAO extends DBContext {
             sql += " OR categoryId = ?";
         }
 
-        sql += " ORDER BY categoryName ASC";
+        sql += " ORDER BY categoryId ASC";
 
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {

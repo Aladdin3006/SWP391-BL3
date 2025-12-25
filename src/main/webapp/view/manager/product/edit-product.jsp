@@ -197,7 +197,7 @@
                                 <c:forEach items="${categories}" var="c">
                                     <option value="${c.categoryId}"
                                         ${c.categoryId == product.categoryId ? "selected" : ""}
-                                        ${c.status == 0 ? "disabled" : ""}>
+                                        ${c.status == 0 ? "" : ""}>
                                             ${c.categoryName}
                                         <c:if test="${c.status == 0}">(Inactive)</c:if>
                                     </option>
